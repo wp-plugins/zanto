@@ -1,5 +1,6 @@
 === Zanto ===
-Contributors: mucunguzi,zanto
+Contributors: brooksX
+Donate link: https://stage.wepay.com/donations/support-zanto
 Tags: translation, multilingual, localization, multisite, language switcher, languages
 Requires at least: 3.0
 Tested up to: 3.7.1
