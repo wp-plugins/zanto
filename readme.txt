@@ -32,4 +32,12 @@ Major new features in Zanto 0.1.0 include:
 
 Upload the Zanto plugin to your blog, Activate it for each blog you want to do translations on or Network-wide if you want to do translation on all blogs in the multisite.
 
+== Screenshots ==
+
+1. Default Front end Language switcher added using either the inbuilt language switcher widget or custom code provided in Zanto settings that you place any where in your theme template.
+2. Settings Section for downloading .mo files, changing your admin language or changing the Front end language settings.
+3. Part of the blog Zanto settings page
+4. Admin Language Switcher
+5. Setting up a translation network from available blogs in the multisite
+
 == Changelog ==
