@@ -1,0 +1,1099 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Zanto Wordpress Translation\n"
+"POT-Creation-Date: 2013-10-26 05:45-0800\n"
+"PO-Revision-Date: 2013-11-01 05:49-0800\n"
+"Last-Translator: Mucunguzi Brooks <mcngzbrooks@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: C:\\xampp\\htdocs\\zanto\\wp-content\\plugins\\zanto-"
+"wordpress-translation\n"
+
+msgid "This plugin helps you Translate all Wordpress the proper way."
+msgstr "jfklkjalla"
+
+#: zanto-wordpress-translation/classes/class.zwt-base.php:267
+msgid ""
+"Zanto Installation is not complete, please click the button to finish "
+"installation procedure"
+msgstr "a"
+
+#: zanto-wordpress-translation/classes/class.zwt-base.php:267
+msgid "Configure Zanto"
+msgstr "afafafa"
+
+#: zanto-wordpress-translation/classes/class.zwt-download-mo.php:80
+msgid ""
+"Failed downloading the language information file. Please go back and try a "
+"little later."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-download-mo.php:218
+msgid "Error occured: Trance it in class.zwt-download-mo.php line 218"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-download-mo.php:229
+msgid "Error occured: Trance it in class.zwt-download-mo.php line 229"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:40
+msgid "Edit Languages"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:45
+msgid ""
+"This table allows you to edit <strong>custom</strong> and <strong>active</"
+"strong> languages for your site. Each row represents a language.\n"
+"<br /><br />\n"
+"For each language, you need to enter the following information:\n"
+"<ul>\n"
+"    <li><strong>Code:</strong> a unique value that identifies the language. "
+"Once entered, the language code cannot be changed.</li>\n"
+"    <li><strong>Translations:</strong> the way the language name will be "
+"displayed in different languages.</li>\n"
+"    <li><strong>Locale:</strong> This determines the locale value for this "
+"language. You should check the name of WordPress localization file to set "
+"this correctly.</li>\n"
+"</ul>"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:66
+msgid ""
+"Please note: language codes cannot be changed after adding languages. Make "
+"sure you enter the correct code."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:82
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:96
+msgid "Language name"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:83
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:97
+msgid "Locale"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:84
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:98
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:479
+msgid "Code"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:86
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:100
+msgid "Translation (new)"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:88
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:102
+#: zanto-wordpress-translation/classes/class.zwt-wp-post.php:58
+msgid "Translation"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:123
+msgid "Back to languages"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:126
+msgid "Add Language"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:126
+#: zanto-wordpress-translation/includes/ajax.php:123
+#: zanto-wordpress-translation/includes/ajax.php:131
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:144
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:166
+msgid "Cancel"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:126
+msgid "Save"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:132
+msgid "Reset languages"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:133
+msgid ""
+"Zanto will reset all language information to its default values. Any "
+"languages that you added or edited will be lost."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:176
+#, php-format
+msgid ""
+"Are you sure you want to delete this language?%sALL the data associated with "
+"this language will be ERASED!"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:255
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:418
+msgid "Please, enter valid data."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:302
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:346
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:353
+#, php-format
+msgid "Error adding translation %s for %s."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:330
+msgid "Adding language failed."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:362
+msgid "Error adding native name."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:373
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:378
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:383
+msgid "Language code exists"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:390
+msgid "default_locale exists"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:396
+msgid "Language default_locale exists"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:408
+msgid "Please, enter required data Zanto."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:431
+msgid "Error: This is a built in language. You can't delete it."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:447
+#, php-format
+msgid "The language with locale %s was deleted."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-edit-languages.php:450
+msgid "Error: Language not found."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:68
+msgid "Documentation on Zanto Settings"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:113
+msgid "Help"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:114
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:144
+msgid "Settings"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:138
+msgid "settings"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:141
+msgid "Translation Network"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:141
+msgid "trans_network"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:144
+msgid "Locale Manager "
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:144
+msgid "Locale Manager"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:144
+msgid "manage_locales"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:147
+msgid "Advanced Tools "
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:147
+msgid "Advanced Tools"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:147
+msgid "advanced_tools"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:243
+msgid "You have already chosen this language for another blog"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-interfaces.php:331
+msgid "Translations for this blog will be overwritten!"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-lang-switcher.php:291
+#: zanto-wordpress-translation/classes/class.zwt-lang-switcher.php:330
+msgid "American English"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-lang-switcher.php:295
+#: zanto-wordpress-translation/classes/class.zwt-lang-switcher.php:334
+msgid "British English"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-lang-switcher.php:370
+#: zanto-wordpress-translation/classes/class.zwt-lang-switcher.php:373
+msgid "Add admin language"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-lang-switcher.php:380
+msgid "Language settings"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-lang-switcher.php:383
+msgid "Language options"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-lang-switcher.php:404
+msgid "Your personal admin Language setting has been changed and saved"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:162
+msgid "This article is also available in"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:170
+#, php-format
+msgid "This post is also available in: %s"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:249
+msgid "Example Field 1 should be true"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:257
+msgid "Only administrators can change Example Field 2."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:304
+msgid "Please make sure the form is properly filled."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:311
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:341
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:355
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:364
+msgid "This operation is not permited."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:318
+msgid "No blogs were selected"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:322
+msgid "Blogs in a translation network should have unique languages."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:331
+msgid "Please fill in all form values."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:346
+msgid ""
+"The language you have chosen for the blog already exists with another blog "
+"in the chosen translation network."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:360
+msgid "No Blog was chosen."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:477
+msgid ""
+"Your permalink structure does not support adding languages to directories "
+"option"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:479
+msgid ""
+"Your permalink structure does not support adding language parameter to URL"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:603
+msgid "Atleast one element must be included in the footer langauge switcher."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:653
+msgid ""
+"Zanto got confused with the submission, please make sure javascript is "
+"enabled."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-settings.php:663
+msgid "Nothing was selected."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-translation-network.php:85
+msgid "Please set the new Primary Language for this translation network."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-translation-network.php:85
+#: zanto-wordpress-translation/views/zwt-meta-options.php:4
+msgid "Set Primary Translation Language"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-translation-network.php:179
+msgid ""
+"The number of language blog sites in the network was changed. Please update "
+"the language order"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-translation-network.php:650
+msgid "Zanto: Language url format has been changed to support new Permalink"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-translation-network.php:723
+#: zanto-wordpress-translation/classes/class.zwt-translation-network.php:759
+msgid ""
+"The language you have chosen for the blog already exists with another blog "
+"in its translation network."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-translation-network.php:803
+msgid "A blog was deleted, Zanto Trans Network table was successfuly updated"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-translation-network.php:805
+msgid "There was an error updating the Trans Network table!"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-translation-network.php:810
+msgid ""
+"There was an error deleting the zwt_trans_network value from usermeta table"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-widgets.php:13
+msgid "Multilingual language Switcher."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-widgets.php:15
+msgid "Zanto Language Switcher"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-widgets.php:20
+msgid "Choose Language"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-widgets.php:33
+msgid "Title:"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-widgets.php:36
+msgid "Type:"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-wp-post.php:60
+msgid "Zanto Translate"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-wp-post.php:184
+#, php-format
+msgid "Translating from %s"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-wp-post.php:185
+#, php-format
+msgid "Copy content from %s"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-wp-post.php:350
+#: zanto-wordpress-translation/classes/class.zwt-wp-tax.php:179
+#, php-format
+msgid "Edit the %s translation"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-wp-post.php:356
+#: zanto-wordpress-translation/classes/class.zwt-wp-post.php:363
+#: zanto-wordpress-translation/classes/class.zwt-wp-tax.php:181
+#: zanto-wordpress-translation/classes/class.zwt-wp-tax.php:188
+#, php-format
+msgid "Add %s translation"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-mo.php:197
+msgid "Updated translation is available."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-mo.php:200
+msgid "Update now"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-mo.php:204
+#: zanto-wordpress-translation/classes/class.zwt-mo.php:209
+msgid "Your site's wordpress .mo file translation is up-to-date."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-mo.php:209
+msgid "check for updates"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-mo.php:212
+msgid "Checking for updates..."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-mo.php:239
+#, php-format
+msgid "Downloading and installing %s translations"
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-mo.php:256
+#, php-format
+msgid "Translations for %s installed."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-mo.php:267
+#, php-format
+msgid "There is no translation available for %s."
+msgstr ""
+
+#: zanto-wordpress-translation/classes/class.zwt-mo.php:279
+msgid "Fetching language information ..."
+msgstr ""
+
+#: zanto-wordpress-translation/includes/ajax.php:32
+msgid "Post not found"
+msgstr ""
+
+#: zanto-wordpress-translation/includes/ajax.php:85
+#, php-format
+msgid ""
+"We found several alternatives for %s translation. Choose which one you want "
+"to use:"
+msgstr ""
+
+#: zanto-wordpress-translation/includes/ajax.php:114
+msgid "No Translation Files Available!"
+msgstr ""
+
+#: zanto-wordpress-translation/includes/ajax.php:129
+msgid "Submit"
+msgstr ""
+
+#: zanto-wordpress-translation/includes/ajax.php:233
+msgid "Cache reset"
+msgstr ""
+
+#: zanto-wordpress-translation/includes/ajax.php:235
+msgid " Invalid value supplied!"
+msgstr ""
+
+#: zanto-wordpress-translation/includes/ajax.php:252
+msgid "Invalid value Suplied!"
+msgstr ""
+
+#: zanto-wordpress-translation/includes/ajax.php:292
+msgid " Import successful!"
+msgstr ""
+
+#: zanto-wordpress-translation/includes/ajax.php:294
+msgid "There was nothing to import!"
+msgstr ""
+
+#: zanto-wordpress-translation/includes/ajax.php:312
+msgid "Recet successful!"
+msgstr ""
+
+#: zanto-wordpress-translation/includes/ajax.php:314
+msgid "Recet failed!"
+msgstr ""
+
+#: zanto-wordpress-translation/includes/functions.php:19
+msgid ""
+"This Zanto admin screen requires JavaScript in order to display properly. "
+"JavaScript is currently off in your browser!"
+msgstr ""
+
+#: zanto-wordpress-translation/includes/functions.php:218
+msgid "No Posts Found"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-advanced-tools.php:9
+msgid "Zanto Advanced Tools"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-advanced-tools.php:10
+msgid ""
+"This page allows operations that are helpfull in troubleshooting Zanto and "
+"Automating certain tasks"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-advanced-tools.php:14
+msgid "Clear Network Cache"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-advanced-tools.php:29
+msgid "Copy Taxonomy Translations"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-advanced-tools.php:32
+msgid "Choose blog"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-advanced-tools.php:42
+msgid "Select Taxonomy"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-advanced-tools.php:49
+msgid ""
+"show_ui and public parameters should be true for a taxonomy to be shown in "
+"this list"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-advanced-tools.php:56
+msgid "Recet Zanto settings"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:31
+msgid "Zanto Locale Management"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:32
+msgid ""
+"Zanto allows individual users to display their admin interface in the "
+"language of their choice that is different from the front end language of "
+"the blog."
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:33
+msgid ""
+"An internet connection is required for sites being developed on localhost to "
+"download the languages chosen."
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:46
+msgid "Your Admin Language Settings"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:53
+msgid "Public Site Language Settings"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:65
+#, php-format
+msgid "Your personal <b>Admin</b> language is %s. Current locale is %s."
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:98
+#, php-format
+msgid "Current .mo file translation was downloaded on %s"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:117
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:151
+msgid "Change language"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:121
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:155
+msgid "Select a language"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/zwt-locale-management.php:159
+msgid "Select"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/taxonomy-langs.php:24
+#, php-format
+msgid "Create %s Translation"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/taxonomy-langs.php:27
+#, php-format
+msgid "Edit %s Translation"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/taxonomy-langs.php:31
+msgid "The chosen category should be the translated version of this category."
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:12
+msgid "Translation Networks"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:17
+msgid "Overview"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:19
+msgid ""
+"This screen shows an individual user all of their sites in this network, and "
+"also allows that user to set a primary site. He or she can use the links "
+"under each site to visit either the frontend or the dashboard for that site."
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:20
+msgid ""
+"Up until WordPress version 3.0, what is now called a Multisite Network had "
+"to be installed separately as WordPress MU (multi-user)."
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:24
+msgid "For more information:"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:25
+msgid ""
+"<a href=\"http://codex.wordpress.org/Dashboard_My_Sites_Screen\" target="
+"\"_blank\">Documentation on My Sites</a>"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:26
+msgid ""
+"<a href=\"http://wordpress.org/support/\" target=\"_blank\">Support Forums</"
+"a>"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:34
+msgid ""
+"A translation network is a group of sites or blogs that are translations of "
+"each other. These share the same Translation Network ID"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:35
+msgid ""
+"This page shows which blogs are in which network as shown by the Translation "
+"Network ID. It also shows the blogs that are not in any network."
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:36
+msgid "You can add a blog that is not attached to a network yet from here."
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:41
+msgid "You must be a member of at least one site to use this page."
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:54
+msgid "Blog Name"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:55
+msgid "Blog Language"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:56
+msgid "Translation Network ID"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:57
+msgid "Translation Network Admin"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:58
+msgid "Action"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:78
+#: zanto-wordpress-translation/menus/translation-network.php:100
+msgid "Visit"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:78
+#: zanto-wordpress-translation/menus/translation-network.php:100
+msgid "Dashboard"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:83
+msgid "Remove &nbsp;"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:83
+msgid "Remove"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:113
+msgid "Add to Translation Network"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:128
+#: zanto-wordpress-translation/menus/translation-network.php:140
+#: zanto-wordpress-translation/menus/translation-network.php:151
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:76
+msgid "- Select -"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:149
+msgid "Languages"
+msgstr ""
+
+#: zanto-wordpress-translation/menus/translation-network.php:163
+msgid "Save Changes"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-meta-options.php:3
+msgid "Notice"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-meta-options.php:4
+msgid ""
+"Please set the Primary Translation Language of this translation network to "
+"translate."
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-meta-options.php:79
+msgid "Apply"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-meta-options.php:91
+msgid "Update"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-meta-options.php:94
+msgid "Make this a primary translation post"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:3
+msgid "You do not have sufficient permissions to manage this page."
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:9
+msgid "Zanto Translation Network Setup"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:13
+msgid "This Site Settings"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:25
+msgid "Complete Installation to set up Zanto for this site"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:27
+msgid "1. Add this blog to a Translation Network"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:28
+msgid "2. Finish Configuration"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:37
+msgid "First time Zanto Installation"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:39
+msgid "1. Complete this form to create a new multi blog Translation Network"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:58
+msgid "Slect Blogs to associate"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:59
+msgid "Assign Blog Language"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:60
+msgid "Access Blog"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:91
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:196
+msgid "Back"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:93
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:197
+msgid "Finish"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:116
+msgid "Make a new translation network for this blog"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:121
+msgid "Add this Blog to an existing translation network"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:152
+msgid "Choose Translation Network for this Blog"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:167
+msgid "Blogs in Translation Network "
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:183
+msgid "Choose the Language of this Blog"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:224
+msgid "Language Switcher Settings"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:234
+msgid "Primary Translation Language"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:245
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:247
+msgid "Language URL Format"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:248
+msgid "Dont change"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:251
+msgid "Don't add anything to the URL"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:254
+msgid "Add language to direcories url"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:256
+msgid ""
+"Add language to Directories URL e.g http://mysite.com/site1/fr/ - French"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:259
+msgid "Add language parameter to url"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:261
+msgid ""
+"Add language Parameter to URL e.g http://mysite.com/site1?lang=fr - French"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:263
+msgid "Documentation Language URL format"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:271
+msgid "User network  Acess Options"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:273
+msgid "User network Options"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:274
+msgid "Auto add users to network"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:276
+msgid ""
+"Auto add users of other blogs that are translations of this blog when they "
+"visit"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:279
+msgid "Don't auto add users to blogs they are not registered"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:281
+msgid "Don't auto add users of translations of this blogs when they visit"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:283
+msgid "Documentation on auto adding users option"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:288
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:290
+msgid "Site visibility options"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:291
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:293
+msgid "Include site in Translation Network language swichers"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:296
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:298
+msgid "Remove site from Translation Network language swichers"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:300
+msgid "Documentation on site visibility options"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:305
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:307
+msgid "Browser Language Redirect"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:308
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:310
+msgid "Disable browser Language Re-direct"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:313
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:315
+msgid "Re-direct visitors to browser language if translation exists"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:318
+msgid "Always redirect visitors based on browser language"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:320
+msgid ""
+"Always redirect visitors based on browser language (redirect to home page if "
+"translations are missing)"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:323
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:324
+msgid "Remember visitor's language preference for"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:326
+msgid "Hours"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:328
+msgid "Documentation on browser language redirect"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:346
+msgid "Language Switcher Language order"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:367
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:369
+msgid "How to handle content without translation"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:370
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:372
+msgid "Skip language"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:375
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:377
+msgid "Link to the home page of missing translation"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:382
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:384
+msgid "How to handle Front Page Content"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:385
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:387
+msgid "Link front page to translation front pages"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:390
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:392
+msgid "Link front page static page to the translated page"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:398
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:400
+msgid "Show post translation Links"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:401
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:403
+msgid "Yes"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:406
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:407
+msgid "Position"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:415
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:416
+msgid "Translation Links Style"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:419
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:464
+msgid "Default"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:420
+msgid "Plain"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:430
+msgid "What to include in the language switcher"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:432
+msgid "What to include in the Footer language switcher"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:433
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:435
+msgid "Flag"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:438
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:440
+msgid "Native Name"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:443
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:445
+msgid "Translated Name"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:447
+msgid "Documentation on language switcher modification"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:452
+msgid "Language Switcher Appearance"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:460
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:461
+msgid "Language Switcher Theme"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:470
+#, php-format
+msgid ""
+"You can add a  language switcher from the current Language Swicher Theme any "
+"where on your site theme by inserting any of these PHP codes in the theme: "
+"%s or use the language switcher widget"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:477
+msgid "Switcher Name"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:478
+msgid "Description"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:497
+msgid "custom css"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:502
+msgid "Use the online language switcher css creator tool "
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:507
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:509
+msgid "Footer Language Switcher Option"
+msgstr ""
+
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:510
+#: zanto-wordpress-translation/views/zwt-settings/page-settings.php:512
+msgid "Show footer language switcher"
+msgstr ""
