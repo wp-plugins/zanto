@@ -12,9 +12,8 @@ Domain Path: /languages/
 
 if( $_SERVER[ 'SCRIPT_FILENAME' ] == __FILE__ )
 	die( 'Access denied.' );
-define('GTP_GAMBA_VERSION', '0.0.4');
+define('GTP_GAMBA_VERSION', '0.1.0');
 define('GTP_NAME',	'Zanto Wordpress Translaton Plugin' );
-define('GTP_REQUIRED_PHP_VERSION',	'5.3' );	// because of get_called_class()
 define('GTP_REQUIRED_WP_VERSION', '3.1' );	// because of esc_textarea()
 define('GTP_PLUGIN_PATH', dirname(__FILE__));
 define('GTP_PLUGIN_FOLDER', basename(GTP_PLUGIN_PATH));
