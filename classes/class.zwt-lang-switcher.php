@@ -182,17 +182,27 @@ if (!class_exists('ZWT_Lang_Switcher')) {
 
             $id = 1;
             $zwt_ls_array = array();
-            $current_language = get_option('WPLANG');
+            $current_language = get_locale();
             foreach ($transnet_blogs as $trans_blog) {
                 if(isset($ls_exclude_list[$trans_blog['blog_id']])){
 				   continue;
 				   }
-                if (isset($translated_urls[$trans_blog['blog_id']]))
-                    $url = $translated_urls[$trans_blog['blog_id']];
+                if (isset($translated_urls[$trans_blog['blog_id']])){
+                         $url = $translated_urls[$trans_blog['blog_id']];
+						 if(zwt_get_global_urls_info('lang_url_format', $trans_blog['blog_id'])==2){
+						    $url = $trans_network->add_url_lang($url, $trans_blog['blog_id'], 2);
+						}
+					}
                 else {
-                    if ((0==$this->ls_settings['skip_missing_trans'] && 0==$args['skip_missing']) || is_front_page()) //link to home page
-                        $url = zwt_get_url_links('site_url', $trans_blog['blog_id']);
-					
+                    if ((0==$this->ls_settings['skip_missing_trans'] && 0==$args['skip_missing']) || is_front_page()){ //link to home page
+					    $url = zwt_get_global_urls_info('site_url', $trans_blog['blog_id']);
+						$lang_url_format = zwt_get_global_urls_info('lang_url_format', $trans_blog['blog_id']);
+                        if($lang_url_format==2){
+						    $url = $trans_network->add_url_lang($url, $trans_blog['blog_id'], 2);
+						}elseif($lang_url_format==1){
+						     $url = $trans_network->add_url_lang($url, $trans_blog['blog_id'], 1);
+						}
+					}
                     else
                         continue;
                 }

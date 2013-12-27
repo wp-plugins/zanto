@@ -243,12 +243,12 @@ if (!class_exists('ZWT_Interfaces')) {
                 }
                 else {
                     $c_settings_obj->init();
-                    if ('complete' !== $c_settings_obj->settings['setup_status']['setup_wizard'])
+                    if ('complete' !== $c_settings_obj->settings['setup_status']['setup_wizard']){
                         $c_settings_obj->settings = array('setup_status' =>
                             array(
                                 'setup_wizard' => 'complete',
                                 'setup_interface' => 'four'
-                                ));
+                                ));}
                     /* set up blog translation settings data	 */
                     $c_trans_net = $zwt_site_obj->modules['trans_network'];
                     /* capture translation network changes on reload */
@@ -256,6 +256,8 @@ if (!class_exists('ZWT_Interfaces')) {
                     $blog_trans_network = $c_trans_net->transnet_blogs;
                     $c_primary_blog_lang = $c_trans_net->primary_lang_blog;
 					$parma_type=get_option('permalink_structure');
+					$c_blog_locale=get_option('WPLANG');
+					$c_blog_lang_code=$c_trans_net->get_lang_code($c_blog_locale);
 					$rewrite_on = (empty($parma_type))? false:true;
 ;
                 }

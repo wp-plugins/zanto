@@ -82,10 +82,11 @@ function zwt_get_site_links($trans_id) {
         return;
     global $site_id, $blog_id;
     $update_flag = 0;
+	$home_url = zwt_home_url();
     $zwt_global_cache = get_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', true);
     if (isset($zwt_global_cache[$blog_id])) {
-        if ($zwt_global_cache[$blog_id]['site_url'] != get_option('siteurl')) {
-            $zwt_global_cache[$blog_id]['site_url'] = get_option('siteurl');
+        if ($zwt_global_cache[$blog_id]['site_url'] != $home_url) {
+            $zwt_global_cache[$blog_id]['site_url'] = $home_url;
             $update_flag = 1;
         }
         if ($zwt_global_cache[$blog_id]['admin_url'] != admin_url()) {
@@ -93,25 +94,35 @@ function zwt_get_site_links($trans_id) {
             $update_flag = 1;
         }
         if ($update_flag) {
-            $zwt_global_cache[$blog_id]['site_url'] = get_option('siteurl');
+            $zwt_global_cache[$blog_id]['site_url'] = $home_url;
             $zwt_global_cache[$blog_id]['admin_url'] = admin_url();
             update_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', $zwt_global_cache);
             ZWT_Base::$notices->enqueue('blog meta options created and updated in global catche');
         }
-    } else {
-        $zwt_global_cache[$blog_id]['site_url'] = get_option('siteurl');
+    } else { //first time creation of global cache for this blog
+        $zwt_global_cache[$blog_id]['site_url'] = $home_url;
         $zwt_global_cache[$blog_id]['admin_url'] = admin_url();
+		$zwt_global_cache[$blog_id]['lang_url_format'] = 0;
         update_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', $zwt_global_cache);
     }
 }
-
-function zwt_add_links($blog_id, $trans_id) {
+function zwt_home_url(){
+    if(function_exists('domain_mapping_siteurl')){// support for domain mapping
+	     return domain_mapping_siteurl( false );
+	}else{
+        return home_url();
+	}
+}
+function zwt_add_links($blog_id, $trans_id, $lang_url_format) {
     if (!absint($blog_id) || !absint($trans_id))
         return;
     global $site_id;
+
+    $home_url=zwt_home_url();
     $zwt_global_cache = get_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', true);
-    $zwt_global_cache[$blog_id]['site_url'] = get_option('siteurl');
+    $zwt_global_cache[$blog_id]['site_url'] = $home_url;
     $zwt_global_cache[$blog_id]['admin_url'] = admin_url();
+	$zwt_global_cache[$blog_id]['lang_url_format'] = $lang_url_format;
     update_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', $zwt_global_cache);
 }
 
@@ -259,35 +270,38 @@ function zwt_detach_post($blog_id, $post_transnetwork) {
   $obj_id is the object id e.g post id for posts
  */
 
-function zwt_get_url_links($link_type, $blog_id) {
+function zwt_get_global_urls_info($req_info, $blog_id) {
     global $site_id, $zwt_site_obj;
     $transnet_id = $zwt_site_obj->modules['trans_network']->transnet_id;
     $blog_parameters = get_metadata('site', $site_id, 'zwt_' . $transnet_id . '_site_cache', true);
     if (!isset($blog_parameters[$blog_id]))
         return;
-    switch ($link_type) {
+    switch ($req_info) {
         case 'site_url':
-            $link = $blog_parameters[$blog_id]['site_url'];
-            if (!$link || $link == '') {
+            $info = $blog_parameters[$blog_id]['site_url'];
+            if (!$info || $info == '') {
                 switch_to_blog($blog_id);
-                $link = get_option('siteurl');
+                $info = get_option('siteurl');
                 zwt_get_site_links($transnet_id);
                 restore_current_blog();
             }
             break;
         case 'admin_url':
-            $link = $blog_parameters[$blog_id]['admin_url'];
-            if (!$link || $link == '') {
+            $info = $blog_parameters[$blog_id]['admin_url'];
+            if (!$info || $info == '') {
                 switch_to_blog($blog_id);
-                $link = admin_url();
+                $info = admin_url();
                 zwt_get_site_links($transnet_id);
                 restore_current_blog();
             }
             break;
+		case 'lang_url_format':
+            $info = $blog_parameters[$blog_id]['lang_url_format'];
+            break;	
         default:
             return false;
     }
-    return $link;
+    return $info;
 }
 
 function zwt_get_trans_url($obj_type, $obj_blog, $obj_id) {
@@ -295,22 +309,22 @@ function zwt_get_trans_url($obj_type, $obj_blog, $obj_id) {
     if (isset($obj_type))
         switch ($obj_type) {
             case 'post':
-                $trans_link = zwt_get_url_links('site_url', $obj_blog) . '?p=' . $obj_id;
+                $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?p=' . $obj_id;
                 return $trans_link;
                 break;
             case 'category':
-                $trans_link = zwt_get_url_links('site_url', $obj_blog) . '?cat=' . $obj_id;
+                $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?cat=' . $obj_id;
                 return $trans_link;
             case 'post_tag':
                 $b_prefix = $wpdb->get_blog_prefix($obj_blog);
                 $term_slug = $wpdb->get_var($wpdb->prepare("SELECT slug FROM {$b_prefix }terms WHERE term_id = %d", $obj_id));
-                $trans_link = zwt_get_url_links('site_url', $obj_blog) . '?tag=' . $term_slug;
+                $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?tag=' . $term_slug;
                 return $trans_link;
                 break;
             default:
                 $b_prefix = $wpdb->get_blog_prefix($obj_blog);
                 $term_slug = $wpdb->get_var($wpdb->prepare("SELECT slug FROM {$b_prefix }terms  WHERE term_id = %d", $obj_id));
-                $trans_link = zwt_get_url_links('site_url', $obj_blog) . '?' . $obj_type . '=' . $term_slug;
+                $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?' . $obj_type . '=' . $term_slug;
                 return $trans_link;
                 break;
         }

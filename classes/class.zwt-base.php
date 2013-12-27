@@ -19,7 +19,7 @@ if (!class_exists('ZWT_Base')) {
         protected static $writeableProperties = array();
         protected $modules;
 
-        const VERSION = '0.0.1';
+        const VERSION = '0.2.0';
         const PREFIX = 'zwt_';
         const DEBUG_MODE = false;
 
@@ -281,15 +281,15 @@ if (!class_exists('ZWT_Base')) {
         public function upgrade($dbVersion = 0) {
             if (did_action('init') !== 1)
                 return;
-
-            if (version_compare($this->modules['settings']->settings['db-version'], self::VERSION, '=='))
+				if(isset($this->modules['settings']->settings['db-version']))
+             print_r($this->modules['settings']->settings);
+            if (version_compare($this->modules['settings']->settings['zanto_settings']['db-version'], self::VERSION, '=='))
                 return;
 
             foreach ($this->modules as $module)
-                $module->upgrade($this->modules['settings']->settings['db-version']);
-
-            //$this->modules['settings']->settings['db-version'] = array('db-version' => self::VERSION);
-            self::clearCachingPlugins();
+                $module->upgrade($this->modules['settings']->settings['zanto_settings']['db-version']);
+			    ZWT_Settings::save_setting('settings', array('db-version' => self::VERSION));
+                self::clearCachingPlugins();
         }
 
         /**

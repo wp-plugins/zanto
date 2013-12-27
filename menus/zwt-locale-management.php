@@ -37,14 +37,14 @@ var zwt_pluginUrl = '<?php  echo GTP_PLUGIN_URL; ?>'
     <br clear="all" />
 
     <div id="menu-management-liquid">
-        <div id="menu-management" style="margin-right:10px;width:auto;"> 
-
-            <h2 class="nav-tab-wrapper">
+	            <h2 class="nav-tab-wrapper">
                 <a class="nav-tab <?php if (isset($_GET['scope']) && $_GET['scope'] == 'back-end' || !isset($_GET['scope'])): ?> nav-tab-active<?php endif ?>" href="<?php echo admin_url('admin.php?page=zwt_manage_locales') ?>"><?php _e('Admin Language', 'Zanto') ?></a>
                 <a class="nav-tab <?php if (isset($_GET['scope']) && $_GET['scope'] == 'front-end'): ?> nav-tab-active<?php endif ?>" href="<?php echo admin_url('admin.php?page=zwt_manage_locales&scope=front-end') ?>"><?php _e('Front-End Language', 'Zanto') ?></a>
                 <a class="nav-tab <?php if (isset($_GET['scope']) && $_GET['scope'] =='flag-mng'): ?> nav-tab-active<?php endif ?>" href="<?php echo admin_url('admin.php?page=zwt_manage_locales&scope=flag-mng') ?>"><?php _e('Flag Management', 'Zanto') ?></a>
 
             </h2>
+        <div id="menu-management" style="margin-right:10px;width:auto;"> 
+
             <div class="menu-edit" <?php if (version_compare($GLOBALS['wp_version'], '3.2.1', '<=')): ?>style="border-style:solid;border-radius:3px;border-width:1px;border-color:#DFDFDF;<?php endif; ?>">
                 <div id="nav-menu-header">
                     &nbsp;                        

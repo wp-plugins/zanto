@@ -86,11 +86,10 @@ class ZWT_Download_MO {
     function get_translations($language) {
 	   global $wp_version;
 	    require_once(ABSPATH . "wp-admin" . '/includes/file.php');
-		
-		preg_match("/^(\d+)\.(\d+)\.(\d+|)/", $wp_version, $decimal);
-		$root_tagged_version = $decimal[1].'.'.$decimal[2];
+		$decimal = explode(".", $wp_version);
+		$root_tagged_version = $decimal[0].'.'.$decimal[1];
 		$tagged_version = $root_tagged_version;
-		if (!empty($decimal[3])) $tagged_version .= '.'.$decimal[3];
+		if (isset($decimal[2])) $tagged_version .= '.'.$decimal[2];
 		
 		
 		   //check for internet connectivity
@@ -107,18 +106,18 @@ class ZWT_Download_MO {
             if (is_wp_error($tmp)) {
 			
 			    if($tmp->get_error_code()=='http_404'){ // try to get .mo files of a lower version
-				    if (!empty($decimal[3]) && $decimal[3]>1){
+				    if (isset($decimal[2]) && $decimal[2]>1){
 					     $x=1;
-					     while(is_wp_error($tmp) && ($decimal[3]-$x)>0){
-				         $tagged_version = $root_tagged_version.'.'.($decimal[3]-$x);
+					     while(is_wp_error($tmp) && ($decimal[2]-$x)>0){
+				         $tagged_version = $root_tagged_version.'.'.($decimal[2]-$x);
 		                 $tmp = download_url("http://svn.automattic.com/wordpress-i18n/".$language."/tags/".$tagged_version."/messages/".$language.".mo");
 				         $x++;
 				         }
 					}
-					  if($tmp->get_error_code()=='http_404'){ // try to get .mo files from the root version up to two root versions below
+					  if($tmp->get_error_code()=='http_404'){ // try to get .mo files from the root version up to 3 root versions below
 					     $y=0;
-						 while(is_wp_error($tmp) && ($decimal[2]-$y)>0 && $y<2){
-						  $root_tagged_version = $decimal[1].'.'.($decimal[2]-$y);
+						 while(is_wp_error($tmp) && ($decimal[1]-$y)>0 && $y<3){
+						  $root_tagged_version = $decimal[0].'.'.($decimal[1]-$y);
 					      $tmp = download_url("http://svn.automattic.com/wordpress-i18n/".$language."/tags/".$root_tagged_version."/messages/".$language.".mo");
 						  $y++;
                          }

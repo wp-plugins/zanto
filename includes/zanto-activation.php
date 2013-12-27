@@ -103,7 +103,7 @@ function zwt_initial_activate(){
         exit;
     }
 	
-		$short_v = implode('.', array_slice(explode('.', GTP_GAMBA_VERSION), 0, 3));
+		$short_v = implode('.', array_slice(explode('.', GTP_ZANTO_VERSION), 0, 3));
 	$zwt_old_settings = get_metadata('site', $site_id, 'zwt_zanto_settings', $single = true);
 	$zwt_new_settings = array('zwt_installed_version' => $short_v);
 	
