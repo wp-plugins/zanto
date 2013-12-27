@@ -9,7 +9,7 @@ foreach($zwt_unfullfilled_requirments as $req=>$status){
             ?>
 	          <li><?php _e('<strong>Wordpress Multisite</strong> has not been activated for your installation. to use the Zanto Wordpress Translation Plugin, you 
 			  need to activate the Multisite mode for Wordpress. You can learn how to do it from
-			  <strong> <a href="http://zanto.org/?p=46">here</a>','Zanto')?></strong>
+			  <strong> <a href="http://codex.wordpress.org/Create_A_Network"> here</a>','Zanto')?></strong>
 			 </li>
             <?php
 			 }

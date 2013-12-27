@@ -10,7 +10,7 @@ if (!current_user_can('manage_options'))
         <?php
     } else {
         ?>
-		 <h2><?php _e('Zanto Settings for this blog', 'Gamba'); ?></h2>
+		 <h2><?php _e('Zanto Settings for this blog', 'Zanto'); ?></h2>
 		 <p><?php _e('This is the Zanto Basic settings Page. Most settings here other than the "Primary Translation Language" Settings will only affect this blog.','Zanto') ?></p>
 		 <p><?php _e('CSS put in the custom css field will be included in the header css of your webpage.','Zanto') ?></p>
          <br/>
@@ -222,14 +222,11 @@ if (!current_user_can('manage_options'))
         }
         ?>
 
-<div id="menu-management-liquid"><div id="menu-management" style="margin-right:10px;width:auto;">
         <h2 class="nav-tab-wrapper">
             <a href="<?php echo admin_url('admin.php?page=zwt_settings'); ?>" class=" <?php echo (!$lang_swchr) ? 'nav-tab nav-tab-active' : 'nav-tab' ?> "><?php _e('Zanto Blog Settings','Zanto') ?></a><a href="<?php echo admin_url('admin.php?page=zwt_settings&stg_scope=lang_swchr'); ?>" class="<?php echo ($lang_swchr) ? 'nav-tab nav-tab-active' : 'nav-tab' ?>"><?php _e('Language Switcher Settings', 'Zanto') ?></a>
         </h2>
         <div class="menu-edit">
-		<div id="nav-menu-header">
-                        &nbsp;                        
-                    </div>
+		
 					<div  style="padding: 10px;">
             <?php if (!isset($_GET['stg_scope'])) { ?>
                     <form form id="zwt_trans_network_setting4" method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']) ?>">
@@ -259,12 +256,13 @@ if (!current_user_can('manage_options'))
                                                     <br/>
                                                     <label title="<?php _e('Add language to direcories url', 'Zanto') ?>">
                                                         <input  type="radio" name="zwt_url_format"  <?php echo($rewrite_on) ? '' : 'disabled="true"' ?> value="1" <?php checked($settings['translation_settings']['lang_url_format'], '1'); ?> />
-                                                        <span><?php _e('Add language to Directories URL e.g http://mysite.com/site1/fr/ - French', 'Zanto') ?>
+                                                        <span><?php echo sprintf(__('Add language to Directories URL e.g %s/%s/', 'Zanto'), zwt_home_url(),$c_blog_lang_code); ?>
                                                     </label>
                                                     <br>
                                                     <label title =<?php _e('Add language parameter to url', 'Zanto') ?> >
                                                         <input  type="radio" name="zwt_url_format" <?php echo($rewrite_on) ? 'disabled="true"' : '' ?> value="2" <?php checked($settings['translation_settings']['lang_url_format'], '2'); ?> />
-                                                        <span><?php _e('Add language Parameter to URL e.g http://mysite.com/site1?lang=fr - French', 'Zanto') ?></span>
+													    <span><?php echo sprintf(__('Add language Parameter to URL e.g %s/?lang=%s', 'Zanto'),zwt_home_url(),$c_blog_lang_code) ?></span>
+
                                                     </label>
                                                     <p><a href=" http://zanto.org/tutorial/language-url-formats/"><?php _e('Documentation Language URL format', 'Zanto') ?></a>.</p>
 
@@ -347,12 +345,12 @@ if (!current_user_can('manage_options'))
                                                             <table class="form-table">
 
                                                                 <tr>
-                                                                    <th scope="row"><?php _e('Language Switcher Language order', 'Zanto') ?></th>
+                                                                    <th scope="row"><?php _e('Languages Order', 'Zanto') ?></th>
                                                                     <td>
                                                                         <div class="lang-sort">
 
-                                                                            <p><code><?php _e('Drag and drop to order languages','Zanto')?></code></p>
-
+                                                                            <p class="description"><?php _e('Drag and drop to order languages','Zanto')?></p>
+                                                                            <p>
                                                                             <ul id="sortable">
                                                                                 <?php foreach ($blog_trans_network as $index => $blog_details): ?>
                                                                                     <li class="button" id="<?php echo $blog_details['blog_id'] ?>">
@@ -363,14 +361,15 @@ if (!current_user_can('manage_options'))
 
                                                                                 <?php endforeach; ?>
                                                                             </ul>
+																			</p>
                                                                         </div>
                                                                     </td>
                                                                 </tr>
 
                                                                 <tr>
-                                                                    <th scope="row"><?php _e('How to handle content without translation', 'Zanto') ?></th>
+                                                                    <th scope="row"><?php _e('Content without translation', 'Zanto') ?></th>
                                                                     <td>
-                                                                        <fieldset><legend class="screen-reader-text"><span><?php _e('How to handle content without translation', 'Zanto') ?></span></legend>
+                                                                        <fieldset><legend class="screen-reader-text"><span><?php _e('Content without translation', 'Zanto') ?></span></legend>
                                                                             <label title="<?php _e('Skip language', 'Zanto') ?>">
                                                                                 <input  type="radio" name="zwt_no_translation" value="1" <?php checked($settings['lang_switcher']['skip_missing_trans'], 1) ?> />
                                                                                 <span><?php _e('Skip language', 'Zanto') ?> </span>
@@ -383,9 +382,9 @@ if (!current_user_can('manage_options'))
                                                                     </td>
                                                                 </tr>
 																<tr>
-                                                                    <th scope="row"><?php _e('How to handle Front Page Content', 'Zanto') ?></th>
+                                                                    <th scope="row"><?php _e('Front Page Settings', 'Zanto') ?></th>
                                                                     <td>
-                                                                        <fieldset><legend class="screen-reader-text"><span><?php _e('How to handle Front Page Content', 'Zanto') ?></span></legend>
+                                                                        <fieldset><legend class="screen-reader-text"><span><?php _e('Front Page Settings', 'Zanto') ?></span></legend>
                                                                             <label title="<?php _e('Link front page to translation front pages', 'Zanto') ?>">
                                                                                 <input  type="radio" name="zwt_front_page_trans" value="0" <?php checked($settings['lang_switcher']['front_page_trans'], 0) ?> />
                                                                                 <span><?php _e('Link front page to translation front pages', 'Zanto') ?> </span>
@@ -532,7 +531,7 @@ if (!current_user_can('manage_options'))
 												<div id="nav-menu-footer">
                         &nbsp;     
                     </div>
-												</div></div></div>
+												</div>
                                                 <?php
                                             }
                                             //end interface 4  

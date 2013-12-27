@@ -3,7 +3,7 @@
 Plugin Name: Zanto WordPress Transaltion
 Plugin URI: http://zanto.org/
 Description: This plugin helps you Translate all Wordpress the proper way. 
-Version: 0.1.0
+Version: 0.2.0
 Author: Zanto Translate
 Author URI: http://zanto.org
 Text Domain: Zanto
@@ -12,7 +12,7 @@ Domain Path: /languages/
 
 if( $_SERVER[ 'SCRIPT_FILENAME' ] == __FILE__ )
 	die( 'Access denied.' );
-define('GTP_GAMBA_VERSION', '0.1.0');
+define('GTP_ZANTO_VERSION', '0.2.0');
 define('GTP_NAME',	'Zanto Wordpress Translaton Plugin' );
 define('GTP_REQUIRED_WP_VERSION', '3.1' );	// because of esc_textarea()
 define('GTP_PLUGIN_PATH', dirname(__FILE__));

@@ -47,12 +47,7 @@ if (!class_exists('ZWT_Settings')) {
 // $newSettings = shortcode_atts(self::getSettings(), $value);
             $newSettings = zwt_merge_atts(self::getSettings(), $value);
 //validation				
-            if (strcmp($newSettings['basic']['field-example1'], 'valid data') !== 0) {
-//ZWT_Base::$notices->enqueue( 'Example 1 must equal "valid data"', 'error' );
-                $newSettings['basic']['field-example1'] = self::$defaultSettings['basic']['field-example1'];
-            }
-
-
+            
             update_option(ZWT_Base::PREFIX . 'zanto_settings', $newSettings);
             do_action('zwt_save_settings', $value);
         }
@@ -94,10 +89,9 @@ if (!class_exists('ZWT_Settings')) {
 
             self::$defaultSettings = self::getDefaultSettings();
             $this->settings = self::getSettings();
-			if(!defined('GTP_LOAD_LS_CSS')){
-			     ($this->settings['lang_switcher']['zwt_ls_theme']==0)?define('GTP_LOAD_LS_CSS', true):define('GTP_LOAD_LS_CSS', false);
-			}
-			     
+            if (!defined('GTP_LOAD_LS_CSS')) {
+                ($this->settings['lang_switcher']['zwt_ls_theme'] == 0) ? define('GTP_LOAD_LS_CSS', true) : define('GTP_LOAD_LS_CSS', false);
+            }
         }
 
         /**
@@ -136,18 +130,16 @@ if (!class_exists('ZWT_Settings')) {
             global $wpdb;
 //let defualt language be the default admin lang
             $default_admin_locale = get_locale();
-
-
-
-            $basic = array(
-                'field-example1' => ''
+			
+            $zanto_settings=array(
+                'db-version' => '0.2.0'
             );
-
+			
             $blog_setup = array(
                 'auto_add_subscribers' => 0,
                 'browser_lang_redirect' => 0,
                 'browser_lr_time' => 24,
-				'site_visibility'=>1
+                'site_visibility' => 1
             );
 
             $translation_settings = array(
@@ -162,7 +154,7 @@ if (!class_exists('ZWT_Settings')) {
                 'language_order' => null,
                 'elements' => array('flag' => 1, 'native_name' => 1, 'translated_name' => 1),
                 'skip_missing_trans' => 0,
-				'front_page_trans'=>0,
+                'front_page_trans' => 0,
                 'post_trans_links' => 0,
                 'post_tl_position' => 'below',
                 'post_availability_text' => __('This post is also available in: %s', 'Zanto'),
@@ -171,8 +163,8 @@ if (!class_exists('ZWT_Settings')) {
                 'switcher_in_wpmenu' => 0,
                 'menu_for_ls' => '',
                 'post_tl_style' => 0,
-				'custom_flag_url'=> 0,
-				'custom_flag_ext'=>'png'
+                'custom_flag_url' => 0,
+                'custom_flag_ext' => 'png'
             );
 
             $setup_status = array(
@@ -181,8 +173,7 @@ if (!class_exists('ZWT_Settings')) {
             );
 
             return array(
-                'db-version' => '0.1.0',
-                'basic' => $basic,
+                'zanto_settings' => $zanto_settings,
                 'blog_setup' => $blog_setup,
                 'translation_settings' => $translation_settings,
                 'setup_status' => $setup_status,
@@ -221,11 +212,10 @@ if (!class_exists('ZWT_Settings')) {
              */
             return $newSettings;
         }
-		
-         /**
+
+        /**
          * This is to enable recognition of .mo files by wordpress uploading system.
          */
-
         function add_custom_mimes($existing_mimes=array()) {
             $existing_mimes['mo'] = 'application/octet-stream';
             return $existing_mimes;
@@ -368,7 +358,7 @@ if (!class_exists('ZWT_Settings')) {
                                         'setup_interface' => 'four'
                                         )));
 
-                                zwt_add_links($blog_id, $new_trans_id);
+                                zwt_add_links($blog_id, $new_trans_id, 0);
                             }
                         }
                         switch_to_blog($current_blog);
@@ -415,7 +405,7 @@ if (!class_exists('ZWT_Settings')) {
                                     'setup_interface' => 'four'
                                     )));
 
-                            zwt_add_links($blog_id, $clean_values['trans_network_id']);
+                            zwt_add_links($blog_id, $clean_values['trans_network_id'], 0);
 
                             $transnet_blogs = $zwt_site_obj->modules['trans_network']->get_transnet_blogs(true);
                             foreach ($transnet_blogs as $trans_blog) {// clear cache to update the translation network in the other blogs to include the new blog
@@ -436,174 +426,177 @@ if (!class_exists('ZWT_Settings')) {
                         zwt_network_vars($c_trans_net->transnet_id, 'update', 'main_lang_blog', $_POST['primary_trans_lang_blog']);
                         $c_trans_net->get_primary_lang(true);
                     }
-                    if (isset($_POST['zwt_url_format'])) {
-                        $parma_type = get_option('permalink_structure');
-                        if (empty($parma_type) && $_POST['zwt_url_format'] == 1) {
-                            ZWT_Base::$notices->enqueue(__('Your permalink structure does not support adding languages to directories option', 'Zanto'), 'error');
-                        } elseif (!empty($parma_type) && $_POST['zwt_url_format'] == 2) {
-                            ZWT_Base::$notices->enqueue(__('Your permalink structure does not support adding language parameter to URL', 'Zanto'), 'error');
-                        } elseif (in_array($_POST['zwt_url_format'], array(0, 1, 2))) {
-                            self::save_setting('settings', array('translation_settings' =>
-                                array(
-                                    'lang_url_format' => $_POST['zwt_url_format']
-                                    )));
-                        }
-                    }
-                    if (isset($_POST['zwt_auto_user']) && in_array($_POST['zwt_auto_user'], array(0, 1))) {
-                        self::save_setting('settings', array('blog_setup' =>
-                            array(
-                                'auto_add_subscribers' => $_POST['zwt_auto_user']
-                                )));
-                    }
-					
-					 if (isset($_POST['zwt_site_visibility']) && in_array($_POST['zwt_site_visibility'], array(0, 1))) {
-					     $ls_exclude_list= get_metadata('site', $site_id, 'zwt_' . $c_trans_net->transnet_id . '_exclude', true);
 
-                        self::save_setting('settings', array('blog_setup' =>
-                            array(
-                                'site_visibility' => $_POST['zwt_site_visibility']
-                                )));
-								
-						 if($_POST['zwt_site_visibility']){
-						     if (isset($ls_exclude_list[$blog_id])) {
-							     unset($ls_exclude_list[$blog_id]);
-                                 update_metadata('site', $site_id, 'zwt_' . $c_trans_net->transnet_id . '_exclude', $ls_exclude_list);
-                             }
-						 }else{
-						     if (!isset($ls_exclude_list[$blog_id])) {
-                                 $ls_exclude_list[$blog_id]=1;
-                                 update_metadata('site', $site_id, 'zwt_' . $c_trans_net->transnet_id . '_exclude', $ls_exclude_list);
-                             }
-						 }
-                    }
-
-                    if (isset($_POST['zwt_browser_lang_redct']) and in_array($_POST['zwt_browser_lang_redct'], array(0, 1, 2))) {
-                        self::save_setting('settings', array('blog_setup' =>
-                            array(
-                                'browser_lang_redirect' => $_POST['zwt_browser_lang_redct']
-                                )));
-                    }
-
-                    if (isset($_POST['zwt_browser_lang_redct_time'])) {
-                        self::save_setting('settings', array('blog_setup' =>
-                            array(
-                                'zwt_browser_lang_redct_time' => absint($_POST['zwt_browser_lang_redct_time'])
-                                )));
-                    }
-
-                    if (isset($_POST['zwt_post_availabitlity_text'])) {
-                        self::save_setting('settings', array('lang_switcher' =>
-                            array(
-                                'post_availability_text' => sanitize_text_field($_POST['zwt_post_availabitlity_text'])
-                                )));
-                    }
-
-                    if (isset($_POST['zwt_post_trans_links'])) {
-                        self::save_setting('settings', array('lang_switcher' =>
-                            array(
-                                'alt_lang_availability' => 1
-                                )));
-                    } else {
-                        self::save_setting('settings', array('lang_switcher' =>
-                            array(
-                                'alt_lang_availability' => 0
-                                )));
-                    }
-
-                    if (isset($_POST['zwt_post_link_pos']) && in_array($_POST['zwt_post_link_pos'], array('above', 'below'))) {
-                        self::save_setting('settings', array('lang_switcher' =>
-                            array(
-                                'post_tl_position' => sanitize_text_field($_POST['zwt_post_link_pos'])
-                                )));
-                    }
-
-                    if (isset($_POST['zwt_post_link_style']) && in_array($_POST['zwt_post_link_style'], array(0, 1))) {
-                        self::save_setting('settings', array('lang_switcher' =>
-                            array(
-                                'post_tl_style' => $_POST['zwt_post_link_style']
-                                )));
-                    }
-
-                    if (isset($_POST['zwt_no_translation']) && in_array($_POST['zwt_no_translation'], array(0, 1))) {
-                        self::save_setting('settings', array('lang_switcher' =>
-                            array(
-                                'skip_missing_trans' => $_POST['zwt_no_translation']
-                                )));
-                    }
-					
-					if (isset($_POST['zwt_front_page_trans']) && in_array($_POST['zwt_front_page_trans'], array(0, 1))) {
-                        self::save_setting('settings', array('lang_switcher' =>
-                            array(
-                                'front_page_trans' => $_POST['zwt_front_page_trans']
-                                )));
-                    }
-
-                    if (isset($_POST['zwt_footer_ls'])) {
-                        self::save_setting('settings', array('lang_switcher' =>
-                            array(
-                                'show_footer_selector' => 1
-                                )));
-                    } else {
-                        self::save_setting('settings', array('lang_switcher' =>
-                            array(
-                                'show_footer_selector' => 0
-                                )));
-                    }
-
-                    if (isset($_POST['zwt_ls_elements']) && is_array($_POST['zwt_ls_elements'])) {
-                        $elements = array('flag' => 0, 'native_name' => 0, 'translated_name' => 0);
-
-                        foreach ($_POST['zwt_ls_elements'] as $switcher_element => $value) {
-                            if (in_array($switcher_element, array('flag', 'native_name', 'translated_name'))) {
-                                $elements[$switcher_element] = 1;
-                            } else {
-                                $elements[$switcher_element] = 0;
+                    if (!isset($_GET['stg_scope'])) {
+                        if (isset($_POST['zwt_url_format'])) {
+                            $parma_type = get_option('permalink_structure');
+                            if (empty($parma_type) && $_POST['zwt_url_format'] == 1) {
+                                ZWT_Base::$notices->enqueue(__('Your permalink structure does not support adding languages to directories option', 'Zanto'), 'error');
+                            } elseif (!empty($parma_type) && $_POST['zwt_url_format'] == 2) {
+                                ZWT_Base::$notices->enqueue(__('Your permalink structure does not support adding language parameter to URL', 'Zanto'), 'error');
+                            } elseif (in_array($_POST['zwt_url_format'], array(0, 1, 2))) {
+                                self::save_setting('settings', array('translation_settings' =>
+                                    array(
+                                        'lang_url_format' => $_POST['zwt_url_format']
+                                        )));
+                                zwt_add_links($blog_id, $c_trans_net->transnet_id, $_POST['zwt_url_format']);
                             }
                         }
-                        self::save_setting('settings', array('lang_switcher' =>
-                            array(
-                                'elements' => $elements
-                                )));
-                        if(empty($_POST['zwt_ls_elements'])){
-                             ZWT_Base::$notices->enqueue(__('Atleast one element must be included in the footer langauge switcher.', 'Zanto'), 'error');
-                         }
-					
-					}
-
-                    if (isset($_POST['zwt_ls_theme'])) {
-                        
-                        self::save_setting('settings', array('lang_switcher' =>
-                            array(
-                                'zwt_ls_theme' => $_POST['zwt_ls_theme']
-                                )));
-                    
-					}
-					
-					
-
-                    if (isset($_POST['zwt_lang_order']) && !is_null($_POST['zwt_lang_order']) && !empty($_POST['zwt_lang_order'])) {
-                        $lang_order = explode(',', $_POST['zwt_lang_order']);
-                        $transnet_blogs = $c_trans_net->transnet_blogs;
-                        foreach ($transnet_blogs as $trans_blog)
-                            $blog_ids[] = $trans_blog['blog_id'];
-                        foreach ($lang_order as $blog_lo) {
-                            if (in_array($blog_lo, $blog_ids))
-                                continue;
-                            else
-                                $lang_order = null;
+                        if (isset($_POST['zwt_auto_user']) && in_array($_POST['zwt_auto_user'], array(0, 1))) {
+                            self::save_setting('settings', array('blog_setup' =>
+                                array(
+                                    'auto_add_subscribers' => $_POST['zwt_auto_user']
+                                    )));
                         }
-                        if (!is_null($lang_order))
+
+                        if (isset($_POST['zwt_site_visibility']) && in_array($_POST['zwt_site_visibility'], array(0, 1))) {
+                            $ls_exclude_list = get_metadata('site', $site_id, 'zwt_' . $c_trans_net->transnet_id . '_exclude', true);
+
+                            self::save_setting('settings', array('blog_setup' =>
+                                array(
+                                    'site_visibility' => $_POST['zwt_site_visibility']
+                                    )));
+
+                            if ($_POST['zwt_site_visibility']) {
+                                if (isset($ls_exclude_list[$blog_id])) {
+                                    unset($ls_exclude_list[$blog_id]);
+                                    update_metadata('site', $site_id, 'zwt_' . $c_trans_net->transnet_id . '_exclude', $ls_exclude_list);
+                                }
+                            } else {
+                                if (!isset($ls_exclude_list[$blog_id])) {
+                                    $ls_exclude_list[$blog_id] = 1;
+                                    update_metadata('site', $site_id, 'zwt_' . $c_trans_net->transnet_id . '_exclude', $ls_exclude_list);
+                                }
+                            }
+                        }
+
+                        if (isset($_POST['zwt_browser_lang_redct']) and in_array($_POST['zwt_browser_lang_redct'], array(0, 1, 2))) {
+                            self::save_setting('settings', array('blog_setup' =>
+                                array(
+                                    'browser_lang_redirect' => $_POST['zwt_browser_lang_redct']
+                                    )));
+                        }
+
+                        if (isset($_POST['zwt_browser_lang_redct_time'])) {
+                            self::save_setting('settings', array('blog_setup' =>
+                                array(
+                                    'zwt_browser_lang_redct_time' => absint($_POST['zwt_browser_lang_redct_time'])
+                                    )));
+                        }
+
+                        if (isset($_POST['zwt_post_availabitlity_text'])) {
                             self::save_setting('settings', array('lang_switcher' =>
                                 array(
-                                    'language_order' => $lang_order
+                                    'post_availability_text' => sanitize_text_field($_POST['zwt_post_availabitlity_text'])
                                     )));
-                        $c_trans_net->zwt_trans_cache['zwt_trans_network_cache']->clear();
+                        }
+
+                        if (isset($_POST['zwt_post_trans_links'])) {
+                            self::save_setting('settings', array('lang_switcher' =>
+                                array(
+                                    'alt_lang_availability' => 1
+                                    )));
+                        } else {
+                            self::save_setting('settings', array('lang_switcher' =>
+                                array(
+                                    'alt_lang_availability' => 0
+                                    )));
+                        }
+
+                        if (isset($_POST['zwt_post_link_pos']) && in_array($_POST['zwt_post_link_pos'], array('above', 'below'))) {
+                            self::save_setting('settings', array('lang_switcher' =>
+                                array(
+                                    'post_tl_position' => sanitize_text_field($_POST['zwt_post_link_pos'])
+                                    )));
+                        }
+
+                        if (isset($_POST['zwt_post_link_style']) && in_array($_POST['zwt_post_link_style'], array(0, 1))) {
+                            self::save_setting('settings', array('lang_switcher' =>
+                                array(
+                                    'post_tl_style' => $_POST['zwt_post_link_style']
+                                    )));
+                        }
+
+                        if (isset($_POST['zwt_no_translation']) && in_array($_POST['zwt_no_translation'], array(0, 1))) {
+                            self::save_setting('settings', array('lang_switcher' =>
+                                array(
+                                    'skip_missing_trans' => $_POST['zwt_no_translation']
+                                    )));
+                        }
+
+                        if (isset($_POST['zwt_front_page_trans']) && in_array($_POST['zwt_front_page_trans'], array(0, 1))) {
+                            self::save_setting('settings', array('lang_switcher' =>
+                                array(
+                                    'front_page_trans' => $_POST['zwt_front_page_trans']
+                                    )));
+                        }
                     }
-                    if (isset($_POST['zwt_additional_css'])) {
-                        self::save_setting('settings', array('lang_switcher' =>
-                            array(
-                                'zwt_ls_custom_css' => wp_filter_nohtml_kses($_POST['zwt_additional_css'])
-                                )));
+
+                    if (isset($_GET['stg_scope']) && $_GET['stg_scope'] == 'lang_swchr') {
+                        if (isset($_POST['zwt_footer_ls'])) {
+                            self::save_setting('settings', array('lang_switcher' =>
+                                array(
+                                    'show_footer_selector' => 1
+                                    )));
+                        } else {
+                            self::save_setting('settings', array('lang_switcher' =>
+                                array(
+                                    'show_footer_selector' => 0
+                                    )));
+                        }
+
+                        if (isset($_POST['zwt_ls_elements']) && is_array($_POST['zwt_ls_elements'])) {
+                            $elements = array('flag' => 0, 'native_name' => 0, 'translated_name' => 0);
+
+                            foreach ($_POST['zwt_ls_elements'] as $switcher_element => $value) {
+                                if (in_array($switcher_element, array('flag', 'native_name', 'translated_name'))) {
+                                    $elements[$switcher_element] = 1;
+                                } else {
+                                    $elements[$switcher_element] = 0;
+                                }
+                            }
+                            self::save_setting('settings', array('lang_switcher' =>
+                                array(
+                                    'elements' => $elements
+                                    )));
+                            if (empty($_POST['zwt_ls_elements'])) {
+                                ZWT_Base::$notices->enqueue(__('Atleast one element must be included in the footer langauge switcher.', 'Zanto'), 'error');
+                            }
+                        }
+
+                        if (isset($_POST['zwt_ls_theme'])) {
+
+                            self::save_setting('settings', array('lang_switcher' =>
+                                array(
+                                    'zwt_ls_theme' => $_POST['zwt_ls_theme']
+                                    )));
+                        }
+
+                        if (isset($_POST['zwt_lang_order']) && !is_null($_POST['zwt_lang_order']) && !empty($_POST['zwt_lang_order'])) {
+                            $lang_order = explode(',', $_POST['zwt_lang_order']);
+                            $transnet_blogs = $c_trans_net->transnet_blogs;
+                            foreach ($transnet_blogs as $trans_blog)
+                                $blog_ids[] = $trans_blog['blog_id'];
+                            foreach ($lang_order as $blog_lo) {
+                                if (in_array($blog_lo, $blog_ids))
+                                    continue;
+                                else
+                                    $lang_order = null;
+                            }
+                            if (!is_null($lang_order))
+                                self::save_setting('settings', array('lang_switcher' =>
+                                    array(
+                                        'language_order' => $lang_order
+                                        )));
+                            $c_trans_net->zwt_trans_cache['zwt_trans_network_cache']->clear();
+                        }
+
+                        if (isset($_POST['zwt_additional_css'])) {
+                            self::save_setting('settings', array('lang_switcher' =>
+                                array(
+                                    'zwt_ls_custom_css' => wp_filter_nohtml_kses($_POST['zwt_additional_css'])
+                                    )));
+                        }
                     }
                 }
 
@@ -644,7 +637,7 @@ if (!class_exists('ZWT_Settings')) {
                             'setup_interface' => 'four'
                             )));
 
-                    zwt_add_links($blog_id, $clean_values['trans_network_id']);
+                    zwt_add_links($blog_id, $clean_values['trans_network_id'],0);
 
                     $transnet_blogs = $zwt_site_obj->modules['trans_network']->get_transnet_blogs(true);
 

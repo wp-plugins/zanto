@@ -3,8 +3,8 @@ Contributors: brooksX
 Donate link: https://stage.wepay.com/donations/support-zanto
 Tags: translation, multilingual, localization, multisite, language switcher, languages
 Requires at least: 3.0
-Tested up to: 3.7.1
-Stable tag: 0.1.0
+Tested up to: 3.8
+Stable tag: 0.2.0
 License: GPLv2 or later
 
 Zanto manages translation of your whole wordpress site to other languages and provides a language switcher to switch between translations.
@@ -41,3 +41,11 @@ Upload the Zanto plugin to your blog, Activate it for each blog you want to do t
 5. Setting up a translation network from available blogs in the multisite
 
 == Changelog ==
+
+= 0.2.0 =
+* Fixed language download bug when version number is only 2 levels 
+* On downloading languages, missing translation files will be searched for two versions back instead of one
+* Fixed front page language switcher bug when using URL's whith language in directories or added as a parameter Zanto feature
+* Intergrated support for domain mapping for the language switcher when using the domain mapping plugin
+* Improved interface to better suite the wordpress admin (some interfaces were not displaying properly in version 3.8)
+* Fixed Language switcher settings being over-written when general settings are saved

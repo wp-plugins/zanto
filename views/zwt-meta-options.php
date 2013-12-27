@@ -1,10 +1,10 @@
 <?php  noscript_notice() ?>
+<?php if($box['id'] == ZWT_Base::PREFIX . 'choose_translation'): ?>
 <?php if(!isset($primary_lang)):?>
 <div class="zwt_notice"><?php _e('<strong>Notice</strong>: Please set the Primary Translation Language of this translation network to translate.','Zanto') ?> <i class="fa fa-warning error"></i></div>
 <p><?php echo '<a class="button" href="'.get_admin_url().'?page=zwt_settings">'. __('Set Primary Translation Language','Zanto').'</a>' ?></p>
 <?php return; ?>
 <?php endif ?>
-<?php if($box['id'] == ZWT_Base::PREFIX . 'choose_translation'): ?>
 <?php if($c_trans_network->primary_lang_blog == $blog_id || isset($_REQUEST['make_primary']) || ($translated_flag && !$primary_post_exists)):
 // start of primary language post display ?>
 <table class="widefat">
