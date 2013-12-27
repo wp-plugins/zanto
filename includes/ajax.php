@@ -42,7 +42,14 @@ if (is_admin() && isset($_REQUEST['admin_fn'])) {
             switch_to_blog($required_posts['blog_id']);
             query_posts(array('post_type' => ($required_posts['post_type']), 'posts_per_page' => -1));
             if (have_posts()) : while (have_posts()) : the_post();
-                    echo '<option value="' . get_the_ID() . '">' . get_the_title() . '</option>';
+			$translations = get_post_meta(get_the_ID(), ZWT_Base::PREFIX . 'post_network', true);
+			$trans_class="";
+			if(is_array($translations))
+			foreach($translations as $translation){
+			 if(isset($translation['blog_id']) && $translation['blog_id']==$blog_id)
+			 $trans_class="translated";
+			}
+                    echo '<option class="'.$trans_class.'" value="' . get_the_ID() . '">' . get_the_title() . '</option>';
                 endwhile;
             else:
                 echo "<option value=''>No Posts Found</option>";

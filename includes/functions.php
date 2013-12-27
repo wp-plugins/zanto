@@ -227,8 +227,16 @@ function zwt_get_post_select_options($attr) {
     if ($loop->have_posts()) {
         while ($loop->have_posts()) {
             $loop->the_post();
-            $output .= the_title('<option value="' . get_the_ID() . '"' . selected($options['selected'], get_the_ID()) . ' > ', ' </option>', false);
-        }
+			$translations = get_post_meta(get_the_ID(), ZWT_Base::PREFIX . 'post_network', true);
+			$trans_class="";
+			if(is_array($translations))
+			foreach($translations as $translation){
+			 if(isset($translation['blog_id']) && $translation['blog_id']==$blog_id)
+			 $trans_class="translated";
+			}
+			
+            $output .= the_title('<option class="'.$trans_class.'" value="' . get_the_ID() . '"' . selected($options['selected'], get_the_ID()) . ' > ', ' </option>', false);
+		}
     } else {
         $output = '<option value="">' . __('No Posts Found', 'Zanto') . '</option>';
     }
