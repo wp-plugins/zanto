@@ -15,7 +15,7 @@ Zanto manages translation of your wordpress site to other languages and provides
 categories, custom taxonomies custom posts e.tc. It takes advantage of the multisite architecture to efficiently manage this.
 
 
-Major new features in Zanto 0.1.0 include:
+Features:
 
 * Translation of posts, categories, custom taxonomies, custom types.
 * Browser Language re-direct. i.e re-direct users to their prefered language in their browser language settings.
@@ -27,6 +27,7 @@ Major new features in Zanto 0.1.0 include:
 * Each admin will have his admin language preferences stored
 * Over 60 in-built languages and flags.
 * Ability for users to add their own native languages i.e from the ones not included.
+* Intergrated support for domain mapping plugin
 
 == Installation ==
 
@@ -49,3 +50,8 @@ Upload the Zanto plugin to your blog, Activate it for each blog you want to do t
 * Intergrated support for domain mapping for the language switcher when using the domain mapping plugin
 * Improved interface to better suite the wordpress admin (some interfaces were not displaying properly in version 3.8)
 * Fixed Language switcher settings being over-written when general settings are saved
+
+== Upgrade Notice ==
+
+= 0.2.0 =
+Upgrade to fix all bugs from the previous version and better integration with the domain mapping plugin. 
