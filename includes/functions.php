@@ -206,8 +206,9 @@ function _zwt_get_meta_table($type, $c_blog_id) {
 
 function zwt_get_post_select_options($attr) {
     global $blog_id;
+	$c_blog=$blog_id;
     $defaults = array(
-        'c_blog' => $blog_id, // blog id to check in
+        'c_blog' => $c_blog, // blog id to check in
         'post_type' => '',
         'order' => 'ASC',
         'orderby' => 'title',
@@ -231,7 +232,7 @@ function zwt_get_post_select_options($attr) {
 			$trans_class="";
 			if(is_array($translations))
 			foreach($translations as $translation){
-			 if(isset($translation['blog_id']) && $translation['blog_id']==$blog_id)
+			 if(isset($translation['blog_id']) && $translation['blog_id']==$c_blog)
 			 $trans_class="translated";
 			}
 			
@@ -383,7 +384,7 @@ function zwt_get_site_flags($locale){
 
 function zwt_clean_blog_tax($deleted_blog) {
     $tax_meta = get_option('zwt_taxonomy_meta');
-
+    if(is_array($tax_meta)){
     foreach ($tax_meta as $tax => $t_array) {
         foreach ($t_array as $term => $blog_tax) {
             if (isset($blog_tax[$deleted_blog])) {
@@ -395,6 +396,7 @@ function zwt_clean_blog_tax($deleted_blog) {
         }
     }
     update_option('zwt_taxonomy_meta', $tax_meta);
+	}
     return;
 }
 

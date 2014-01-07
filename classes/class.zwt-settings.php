@@ -201,7 +201,7 @@ if (!class_exists('ZWT_Settings')) {
         public function validateSettings($newSettings) {
             $newSettings = shortcode_atts($this->settings, $newSettings);
 
-            if (!is_string($newSettings['db-version']))
+            if (!isset($newSettings['db-version']) || !is_string($newSettings['db-version']))
                 $newSettings['db-version'] = ZWT_Base::VERSION;
 
             /* Basic Settings
