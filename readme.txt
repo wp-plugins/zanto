@@ -43,6 +43,11 @@ Upload the Zanto plugin to your blog, Activate it for each blog you want to do t
 
 == Changelog ==
 
+= 0.2.1 =
+*Fixed bugs that eluded us in 0.2.1
+*Added gray highlighting for translated posts so you can tell the difference between the translated posts and un-translated posts when assoicating the posts
+on the post edit page. You can read about the new changes here http://zanto.org/zanto-0-2-1-starting-new-year-high-spirits/
+
 = 0.2.0 =
 * Fixed language download bug when version number is only 2 levels 
 * On downloading languages, missing translation files will be searched for two versions back instead of one
@@ -53,8 +58,9 @@ Upload the Zanto plugin to your blog, Activate it for each blog you want to do t
 
 == Upgrade Notice ==
 
+=0.2.1=
+Upgrade to fix bugs from previous version and better translation process by gray highlighting for translated posts so you can tell the difference between the translated posts and un-translated posts when assoicating the posts
+on the post edit page. 
+
 = 0.2.0 =
 Upgrade to fix all bugs from the previous version and better integration with the domain mapping plugin. 
-=0.2.1=
-Added gray highlighting for translated posts so you can tell the difference between the translated posts and un-translated posts when assoicating the posts
-on the post edit page.
