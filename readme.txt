@@ -44,7 +44,7 @@ Upload the Zanto plugin to your blog, Activate it for each blog you want to do t
 == Changelog ==
 
 = 0.2.1 =
-*Fixed bugs that eluded us in 0.2.1
+*Fixed bugs that eluded us in 0.2.0
 *Added gray highlighting for translated posts so you can tell the difference between the translated posts and un-translated posts when assoicating the posts
 on the post edit page. You can read about the new changes here http://zanto.org/zanto-0-2-1-starting-new-year-high-spirits/
 
