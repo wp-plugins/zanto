@@ -3,7 +3,7 @@
 Plugin Name: Zanto WordPress Transaltion
 Plugin URI: http://zanto.org/
 Description: This plugin helps you Translate all Wordpress the proper way. 
-Version: 0.2.0
+Version: 0.2.1
 Author: Zanto Translate
 Author URI: http://zanto.org
 Text Domain: Zanto
