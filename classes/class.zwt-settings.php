@@ -517,12 +517,6 @@ if (!class_exists('ZWT_Settings')) {
                                     )));
                         }
 
-                        if (isset($_POST['zwt_no_translation']) && in_array($_POST['zwt_no_translation'], array(0, 1))) {
-                            self::save_setting('settings', array('lang_switcher' =>
-                                array(
-                                    'skip_missing_trans' => $_POST['zwt_no_translation']
-                                    )));
-                        }
 
                         if (isset($_POST['zwt_front_page_trans']) && in_array($_POST['zwt_front_page_trans'], array(0, 1))) {
                             self::save_setting('settings', array('lang_switcher' =>
@@ -533,6 +527,14 @@ if (!class_exists('ZWT_Settings')) {
                     }
 
                     if (isset($_GET['stg_scope']) && $_GET['stg_scope'] == 'lang_swchr') {
+					
+				    	if (isset($_POST['zwt_no_translation']) && in_array($_POST['zwt_no_translation'], array(0, 1))) {
+                            self::save_setting('settings', array('lang_switcher' =>
+                                array(
+                                    'skip_missing_trans' => $_POST['zwt_no_translation']
+                                    )));
+                        }
+						
                         if (isset($_POST['zwt_footer_ls'])) {
                             self::save_setting('settings', array('lang_switcher' =>
                                 array(

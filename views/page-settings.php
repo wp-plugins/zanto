@@ -337,7 +337,7 @@ if (!current_user_can('manage_options'))
                                                     <input type="submit" name="interface_4_save" id="submit4" class="button button-primary" value="Save Changes">
                                                     </form>
                                                 <?php } ?>
-                                                <? if (isset($_GET['stg_scope']) && $_GET['stg_scope'] == 'lang_swchr') { ?>
+                                                <?php if (isset($_GET['stg_scope']) && $_GET['stg_scope'] == 'lang_swchr') { ?>
                                                         <form form id="zwt_trans_network_setting4" method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']) ?>">
                                                             <?php wp_nonce_field('zwt_translation_setting_nonce_4', 'zwt_translation_interface_4'); ?>
 

@@ -319,24 +319,24 @@ function zwt_get_trans_url($obj_type, $obj_blog, $obj_id) {
         switch ($obj_type) {
             case 'post':
                 $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?p=' . $obj_id;
-                return $trans_link;
                 break;
             case 'category':
                 $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?cat=' . $obj_id;
-                return $trans_link;
             case 'post_tag':
                 $b_prefix = $wpdb->get_blog_prefix($obj_blog);
                 $term_slug = $wpdb->get_var($wpdb->prepare("SELECT slug FROM {$b_prefix }terms WHERE term_id = %d", $obj_id));
                 $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?tag=' . $term_slug;
-                return $trans_link;
                 break;
             default:
                 $b_prefix = $wpdb->get_blog_prefix($obj_blog);
                 $term_slug = $wpdb->get_var($wpdb->prepare("SELECT slug FROM {$b_prefix }terms  WHERE term_id = %d", $obj_id));
                 $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?' . $obj_type . '=' . $term_slug;
-                return $trans_link;
                 break;
         }
+		
+		$trans_link = apply_filters('zwt_trans_url', $trans_link, $obj_type,$obj_blog, $obj_id);
+	    
+		return $trans_link;
 }
 
 function zwt_merge_atts($pairs, $atts) {

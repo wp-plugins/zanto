@@ -91,7 +91,7 @@ endif;
 <input class="button button-small"  type="submit" value="<?php _e('Update', 'Zanto')?>" />
 <?php if(!isset($_REQUEST['change_transln'])):?>
 <p>
-<a href="<? echo add_query_arg(array('make_primary'=>'true')); ?>"><?php _e('Make this a primary translation post','Zanto') ?></a>
+<a href="<?php echo add_query_arg(array('make_primary'=>'true')); ?>"><?php _e('Make this a primary translation post','Zanto') ?></a>
 <?php else:?>
 &nbsp; <a href="<?php echo remove_query_arg(array('change_transln')); ?>">Cancel</a>
 <p>

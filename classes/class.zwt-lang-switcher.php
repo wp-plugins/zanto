@@ -109,7 +109,8 @@ if (!class_exists('ZWT_Lang_Switcher')) {
             $trans_network = $zwt_site_obj->modules['trans_network'];
             $transnet_blogs = $trans_network->transnet_blogs;
 			$ls_exclude_list= get_metadata('site', $site_id, 'zwt_' . $trans_network->transnet_id . '_exclude', true);
-
+			$translated_urls=null;
+			
 			if(is_front_page()){
 			     if($this->ls_settings['front_page_trans'] && !$wp_query->is_home && !empty($wp_query->posts)){
 				 //get meta of post  $this->wp_query->post->ID
@@ -131,13 +132,14 @@ if (!class_exists('ZWT_Lang_Switcher')) {
                 $p_translations = get_post_meta($wp_query->post->ID, ZWT_Base::PREFIX . 'post_network', true);
                 //do blog update checks here
 
-                if (!empty($p_translations))
+                if (!empty($p_translations)){
                     foreach ($p_translations as $p_trans) {
                         if (isset($p_trans['post_id']))
                             $translated_urls[$p_trans['blog_id']] = zwt_get_trans_url('post', $p_trans['blog_id'], $p_trans['post_id']);
                         else
                             $translated_urls[$p_trans['blog_id']] = $p_trans['t_link'];
                     }
+				}
             }
             //$tax_meta[$taxonomy][$term_id][$trans_blog['blog_id']]
             elseif (is_category() && !empty($wp_query->posts)) {
@@ -168,9 +170,8 @@ if (!class_exists('ZWT_Lang_Switcher')) {
                         $translated_urls[$trans_blog['blog_id']] = zwt_get_trans_url($taxonomy_name, $trans_blog['blog_id'], $tax_meta[$taxonomy_name][$tax_id][$trans_blog['blog_id']]);
                     }
                 }
-            } 
-            
-
+            }
+             $translated_urls = apply_filters( 'zwt_translated_urls', $translated_urls, $args);
             /*
               $zwt_ls_array = apply_filters('zwt_get_current_ls', $zwt_ls_array);
 
@@ -187,13 +188,14 @@ if (!class_exists('ZWT_Lang_Switcher')) {
                 if(isset($ls_exclude_list[$trans_blog['blog_id']])){
 				   continue;
 				   }
-                if (isset($translated_urls[$trans_blog['blog_id']])){
+                if (isset($translated_urls[$trans_blog['blog_id']])){// translated url exists
                          $url = $translated_urls[$trans_blog['blog_id']];
 						 if(zwt_get_global_urls_info('lang_url_format', $trans_blog['blog_id'])==2){
 						    $url = $trans_network->add_url_lang($url, $trans_blog['blog_id'], 2);
 						}
+						$url = apply_filters( 'zwt_url_exist', $url, $translated_urls[$trans_blog['blog_id']],$trans_blog );
 					}
-                else {
+                else {//translated url doesn't exist
                     if ((0==$this->ls_settings['skip_missing_trans'] && 0==$args['skip_missing']) || is_front_page()){ //link to home page
 					    $url = zwt_get_global_urls_info('site_url', $trans_blog['blog_id']);
 						$lang_url_format = zwt_get_global_urls_info('lang_url_format', $trans_blog['blog_id']);
@@ -202,9 +204,11 @@ if (!class_exists('ZWT_Lang_Switcher')) {
 						}elseif($lang_url_format==1){
 						     $url = $trans_network->add_url_lang($url, $trans_blog['blog_id'], 1);
 						}
-					}
-                    else
-                        continue;
+					}else{
+					     $url = apply_filters( 'zwt_no_url',null, $trans_blog);// use this filter to do what you want with skip language option
+			             if (is_null($url))
+                            continue;
+						}
                 }
                 ($blog_id == $trans_blog['blog_id']) ? $active = 1 : $active = 0;
                 $native_name = $trans_network->get_display_language_name($trans_blog['lang_code']);
@@ -221,7 +225,7 @@ if (!class_exists('ZWT_Lang_Switcher')) {
                 $id++;
             }
             unset($id);
-            return $zwt_ls_array;
+            return apply_filters( 'zwt_ls_array',$zwt_ls_array, $args);
         }
 
         function post_availability($content) {
