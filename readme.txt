@@ -4,7 +4,7 @@ Donate link: https://stage.wepay.com/donations/support-zanto
 Tags: translation, multilingual, localization, multisite, language switcher, languages
 Requires at least: 3.0
 Tested up to: 3.8
-Stable tag: 0.2.2
+Stable tag: 0.2.3
 License: GPLv2 or later
 
 Zanto helps you run a multilingual site by providing linkage between content in blogs of different languages in a WordPress multisite.
@@ -85,6 +85,9 @@ Yes, we have so many features in store under developement, keep tuned in at <a h
 and perticipate in our forum. Get to decide what you want in your favourite free multilingual plugin and we'll fold our shirt sleeves to get it ready for the next version.
 
 == Upgrade Notice ==
+
+= 0.2.3 =
+Upgrade to fix issue of some options not saving
 
 = 0.2.2 =
 Upgrade to fix bug from previous version 

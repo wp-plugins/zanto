@@ -19,7 +19,7 @@ if (!class_exists('ZWT_Base')) {
         protected static $writeableProperties = array();
         protected $modules;
 
-        const VERSION = '0.2.0';
+        const VERSION = '0.2.3';
         const PREFIX = 'zwt_';
         const DEBUG_MODE = false;
 
