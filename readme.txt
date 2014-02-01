@@ -43,6 +43,8 @@ Upload the Zanto plugin to your blog, Activate it for each blog you want to do t
 5. Setting up a translation network from available blogs in the multisite
 
 == Changelog ==
+= 0.2.3 =
+*Fixed an if statement bug that was causing some options not to save
 = 0.2.2 =
 *Fixed technical bugs related to php opening tags
 *Added filters to allow hooking into and modifying how zanto handles content without translation
