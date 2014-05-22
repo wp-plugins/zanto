@@ -17,6 +17,9 @@ if ($WordPress_language->current_scope == 'front-end') {
 } else {
     $current_locale = $current_locale_back;
 }
+ if (isset($_GET['scope']) && $_GET['scope']!=='back-end' && !current_user_can('manage_options')) {
+        wp_die('Insufficient privileges!');
+    }
 
 
 $current_lang_code_front = $trans_network->get_lang_code($current_locale_front);
@@ -39,9 +42,10 @@ var zwt_pluginUrl = '<?php  echo GTP_PLUGIN_URL; ?>'
     <div id="menu-management-liquid">
 	            <h2 class="nav-tab-wrapper">
                 <a class="nav-tab <?php if (isset($_GET['scope']) && $_GET['scope'] == 'back-end' || !isset($_GET['scope'])): ?> nav-tab-active<?php endif ?>" href="<?php echo admin_url('admin.php?page=zwt_manage_locales') ?>"><?php _e('Admin Language', 'Zanto') ?></a>
+				<?php if(current_user_can('manage_options')): ?>
                 <a class="nav-tab <?php if (isset($_GET['scope']) && $_GET['scope'] == 'front-end'): ?> nav-tab-active<?php endif ?>" href="<?php echo admin_url('admin.php?page=zwt_manage_locales&scope=front-end') ?>"><?php _e('Front-End Language', 'Zanto') ?></a>
                 <a class="nav-tab <?php if (isset($_GET['scope']) && $_GET['scope'] =='flag-mng'): ?> nav-tab-active<?php endif ?>" href="<?php echo admin_url('admin.php?page=zwt_manage_locales&scope=flag-mng') ?>"><?php _e('Flag Management', 'Zanto') ?></a>
-
+                 <?php endif; ?>
             </h2>
         <div id="menu-management" style="margin-right:10px;width:auto;"> 
 

@@ -404,10 +404,6 @@ if (!class_exists('ZWT_Lang_Switcher')) {
                 return;
             }
 
-            if (!current_user_can('manage_options')) {
-                wp_die('Insufficient privileges!');
-            }
-
             if (isset($_REQUEST['set_lang'])) {
                 $user_id = get_current_user_id();
                 $lang_code = $_REQUEST['set_lang'];

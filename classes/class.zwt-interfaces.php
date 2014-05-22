@@ -138,7 +138,7 @@ if (!class_exists('ZWT_Interfaces')) {
                         ZWT_Base::PREFIX . 'settings', __('Translation Network', 'Zanto'), __('Translation Network', 'Zanto'), 'manage_options', ZWT_Base::PREFIX . __('trans_network', 'Zanto'), array($this, 'user_trans_networks'));
 
                 add_submenu_page(
-                        ZWT_Base::PREFIX . 'settings', __('Locale Manager ', 'Zanto'), __('Locale Manager', 'Zanto'), 'manage_options', ZWT_Base::PREFIX . __('manage_locales', 'Zanto'), array($this, 'mo_management'));
+                        ZWT_Base::PREFIX . 'settings', __('Locale Manager ', 'Zanto'), __('Locale Manager', 'Zanto'), 'read', ZWT_Base::PREFIX . __('manage_locales', 'Zanto'), array($this, 'mo_management'));
 
                 add_submenu_page(
                         ZWT_Base::PREFIX . 'settings', __('Advanced Tools ', 'Zanto'), __('Advanced Tools', 'Zanto'), 'manage_options', ZWT_Base::PREFIX . __('advanced_tools', 'Zanto'), array($this, 'advanced_tools'));
