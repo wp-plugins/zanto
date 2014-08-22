@@ -6,7 +6,7 @@ Tested up to: 3.9.2
 Stable tag: 0.3.0
 License: GPLv2 or later
 
-Zanto WP Translation helps you run a WordPress multilingual site by providing linkage between content in blogs of different languages in a WordPress multisite.
+Zanto WP Translation helps you run a WordPress multilingual site by providing linkage between content in blogs of different languages in a multisite.
 
 == Description ==
 
