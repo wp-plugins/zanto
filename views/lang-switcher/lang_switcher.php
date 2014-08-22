@@ -1,30 +1,19 @@
 <?php
-/*
-Theme Name: Default Language Switcher 
-Theme URI: http://www.zanto.org
-Description: Default language switcher for Zanto
-Version: 0.1.2
-Author: Ayebare Mucunguzi
-Theme URI: http://www.zanto.org
-License: GNU General Public License v2.0
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
-
-*/
 
 /**
  * This is the most generic theme file for Zanto Language switchers *
  * To use your own modified version of language switchers,
- * create a directory folder named zanto in your theme base directory or child theme directory, create a file e.g my_switchers.zwt.php,
+ * create a directory folder named zanto in your theme base directory, create a file e.g my_switchers.zwt.php,
  * and place it in the directory you created. then copy this file content and paste it in my_switchers.zwt.php, you
- * can modify it as you want :). Go to Language Switcher settings in the admin panel, a new switcher theme will be available
+ * can modify it as you want :). Go to Language Switcher settings in the admin panel, a new switcher theme called "my_sitcher"
+ * will be available. choose it and save settings.
  * @package Zanto Wordpress Translation
  */
 
 $ls_types = array(
-             'drop_down'=> __('drop down menu ','Zanto'), 
-			 'horizontal'=>__('horizontal list ','Zanto'),
-			 'vertical'=>  __('vertical list','Zanto')
-			 );
+             'drop_down'=>'This is a lang switcher from the zanto theeme drop down menu', 
+			 'horizontal'=>'This is a language swicher with languages aligned horizontally',
+			 'vertical'=>'This is a language swicher with languages aligned vertically');
 			 
 zwt_register_switcher_types($ls_types);
 
