@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Zanto WordPress Transaltion
+Plugin Name: Zanto WP Translation
 Plugin URI: http://zanto.org/
-Description: This plugin helps you Translate all Wordpress the proper way. 
-Version: 0.2.3
+Description: Make blogs in a WordPress multisite translations of each other
+Version: 0.3.0
 Author: Zanto Translate
 Author URI: http://zanto.org
 Text Domain: Zanto
@@ -12,24 +12,26 @@ Domain Path: /languages/
 
 if( $_SERVER[ 'SCRIPT_FILENAME' ] == __FILE__ )
 	die( 'Access denied.' );
-define('GTP_ZANTO_VERSION', '0.2.3');
+define('GTP_ZANTO_VERSION', '0.3.0');
 define('GTP_NAME',	'Zanto Wordpress Translaton Plugin' );
 define('GTP_REQUIRED_WP_VERSION', '3.1' );	// because of esc_textarea()
 define('GTP_PLUGIN_PATH', dirname(__FILE__));
 define('GTP_PLUGIN_FOLDER', basename(GTP_PLUGIN_PATH));
 define('GTP_PLUGIN_URL', plugin_dir_url(__FILE__) );
 (!function_exists('is_multisite') || !is_multisite() )?define('GTP_MULTISITE', false): define('GTP_MULTISITE', true);
-if(!defined('GTP_lS_THEME_PATH')) {
-   define('GTP_lS_THEME_PATH', get_template_directory().'/zanto' );
-}
+
 
 /**
  * Checks if the system requirements are met
- * @author Zanto Translate
+ * @author Ayebare Mucunguzi
  * @return array 0 to indicate un-met conditions.
  */
  $zwt_icon_url= GTP_PLUGIN_URL . 'images/logo-admin.gif';
- $zwt_menu_url= GTP_PLUGIN_URL . 'images/menu-icon.png';
+ $zwt_menu_url= GTP_PLUGIN_URL . 'images/menu-icon.gif';
+ if(is_admin()){
+    require_once( GTP_PLUGIN_PATH . '/includes/notices/admin-notice-helper.php' );
+	require_once( GTP_PLUGIN_PATH . '/includes/notices/email-notifications.php' );
+ }
  require_once( GTP_PLUGIN_PATH . '/includes/install-requirements.php' );
  $zwt_unfullfilled_requirments = zwt_requirements_missing();
  
@@ -39,7 +41,7 @@ if(!defined('GTP_lS_THEME_PATH')) {
    
 	
 if( !$zwt_unfullfilled_requirments)
-{
+{ 
 	require_once( GTP_PLUGIN_PATH . '/classes/class.zwt-module.php' );
 	require_once( GTP_PLUGIN_PATH . '/classes/class.zwt-base.php' );
 	require_once( GTP_PLUGIN_PATH . '/classes/class.zwt-lang-switcher.php' );
@@ -52,6 +54,7 @@ if( !$zwt_unfullfilled_requirments)
 	
 	if( class_exists( 'ZWT_Base' ) )
 	{
+	
 		 $zwt_site_obj = ZWT_Base::getInstance();
 		 $zwt_language_switcher = new ZWT_Lang_Switcher();
 

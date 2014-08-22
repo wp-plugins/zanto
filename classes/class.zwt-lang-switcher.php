@@ -25,9 +25,12 @@ if (!class_exists('ZWT_Lang_Switcher')) {
             global $zwt_site_obj;
             if (!isset($zwt_site_obj->modules['settings']))
                 return;
-            $this->ls_settings = $zwt_site_obj->modules['settings']->settings['lang_switcher'];
+            $this->get_settings();
             $this->registerHookCallbacks();
-            $this->get_ls_theme();
+			if (!isset($_POST['zwt_ls_theme'])){//don't load when doing language switcher updates
+                 $this->get_ls_theme(); 
+			}
+			
         }
 
         /**
@@ -40,7 +43,6 @@ if (!class_exists('ZWT_Lang_Switcher')) {
             add_action('plugins_loaded', array($this, 'init'));
             if (is_admin()) {
                 add_action('admin_init', array($this, 'process_admin_swicher'));
-                add_filter('locale', array($this, 'user_admin_locale'));
                 add_action('admin_bar_menu', __CLASS__ . '::adminLanguageSwitcher', 999);
                 add_action('zwt_language_switcher', array($this, 'zwt_language_switcher_temp'), 1);
             } else {
@@ -54,11 +56,9 @@ if (!class_exists('ZWT_Lang_Switcher')) {
             }
              if (!is_admin()) {
                 add_action('wp_head', array($this, 'custom_language_switcher_style'),20);
+				add_action('wp_head', array($this, 'add_header_lang_links'));
             }
-
-            if (!empty($this->ls_settings['switcher_in_wpmenu'])) {
-                add_filter('wp_nav_menu_items', array($this, 'wp_nav_menu_items_filter'), 10, 2);
-            }
+            
         }
 
         /**
@@ -67,15 +67,48 @@ if (!class_exists('ZWT_Lang_Switcher')) {
          * @author Zanto Translate
          */
         public function init() {
-            
+            if(is_admin()){
+			     add_filter('locale', array($this, 'user_admin_locale'));
+			}
         }
-        
+        public function get_settings($update=false){
+		    if(!$update){
+		         global $zwt_site_obj;
+		          $this->ls_settings = $zwt_site_obj->modules['settings']->settings['lang_switcher'];
+			}else{
+			    $settings=ZWT_Settings::getSettings();
+				$this->ls_settings = $settings['lang_switcher'];
+			}
+			
+		}
+		
 		public function custom_language_switcher_style(){
 			 if (isset($this->ls_settings['zwt_ls_custom_css']) && !empty($this->ls_settings['zwt_ls_custom_css'])) {
                 echo "\r\n<style type=\"text/css\">";
                 echo $this->ls_settings['zwt_ls_custom_css'];
                 echo "\r\n</style>";
             }
+		}
+		
+		/**
+         * Adds alternative languages to the <head> tag
+         * @since 0.3.0
+         * @return void
+         */
+		function add_header_lang_links(){
+		    global $zwt_site_obj;
+		    $trans_network = $zwt_site_obj->modules['trans_network'];
+			$add_langs2head = zwt_network_vars($trans_network->transnet_id, 'get', 'add_seo_headlangs');
+			if($add_langs2head ){
+			    $links='';
+			    $languages = $this->get_current_ls(array('skip_missing' => 1));
+				if (!empty($languages))
+			    foreach( $languages as $lang_code=>$lang){
+				    $lang_locale = str_replace("_","-",$lang_code);
+				    $links.= '<link rel="alternate"  hreflang="'. $lang_locale. '"  href="'.$lang['url'].'">';
+				}
+				echo $links;
+			}
 		}
 		
 		public function get_ls_theme(){
@@ -86,19 +119,21 @@ if (!class_exists('ZWT_Lang_Switcher')) {
 		     $show_translated_name=$this->ls_settings['elements']['translated_name'];
 			     
 		     if ($this->ls_settings['zwt_ls_theme'] !== 0){
-			     $theme_path=GTP_lS_THEME_PATH.'/'.$this->ls_settings['zwt_ls_theme'].'.zwt.php';
+			     $theme_path=WP_CONTENT_DIR.$this->ls_settings['zwt_ls_theme'];
+				 
 			     if(file_exists($theme_path)){
 			         require_once($theme_path);
 					 }else{
-					 require_once( dirname(__DIR__) . '/views/lang-switcher/lang_switcher.php' );
+					 require_once( dirname(__DIR__) . '/views/lang-switcher/lang_switcher.zwt.php' );
 					 }
 			 }else{
-			     require_once( dirname(__DIR__) . '/views/lang-switcher/lang_switcher.php' );
+			     require_once( dirname(__DIR__) . '/views/lang-switcher/lang_switcher.zwt.php' );
 			 }
 			 
 			 return ;
 		
 		}
+		
         //$args['skip_missing']
         public function get_current_ls($args=array()) {
             global $wpdb, $post, $cat, $tag_id, $blog_id, $zwt_site_obj, $wp_query, $site_id;
@@ -268,9 +303,8 @@ if (!class_exists('ZWT_Lang_Switcher')) {
                 } else {
                     $content = $content . $out;
                 }
-
-                return $content;
             }
+			return $content;
         }
 
         
@@ -404,13 +438,14 @@ if (!class_exists('ZWT_Lang_Switcher')) {
                 return;
             }
 
+            
             if (isset($_REQUEST['set_lang'])) {
                 $user_id = get_current_user_id();
                 $lang_code = $_REQUEST['set_lang'];
                 check_admin_referer('zwt_changeLang-' . $lang_code . '_' . $user_id);
                 update_user_meta($user_id, 'zwt_adminlang_lang', $lang_code);
                 wp_redirect(remove_query_arg(array('set_lang')));
-                ZWT_Base::$notices->enqueue(__('Your personal admin Language setting has been changed and saved','Zanto'));
+                add_notice(__('Your personal admin Language setting has been changed and saved','Zanto'));
                 exit;
             }
         }

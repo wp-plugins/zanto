@@ -42,13 +42,11 @@ class ZWT_Edit_Languages {
         <br />
 
             <div id="zwt_edit_languages_info">
-                <?php _e('This table allows you to edit <strong>custom</strong> and <strong>active</strong> languages for your site. Each row represents a language.
-<br /><br />
-For each language, you need to enter the following information:
+                <?php _e('For each new language, you need to enter the following information:
 <ul>
-    <li><strong>Code:</strong> a unique value that identifies the language. Once entered, the language code cannot be changed.</li>
-    <li><strong>Translations:</strong> the way the language name will be displayed in different languages.</li>
-    <li><strong>Locale:</strong> This determines the locale value for this language. You should check the name of WordPress localization file to set this correctly.</li>
+    <li><b>Code:</b> Language code. Notice locales en_US, en_AU, en_GB all share the same code "en".</li>
+    <li><strong>Translations:</strong> The way the language name will be displayed in different languages.</li>
+    <li><strong>Locale:</strong> This determines the locale value for this language.</li>
 </ul>', 'Zanto'); ?>
 
             </div>
@@ -76,7 +74,7 @@ For each language, you need to enter the following information:
             <input type="hidden" name="zwt_edit_languages_action" value="update" />
             <input type="hidden" name="zwt_edit_languages_ignore_add" id="zwt_edit_languages_ignore_add" value="<?php echo ($this->add_validation_failed) ? 'false' : 'true'; ?>" />
             <?php wp_nonce_field('zwt_edit_languages'); ?>
-            <table id="zwt_edit_languages_table" class="form-table" cellspacing="0">
+            <table id="zwt_edit_languages_table" class="widefat" cellspacing="0">
                 <thead style="background-color:#f5f5f5; border:1px solid #ddd">
                     <tr>
                         <th><?php _e('Language name', 'Zanto'); ?></th>
@@ -219,7 +217,7 @@ For each language, you need to enter the following information:
 
         foreach ($this->current_languages as $lang) {
             foreach ($this->current_languages as $lang_translation) {
-                $this->current_languages[$lang['default_locale']]['translation'][$lang_translation['id']] = $zwt_site_obj->modules['trans_network']->get_display_language_name($lang_translation['default_locale']);
+                $this->current_languages[$lang['default_locale']]['translation'][$lang_translation['id']] = $zwt_site_obj->modules['trans_network']->get_display_language_name($lang['default_locale'],$lang_translation['default_locale']);
             }
         }
     }
@@ -370,23 +368,6 @@ For each language, you need to enter the following information:
         global $wpdb;
 
         // If insert, check if languge code (unique) exists.
-        $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wpdb->base_prefix}zwt_languages WHERE code=%s",$data['code']));
-        if ($exists && $id == 'add') {
-			 $this->error = __('Language code exists', 'Zanto');
-            $this->add_validation_failed = true;
-            return false;
-        }
-		 if($exists && ($id !== 'add') && $exists!= $id){
-		     $this->error = __('Language code exists', 'Zanto');
-            return false;
-		 }
-
-		else if ($exists && $wpdb->get_var($wpdb->prepare("SELECT code FROM {$wpdb->base_prefix}zwt_languages WHERE code=%s AND id=%s", $data['code'],$id )) != $data['code']) {
-            $this->error = __('Language code exists', 'Zanto');
-            if ($id == 'add')
-                $this->add_validation_failed = true;
-            return false;
-        }
 
         if ($l_exists = $wpdb->get_var($wpdb->prepare("SELECT default_locale FROM {$wpdb->base_prefix}zwt_languages WHERE default_locale=%s",$data['default_locale'])) && $id == 'add') {
             $this->error = __('default_locale exists', 'Zanto');

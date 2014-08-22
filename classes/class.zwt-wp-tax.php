@@ -197,6 +197,9 @@ if (!class_exists('ZWT_Tax')) {
             if (did_action('edit_term') !== 1 && did_action('create_term') !== 1) {
                 return;
             }
+			if (!isset($_POST['zwt_trans_taxonomies'])){
+			    return;
+			}
             global $zwt_site_obj, $blog_id;
             $transnet_blogs = $zwt_site_obj->modules['trans_network']->transnet_blogs;
             $tax_meta = $this->tax_meta;
@@ -214,10 +217,10 @@ if (!class_exists('ZWT_Tax')) {
                     $val = intval($_POST['zwt_trans_taxonomies'][$trans_blog['blog_id']]);
                     $tax_meta[$taxonomy][$term_id][$trans_blog['blog_id']] = $val;
 					$old_blog_id =  $blog_id;
-					switch_to_blog($trans_blog['blog_id']);// switch to source blog and update the term being translated
-					$source_tax_meta = get_option('zwt_taxonomy_meta');
-					$source_tax_meta[$taxonomy][$val][$old_blog_id]=$term_id; //@todo verify existence of $taxonomy before comencing
-				    update_option('zwt_taxonomy_meta', $source_tax_meta, 99);
+					switch_to_blog($trans_blog['blog_id']);// switch to $val term source blog and update it with the term being translated
+					$val_blog_tax_meta = get_option('zwt_taxonomy_meta');
+					$val_blog_tax_meta[$taxonomy][$val][$old_blog_id]=$term_id; //@todo verify existence of $taxonomy before comencing
+				    update_option('zwt_taxonomy_meta', $val_blog_tax_meta, 99);
 					restore_current_blog();
                 } else {
                     if (isset($tax_meta[$taxonomy][$term_id][$trans_blog['blog_id']]))
@@ -294,12 +297,7 @@ if (!class_exists('ZWT_Tax')) {
          * @param string $dbVersion
          */
         public function upgrade($dbVersion = 0) {
-            /*
-              if( version_compare( $dbVersion, 'x.y.z', '<' ) )
-              {
-              // Do stuff
-              }
-             */
+             /* all general upgrade procedures are implemented in the ZWT_Translation_Network class upgrade function */
         }
 
         /**

@@ -54,7 +54,7 @@ if (!class_exists('ZWT_Translation_Network')) {
                 return;
             $this->transnet_id = $this->get_trans_id(true);
             $this->transnet_blogs = $this->get_transnet_blogs(true);
-            $this->primary_lang = $this->get_primary_lang();
+            $this->primary_lang_blog = $this->get_primary_lang_blog();
             if ($this->ZWT_Settings->settings['blog_setup']['auto_add_subscribers'] == 1) {
                 $this->auto_add_user_to_site();
             }
@@ -74,19 +74,19 @@ if (!class_exists('ZWT_Translation_Network')) {
             }
         }
 
-        public function get_primary_lang($refresh=false) {
+        public function get_primary_lang_blog($refresh=false) {
             global $site_id;
             if (!$this->primary_lang_blog || $refresh) {
-                $primary_language = zwt_network_vars($this->transnet_id, 'get', 'main_lang_blog');
-                if (!$primary_language) {
+                $primary_lang_blog = zwt_network_vars($this->transnet_id, 'get', 'main_lang_blog');
+                if (!$primary_lang_blog) {
                     $trans_id = $this->get_trans_id();
                     if (isset($trans_id)) {
                         if (!isset($_REQUEST['page']) || $_REQUEST['page'] != 'zwt_settings') {
-                            ZWT_Base::$notices->enqueue(__('Please set the new Primary Language for this translation network.', 'Zanto') . '&nbsp;<a class="button-primary" href="' . get_admin_url() . '?page=zwt_settings">' . __('Set Primary Translation Language', 'Zanto') . '</a>');
+                            add_notice(__('Please set the new Primary Language for this translation network.', 'Zanto') . '&nbsp;<a class="button-primary" href="' . admin_url('admin.php?page=zwt_settings') . '">' . __('Set Primary Translation Language', 'Zanto') . '</a>');
                         }
                     }
                 }
-                $this->primary_lang_blog = $primary_language;
+                $this->primary_lang_blog = $primary_lang_blog;
             }
             return $this->primary_lang_blog;
         }
@@ -176,7 +176,7 @@ if (!class_exists('ZWT_Translation_Network')) {
                 if (count($orderd_array) == count($trans_blog_array))
                     return $orderd_array;
                 else {
-                    ZWT_Base::$notices->enqueue(__('The number of language blog sites in the network was changed. Please update the language order', 'Zanto'));
+                    add_notice(__('The number of language blog sites in the network was changed. Please update the language order', 'Zanto'));
                     ZWT_Settings::save_setting('settings', array('lang_switcher' =>
                         array(
                             'language_order' => null
@@ -234,11 +234,39 @@ if (!class_exists('ZWT_Translation_Network')) {
          * @author Zanto Translate
          * @param string $dbVersion
          */
-        public function upgrade($dbVersion = 0) {
+        public function upgrade($dbVersion = 0, $networkwide = false) {
+            global $wpdb;
 
-            if (version_compare($dbVersion, '0.2.0', '<')) {
-                global $blog_id;
-                zwt_add_links($blog_id, $this->transnet_id, $this->ZWT_Settings->settings['translation_settings']['lang_url_format']);
+            if ($networkwide) {//these upgrade procedures affect the entire network at once
+                if (version_compare($dbVersion, '0.2.0', '<')) {
+                    global $blog_id;
+                    zwt_add_links($blog_id, $this->transnet_id, $this->ZWT_Settings->settings['translation_settings']['lang_url_format']);
+                }
+                if (version_compare($dbVersion, '0.2.4', '<')) {
+
+                    $settings_array = get_option('zwt_zanto_settings');
+                    update_option('_zwt_settings_buckup', $settings_array);
+                    if (isset($settings_array['lang_switcher'])) { //add use_custom_flag setting and modify the way custom flag and language switcher urls  are stored
+                        $lang_switchr_stgs = $settings_array['lang_switcher'];
+						
+                        if (isset($lang_switchr_stgs['zwt_ls_theme']) && $lang_switchr_stgs['zwt_ls_theme']) {
+                            $lang_switchr_stgs['zwt_ls_theme'] = str_replace(WP_CONTENT_DIR, '', get_template_directory()) . '/zanto/' . $lang_switchr_stgs['zwt_ls_theme'] . '.zwt.php';
+                        }
+                        if (isset($lang_switchr_stgs['custom_flag_url']) && $lang_switchr_stgs['custom_flag_url']) {
+                            $lang_switchr_stgs['custom_flag_url'] = str_replace(content_url(), '', $lang_switchr_stgs['custom_flag_url']);
+                            $lang_switchr_stgs['use_custom_flags'] = 1;
+                        }
+
+                        $settings_array['lang_switcher'] = $lang_switchr_stgs;
+                        update_option('zwt_zanto_settings', $settings_array);
+                    }
+					
+                    //Allow for duplicate language code to support codes with multiple locales e.g de for de_DE, de_LI, de_CH
+                    $wpdb->query('ALTER TABLE ' . $wpdb->base_prefix . 'zwt_languages DROP INDEX code');
+                    $wpdb->query('ALTER TABLE ' . $wpdb->base_prefix . 'zwt_languages ADD UNIQUE (default_locale)');
+                    $wpdb->show_errors();
+                }
+            } else {// these upgrade procedure affect a single site
             }
         }
 
@@ -662,13 +690,13 @@ if (!class_exists('ZWT_Translation_Network')) {
                                         array(
                                             'lang_url_format' => 2
                                             )));
-                    ZWT_Base::$notices->enqueue($change_notice);
+                    add_notice($change_notice);
                 } else {
                     ($zwt_url_format == 1)? : ZWT_Settings::save_setting('settings', array('translation_settings' =>
                                         array(
                                             'lang_url_format' => 1
                                             )));
-                    ZWT_Base::$notices->enqueue($change_notice);
+                    add_notice($change_notice);
                 }
             }
         }
@@ -727,7 +755,7 @@ if (!class_exists('ZWT_Translation_Network')) {
             if ($newvalue !== $oldvalue) {
                 foreach ($this->transnet_blogs as $trans_blog) {
                     if ($newvalue == $trans_blog['lang_code']) {
-                        ZWT_Base::$notices->enqueue(__('The language you have chosen for the blog already exists with another blog in its translation network.', 'Zanto'), 'error');
+                        add_notice(__('The language you have chosen for the blog already exists with another blog in its translation network.', 'Zanto'), 'error');
                         return $oldvalue;
                     }
                 }
@@ -763,9 +791,7 @@ if (!class_exists('ZWT_Translation_Network')) {
 
             foreach ($transnet_blogs as $trans_blog) {
                 if ($new_lang == $trans_blog['lang_code']) {
-                    add_action('admin_notices', function() {
-                                echo '<div class="error"><p>' . __('The language you have chosen for the blog already exists with another blog in its translation network.', 'Zanto') . '</p></div>';
-                            });
+                    add_notice(__('The language you have chosen for the blog already exists with another blog in its translation network.', 'Zanto'));
                     return false;
                 }
             }
@@ -810,18 +836,18 @@ if (!class_exists('ZWT_Translation_Network')) {
             if (!empty($transnet_blogs)) {
 
                 if ($wpdb->delete($wpdb->base_prefix . 'zwt_trans_network', array('blog_id' => $blog_id), array('%d'))) {
-                    ZWT_Base::$notices->enqueue(__('A blog was deleted, Zanto Trans Network table was successfuly updated', 'Zanto'));
+                    add_notice(__('A blog was deleted, Zanto Trans Network table was successfuly updated', 'Zanto'));
                 } else { //@todo make it persistent
                     wp_die(__('There was an error updating the Trans Network table!', 'Zanto'));
                 }
 
                 if (count($transnet_blogs) < 2) {
                     if (!$wpdb->delete($wpdb->base_prefix . 'usermeta', array('meta_key' => 'zwt_installed_transnetwork', 'meta_value' => $transnet_id), array('%s', '%d'))) {
-                        ZWT_Base::$notices->enqueue(__('There was an error deleting the zwt_trans_network value from usermeta table', 'Zanto'), 'error');
+                        add_notice(__('There was an error deleting the zwt_trans_network value from usermeta table', 'Zanto'), 'error');
                     }
                 }
 
-                if ($this->get_primary_lang(true) == $blog_id) {
+                if ($this->get_primary_lang_blog(true) == $blog_id) {
                     delete_metadata('site', $site_id, 'zwt_' . $transnet_id . '_network_vars');
                 }
 

@@ -23,6 +23,7 @@ if (!class_exists('ZWT_WP_POST')) {
             add_action('save_post', array($this, 'save_trans_metabox'));
             add_action('add_meta_boxes', array($this, 'add_translation_box'));
             add_action('current_screen', array($this, 'screen_fns'));
+            add_action('media_buttons', array($this, 'zwt_copy_from_original'), 11);
         }
 
         /**
@@ -54,9 +55,7 @@ if (!class_exists('ZWT_WP_POST')) {
                 /* if ( 'page' == $post_type || 'post' == $post_type )
                   continue;
                   if($pagenow!='post-new.php') */
-                if (isset($_REQUEST['source_b']) && isset($_REQUEST['zwt_translate']))
-                    add_meta_box(ZWT_Base::PREFIX . 'translation_high', __('Translation', 'Zanto'), __CLASS__ . '::meta_box_callback', $post_type, 'side', 'high');
-                else
+                if (!isset($_REQUEST['source_b']) || !isset($_REQUEST['zwt_translate']))
                     add_meta_box(ZWT_Base::PREFIX . 'choose_translation', __('Zanto Translate', 'Zanto'), __CLASS__ . '::meta_box_callback', $post_type, 'normal', 'high');
             }
         }
@@ -87,28 +86,27 @@ if (!class_exists('ZWT_WP_POST')) {
                     $primary_post_exists = false;
 
                     if ($post_network && is_array($post_network)) {// separate translated from untranslated blog post for display
-
-                        foreach ($post_network as $p_index =>$p_trans_net) {
-						    $b_deleted = true; //monitor deleted blogs
+                        foreach ($post_network as $p_index => $p_trans_net) {
+                            $b_deleted = true; //monitor deleted blogs
                             foreach ($transnet_blogs as $index => $trans_blog) {
                                 if ($trans_blog['blog_id'] == $p_trans_net['blog_id']) {
                                     $tld_lang_blog[$trans_blog['blog_id']] = $trans_blog['lang_code'];
                                     unset($transnet_blogs[$index]);
-									$b_deleted = false;
+                                    $b_deleted = false;
                                 }
                                 if ($p_trans_net['blog_id'] == $primary_blog_id)
                                     $primary_post_exists = true;
                                 if (isset($p_trans_net['post_id']) && $p_trans_net['post_id'] == $post->ID)
                                     $translated_flag = true;
                             }
-							if($b_deleted){// blog was deleted
-							     unset($post_network[$p_index]);
-								 zwt_broadcast_post_network($post_network);
-							}
+                            if ($b_deleted) {// blog was deleted
+                                unset($post_network[$p_index]);
+                                zwt_broadcast_post_network($post_network);
+                            }
                         }
                     }
 
-                    $blog_parameters = get_metadata('site', $site_id, 'zwt_'.$transnet_id.'_site_cache', true);
+                    $blog_parameters = get_metadata('site', $site_id, 'zwt_' . $transnet_id . '_site_cache', true);
 
                     if ($primary_blog_id != $blog_id && ($primary_post_exists || !$translated_flag)) {// code for non primary language metabox display
                         if ($post_network && is_array($post_network)) {
@@ -139,12 +137,6 @@ if (!class_exists('ZWT_WP_POST')) {
                     }
                     $view = 'zwt-meta-options.php';
                     break;
-
-
-                case ZWT_Base::PREFIX . 'translation_high':
-                    add_action('zwt_edit_post_trans_optios', __CLASS__ . '::zwt_copy_from_original');
-                    $view = 'zwt-meta-options.php';
-                    break;
             }
 
             $view = dirname(__DIR__) . '/views/' . $view;
@@ -154,12 +146,15 @@ if (!class_exists('ZWT_WP_POST')) {
                 throw new Exception(__METHOD__ . " error: " . $view . " doesn't exist.");
         }
 
-        public static function zwt_copy_from_original() {
-            global $wpdb, $post, $zwt_site_obj;
+        function zwt_copy_from_original() {
+
+            global $wpdb, $post, $zwt_site_obj, $blog_id;
             $c_trans_network = $zwt_site_obj->modules['trans_network'];
 
-            $disabled = '';
             if (isset($_GET['source_b']) && isset($_GET['zwt_translate'])) {
+
+                $disabled = '';
+
                 $source_blog = $_GET['source_b'];
                 $source_post_id = $_GET['zwt_translate'];
 
@@ -170,7 +165,7 @@ if (!class_exists('ZWT_WP_POST')) {
                     }
 
 
-                $source_lang_name =  $c_trans_network->get_display_language_name($source_details['lang_code'],get_locale());
+                $source_lang_name = $c_trans_network->get_display_language_name($source_details['lang_code'], get_locale());
                 $show = true;
 
 
@@ -180,11 +175,22 @@ if (!class_exists('ZWT_WP_POST')) {
 
 
                 if ($show) {
+
                     wp_nonce_field('copy_from_original_nonce', '_zwt_nonce_cfo_' . $source_post_id);
-					echo '<p>'.sprintf(__('Translating from %s', 'Zanto'), $source_lang_name).':</p>';
-                    echo '<p><input id="zwt_cfo" class="button-secondary" style="float:left" type="button" value="' . sprintf(__('Copy content from %s', 'Zanto'), $source_lang_name) . '" 
-                onclick="zwt_copy_from_original(\'' . esc_js($source_blog) . '\', \'' . esc_js($source_post_id) . '\');"' . $disabled . '/></p>';
-                    echo '<br clear="all" />';
+                    $copy_button_v = '<a id="zwt_cfo" class="button" onclick="zwt_copy_from_original(\'' . esc_js($source_blog) . '\', \'' . esc_js($source_post_id) . '\');"' . $disabled . '>
+					<span><i class="fa fa-paste"></i> ' . sprintf(__('Copy content from %s', 'Zanto'), $source_lang_name) . '</span>
+					</a>';
+                    echo apply_filters('button_cfo_visible', $copy_button_v, $source_post_id, $source_blog);
+                }
+            } else {
+                global $hook_suffix;
+
+                if ($hook_suffix == 'post-new.php' && $blog_id !== $c_trans_network->primary_lang_blog) {
+                    $source_lang_name = $c_trans_network->get_display_language_name(zwt_get_blog_lang($c_trans_network->primary_lang_blog));
+                    $copy_button_h = '<a id="zwt_cfo" class="button zwt_cfp" style="display:none">
+					<span><i class="fa fa-paste"></i> ' . sprintf(__('Copy content from %s', 'Zanto'), $source_lang_name) . ' </span>
+					</a><input type="hidden" id="zwtprimaryblog" name="zwtprimaryblog" value="' . $c_trans_network->primary_lang_blog . '" />';
+                    echo apply_filters('button_cfo_hidden', $copy_button_h, $c_trans_network->primary_lang_blog);
                 }
             }
         }
@@ -197,8 +203,7 @@ if (!class_exists('ZWT_WP_POST')) {
             $c_trans_network = $zwt_site_obj->modules['trans_network'];
             if (did_action('save_post') !== 1)
                 return;
-            if (!isset($_POST['zwt_savepost_nonce']) || !wp_verify_nonce($_POST['zwt_savepost_nonce'], plugin_basename(__FILE__)))
-                return;
+
             if (( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)) {
                 return;
             }
@@ -208,22 +213,27 @@ if (!class_exists('ZWT_WP_POST')) {
 
             $old_pnetwork = get_post_meta($post_id, ZWT_Base::PREFIX . 'post_network', true);
             $transnet_blogs = $c_trans_network->transnet_blogs;
-
-            if (isset($_POST['select_secondary']) && is_array($_POST['select_secondary'])) {
-                $secondary_elements = array_filter($_POST['select_secondary'], 'strlen');
+            /* zwt_select_primary is the translation post select tag name for secondary language blogs */
+            if (isset($_POST['zwt_select_primary']) && is_array($_POST['zwt_select_primary'])) {
+                if (!isset($_POST['zwt_savepost_nonce']) || !wp_verify_nonce($_POST['zwt_savepost_nonce'], plugin_basename(__FILE__))) {
+                    return;
+                }
+                $secondary_elements = array_filter($_POST['zwt_select_primary'], 'strlen');
                 if (empty($secondary_elements))
                     return;
 
                 if (is_array($old_pnetwork)) {
-// translation existed, remove post from all pnetworks its attached to 
+                    /* translation existed, remove post from all pnetworks its attached to */
                     zwt_detach_post($blog_id, $old_pnetwork);
                 }
                 foreach ($transnet_blogs as $trans_blog) {
-                    foreach ($_POST['select_secondary'] as $lang => $p_id) {
+                    foreach ($_POST['zwt_select_primary'] as $lang => $p_id) {
                         if ($lang == $trans_blog['lang_code'])
-                            $prim_blog_details = $trans_blog; break;
+                            $prim_blog_details = $trans_blog; //see reference comment below
+                        break;
                     }
                 }
+                /* $prim_blog_details is the array cotaining the blog_id and lang_code of the primary language blog */
                 switch_to_blog($prim_blog_details['blog_id']);
                 /* check if new primary post has its own post trans network */
                 $prim_post_network = get_post_meta($p_id, ZWT_Base::PREFIX . 'post_network', true);
@@ -238,7 +248,7 @@ if (!class_exists('ZWT_WP_POST')) {
                 } else {
                     /* create new network and add it to the posts */
                     foreach ($transnet_blogs as $index => $trans_blog) {
-                        foreach ($_POST['select_secondary'] as $lang => $p_id) {
+                        foreach ($_POST['zwt_select_primary'] as $lang => $p_id) {
                             if ($lang == $trans_blog['lang_code']) {
                                 $post_transnetwork[] = array('blog_id' => $trans_blog['blog_id'], 'post_id' => $p_id);
                             }
@@ -248,10 +258,15 @@ if (!class_exists('ZWT_WP_POST')) {
                     zwt_broadcast_post_network($post_transnetwork);
                 }
             } else {
-
-                if (isset($_POST['transln_method_select']) && is_array($_POST['transln_method_select'])) {
+                /* zwt_select_secondary is the selection tag name on the primary blog post page for selecting translations from secondary blogs */
+                if (isset($_POST['zwt_select_secondary']) && is_array($_POST['zwt_select_secondary'])) {
+                    if (!isset($_POST['zwt_savepost_nonce']) || !wp_verify_nonce($_POST['zwt_savepost_nonce'], plugin_basename(__FILE__))) {
+                        return;
+                    }
                     foreach ($transnet_blogs as $index => $trans_blog)
-                        foreach ($_POST['transln_method_select'] as $lang => $p_id) {
+                        foreach ($_POST['zwt_select_secondary'] as $lang => $p_id) {
+                            if ($p_id == "-1")
+                                continue;
                             if ($lang == $trans_blog['lang_code']) {
                                 $post_transnetwork[] = array('blog_id' => $trans_blog['blog_id'], 'post_id' => $p_id);
                             }
@@ -287,12 +302,11 @@ if (!class_exists('ZWT_WP_POST')) {
                 $parts = parse_url($_SERVER['HTTP_REFERER']);
                 if (isset($parts['query'])) {
                     parse_str(strval($parts['query']), $query);
-					}
-                    $source_post_id = isset($query['zwt_translate']) ? intval($query['zwt_translate']) : false;
-                    $source_blog = isset($query['source_b']) ? intval($query['source_b']) : false;
-                
+                }
+                $source_post_id = isset($query['zwt_translate']) ? intval($query['zwt_translate']) : false;
+                $source_blog = isset($query['source_b']) ? intval($query['source_b']) : false;
             }
-            if ($source_post_id && $source_blog) {
+            if (isset($source_post_id) && isset($source_blog)) {
                 switch_to_blog($source_blog);
                 $source_post_network = get_post_meta($source_post_id, ZWT_Base::PREFIX . 'post_network', true); //get post trans network of source post
                 restore_current_blog();
@@ -314,13 +328,19 @@ if (!class_exists('ZWT_WP_POST')) {
         public function edit_post_th($columns) {
             global $zwt_site_obj, $blog_id;
             $transnet_blogs = $zwt_site_obj->modules['trans_network']->transnet_blogs;
+            $primary_blog = $zwt_site_obj->modules['trans_network']->primary_lang_blog;
             $flags = array();
-            foreach ($transnet_blogs as $trans_blog) {
-                if ($trans_blog['blog_id'] == $blog_id)
-                    continue;
-                $flags[] = zwt_get_flag($trans_blog['lang_code']);
+            if ($blog_id == $primary_blog) {
+                foreach ($transnet_blogs as $trans_blog) {
+                    if ($trans_blog['blog_id'] == $blog_id)
+                        continue;
+                    $flags[] = zwt_get_flag($trans_blog['lang_code']);
+                    $columns['zwt_col'] = implode('&nbsp;', $flags);
+                }
+            }else {
+                $primary_lang = zwt_get_blog_lang($primary_blog);
+                $columns['zwt_col'] = zwt_get_flag($primary_lang);
             }
-            $columns['zwt_col'] = implode('&nbsp;', $flags);
             return $columns;
         }
 
@@ -332,35 +352,69 @@ if (!class_exists('ZWT_WP_POST')) {
                 $locale = get_locale();
                 $trans_obj = $zwt_site_obj->modules['trans_network'];
                 $transnet_blogs = $trans_obj->transnet_blogs;
-                $blog_parameters = get_metadata('site', $site_id, 'zwt_'.$trans_obj->transnet_id.'_site_cache', true);
+                $primary_blog = $trans_obj->primary_lang_blog;
+                $blog_parameters = get_metadata('site', $site_id, 'zwt_' . $trans_obj->transnet_id . '_site_cache', true);
                 $post_type_string = '?post_type=' . $current_screen->post_type;
 
                 $post_network = get_post_meta($item_id, ZWT_Base::PREFIX . 'post_network', true);
 
                 if ($post_network && is_array($post_network)) {// separate translated from untranslated blog post for display
-                    foreach ($transnet_blogs as $trans_blog) {
-                        if ($trans_blog['blog_id'] == $blog_id)
-                            continue;
+                    if ($blog_id !== $primary_blog) {
+                        $primary_lang = zwt_get_blog_lang($primary_blog);
                         $translated_flag = false;
                         foreach ($post_network as $p_trans_net) {
-                            if ($trans_blog['blog_id'] == $p_trans_net['blog_id']) {
+                            if ($primary_blog == $p_trans_net['blog_id']) {
 
                                 echo '<a href="',
-                                (isset($p_trans_net['post_id'])) ? $blog_parameters[$trans_blog['blog_id']]['admin_url'] . 'post.php?post=' . $p_trans_net['post_id'] . '&action=edit' : $p_trans_net['t_link'],
-                                '" target="_blank" title ="' . sprintf(__('Edit the %s translation', 'Zanto'), $trans_obj->get_display_language_name($trans_blog['lang_code'], $locale)) . '"><i class="fa fa-check-square-o btp-post-icon"></i></a>&nbsp';
+                                (isset($p_trans_net['post_id'])) ? $blog_parameters[$primary_blog]['admin_url'] . 'post.php?post=' . $p_trans_net['post_id'] . '&action=edit' : $p_trans_net['t_link'],
+                                '" target="_blank" title ="' . sprintf(__('Edit the %s translation', 'Zanto'), $trans_obj->get_display_language_name($primary_lang, $locale)) . '"><i class="fa fa-check-square-o btp-post-icon"></i></a>&nbsp';
                                 $translated_flag = true;
                                 break;
                             }
                         }
                         if (!$translated_flag) {
-                            echo '<a href="' . add_query_arg(array('zwt_translate' => $item_id, 'source_b' => $blog_id), $blog_parameters[$trans_blog['blog_id']]['admin_url'] . 'post-new.php' . $post_type_string) . '" target="_blank" title ="' . sprintf(__('Add %s translation', 'Zanto'), $trans_obj->get_display_language_name($trans_blog['lang_code'])) . '"><i class="fa fa-plus btp-post-icon"></i></a>&nbsp;';
+                            echo '<a href="' . add_query_arg(array('zwt_translate' => $item_id, 'source_b' => $blog_id), $blog_parameters[$primary_blog]['admin_url'] . 'post-new.php' . $post_type_string) . '" target="_blank" title ="' . sprintf(__('Add %s translation', 'Zanto'), $trans_obj->get_display_language_name($primary_lang)) . '"><i class="fa fa-plus btp-post-icon"></i></a>&nbsp;';
+                        }
+                    } else {
+                        foreach ($transnet_blogs as $trans_blog) {
+                            if ($trans_blog['blog_id'] == $blog_id) {
+                                continue;
+                            }
+
+                            $translated_flag = false;
+                            foreach ($post_network as $p_trans_net) {
+                                if ($trans_blog['blog_id'] == $p_trans_net['blog_id']) {
+
+                                    echo '<a href="',
+                                    (isset($p_trans_net['post_id'])) ? $blog_parameters[$trans_blog['blog_id']]['admin_url'] . 'post.php?post=' . $p_trans_net['post_id'] . '&action=edit' : $p_trans_net['t_link'],
+                                    '" target="_blank" title ="' . sprintf(__('Edit the %s translation', 'Zanto'), $trans_obj->get_display_language_name($trans_blog['lang_code'], $locale)) . '"><i class="fa fa-check-square-o btp-post-icon"></i></a>&nbsp';
+                                    $translated_flag = true;
+                                    break;
+                                }
+                            }
+                            if (!$translated_flag) {
+                                echo '<a href="' . add_query_arg(array('zwt_translate' => $item_id, 'source_b' => $blog_id), $blog_parameters[$trans_blog['blog_id']]['admin_url'] . 'post-new.php' . $post_type_string) . '" target="_blank" title ="' . sprintf(__('Add %s translation', 'Zanto'), $trans_obj->get_display_language_name($trans_blog['lang_code'])) . '"><i class="fa fa-plus btp-post-icon"></i></a>&nbsp;';
+                            }
                         }
                     }
                 } else {//no translation exists
-                    foreach ($transnet_blogs as $trans_blog) {
-                        if ($trans_blog['blog_id'] == $blog_id)
-                            continue;
-                        echo '<a href="' . add_query_arg(array('zwt_translate' => $item_id, 'source_b' => $blog_id), $blog_parameters[$trans_blog['blog_id']]['admin_url'] . 'post-new.php' . $post_type_string) . '" target="_blank" title ="' . sprintf(__('Add %s translation', 'Zanto'), $trans_obj->get_display_language_name($trans_blog['lang_code'], $locale)) . '"><i class="fa fa-plus btp-post-icon"></i></a>&nbsp;';
+                    if ($blog_id !== $primary_blog) {
+                        $primary_lang = zwt_get_blog_lang($primary_blog);
+                        echo '<a href="' . add_query_arg(array('zwt_translate' => $item_id, 'source_b' => $blog_id), $blog_parameters[$primary_blog]['admin_url'] . 'post-new.php' . $post_type_string) . '" target="_blank" title ="' . sprintf(__('Add %s translation', 'Zanto'), $trans_obj->get_display_language_name($primary_lang, $locale)) . '"><i class="fa fa-plus btp-post-icon"></i></a>&nbsp;';
+                    } else {
+                        foreach ($transnet_blogs as $trans_blog) {
+                            if ($trans_blog['blog_id'] == $blog_id) {
+                                continue;
+                            }
+                            if (defined('ZTM_VERSION')) {
+                                $translation_meta = get_post_meta($item_id, '_translation_meta_', true);
+                                if (isset($translation_meta[$trans_blog['blog_id']]['status']) && $translation_meta[$trans_blog['blog_id']]['status'] !== 'translated') {
+                                    echo '<a href="#" title ="' . __('In Translation', 'Zanto') . '"><i class="fa fa-lock btp-post-icon"></i></a>&nbsp;';
+                                    continue;
+                                }
+                            }
+                            echo '<a href="' . add_query_arg(array('zwt_translate' => $item_id, 'source_b' => $blog_id), $blog_parameters[$trans_blog['blog_id']]['admin_url'] . 'post-new.php' . $post_type_string) . '" target="_blank" title ="' . sprintf(__('Add %s translation', 'Zanto'), $trans_obj->get_display_language_name($trans_blog['lang_code'], $locale)) . '"><i class="fa fa-plus btp-post-icon"></i></a>&nbsp;';
+                        }
                     }
                 }
             }
@@ -401,12 +455,7 @@ if (!class_exists('ZWT_WP_POST')) {
          * @param string $dbVersion
          */
         public function upgrade($dbVersion = 0) {
-            /*
-              if( version_compare( $dbVersion, 'x.y.z', '<' ) )
-              {
-              // Do stuff
-              }
-             */
+            /* all general upgrade procedures are implemented in the ZWT_Translation_Network class upgrade function */
         }
 
         /**

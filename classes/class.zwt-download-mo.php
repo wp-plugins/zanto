@@ -96,7 +96,7 @@ class ZWT_Download_MO {
 		   $i_connectivity = check_internet_connection();
 		   if(!$i_connectivity)
                 {
-                add_action('admin_notices', function(){echo '<div class="updated"><p><strong>Notice: </strong>'.__('Please connect to the Internet for the language files to be downloaded','Zanto').' &nbsp;<i class="fa fa-2x fa-cloud-download error"></i></p></div>';});
+                add_notice(__('<strong>Notice: </strong>Please connect to the Internet for the language files to be downloaded','Zanto').' &nbsp;<i class="fa fa-2x fa-cloud-download error"></i>');
 				return false;
                 }
 		
@@ -126,11 +126,11 @@ class ZWT_Download_MO {
 				
 				if (is_wp_error($tmp)) {
 				         if($tmp->get_error_code()=='http_404'){ 
-			                 add_action('admin_notices', function(){echo '<div class="error"><p>'.__('No recent translations for the chosen language were found. Try manually downloading the older versions at http://svn.automattic.com/wordpress-i18n/.','Zanto').'</p></div>';});
+			                 add_notice(__('No recent translations for the chosen language were found. Try manually downloading the older versions at http://svn.automattic.com/wordpress-i18n/.','Zanto'));
 
 						 }else{
 						     echo 
-					       add_action('admin_notices', function(){echo '<div class="error"><p>'.$tmp->get_error_code().': '.$tmp->get_error_message().'</p></div>';});
+					       add_notice($tmp->get_error_code().': '.$tmp->get_error_message());
 
 						 }
                          @unlink($file_array['tmp_name']);
@@ -160,7 +160,7 @@ class ZWT_Download_MO {
             // Check for handle sideload errors.
             if (is_wp_error($id)) {
                 @unlink($file_array['tmp_name']);
-                ZWT_Base::$notices->enqueue($id->get_error_code().': '.$id->get_error_message(), 'error', 'error' );
+                add_notice($id->get_error_code().': '.$id->get_error_message(), 'error', 'error' );
                 return false;
             }
 			

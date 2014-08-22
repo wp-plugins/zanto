@@ -10,7 +10,7 @@
 
 var original_lang_switch_form = jQuery('#wp_lang_switch_form').html();
  
-function zwt_wrapper( $ )
+function zwt_mo_mgt( $ )
 {
     var zwt = 
     {
@@ -56,7 +56,8 @@ function zwt_wrapper( $ )
             $('.wp_lang_thickbox a').click(zwt.dowloadOperations);
             $('#front_mo_download').change(zwt.frontScopeLanguage);
 			$('#zwt_flag_url_change').click(zwt.flagUrlChange);
-			$('#zwt_flag_url').change(zwt.flagUrlSelect);
+			$('#zwt_use_custom_flags').click(zwt.enableCustomFlags);
+			$('#zwt_default_dir').click(zwt.defaultFlagPath);
 			
         },
 		
@@ -128,6 +129,7 @@ function zwt_wrapper( $ )
                     action: 'zwt_all_ajax',
                     admin_fn :'flag_url_change',
                     flag_url: $('#zwt_flag_url').val(),
+					use_custom: $('#zwt_use_custom_flags').attr('checked'), 
                     _wpnonce: $('#zwt_custom_flags').val(),
 					flag_ext:$('#zwt_flag_ext').val()
                 };
@@ -153,7 +155,22 @@ function zwt_wrapper( $ )
 		       $('#zwt_flag_ext_span').hide();
 		   }
 		},
-
+        enableCustomFlags: function(){
+		if ($(this).attr('checked')) {
+		        $('#zwt_flag_url').attr('disabled',false);
+				$('#zwt_flag_ext').attr('disabled',false);
+				$('#zwt_default_dir').attr('disabled',false);
+				 
+             }else{
+			    $('#zwt_flag_url').attr('disabled',true);
+			    $('#zwt_flag_ext').attr('disabled',true);
+				$('#zwt_default_dir').attr('disabled',true);
+			 }
+		},
+		
+		defaultFlagPath: function (){
+		    $('#zwt_flag_url').attr('value',($('#zwt_default_url').attr('value')));
+		},
 		
 	    getUrlVars: function(href) {
                 var vars = {};
@@ -166,16 +183,9 @@ function zwt_wrapper( $ )
         initialisePage: function()
         {		   
             //var original_lang_switch_form = null;
-			 if($('#zwt_flag_url').val() == -1){
-		        $('#zwt_flag_ext_span').hide();
-		   }
-			
             if (zwt.langSwitcherShow != 'on') {
                 $('#wp-admin-bar-WP_LANG_lang').hide();
             }
-       
-                            
-			
         }
 		 		
     }; // end zwt
@@ -184,9 +194,9 @@ function zwt_wrapper( $ )
 	zwt.init );
 
 	
-} // end zwt_wrapper()
+} // end zwt_mo_mgt()
 
-zwt_wrapper( jQuery );
+zwt_mo_mgt( jQuery );
 
 function wp_lang_check_for_updates() {
     jQuery('#zwt_manage_locales_update_to_date').hide();

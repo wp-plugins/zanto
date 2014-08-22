@@ -1,28 +1,59 @@
 <?php
+
 /**
  * Get all available switcher themes on the presence of *.zwt.php files in a given directory. The default directory is The Wordpress site theme directory.
- *
- * @since 3.0.0
- *
  * @param string $dir A directory in which to search for lang switcher theme files. The default directory is the theme's directory from get_template_directory()
  * @return array Array of language switcher themes or an empty array if no themes are present. Language switcher theme names are formed by stripping the .zwt.php extension from the theme file names.
  */
-function zwt_get_ls_themes( $dir = null ) {
-	$themes = array();
+function zwt_get_ls_themes($dir = null) {
+    $file_headers = array(
+		'Name'        => 'Theme Name',
+		'ThemeURI'    => 'Theme URI',
+		'Description' => 'Description',
+		'Author'      => 'Author',
+		'AuthorURI'   => 'Author URI',
+		'Version'     => 'Version',
+		'Tags'        => 'Tags',
+		'TextDomain'  => 'Text Domain',
+		'DomainPath'  => 'Domain Path',
+	);
+	
+    
+    $themes = array();
+    $dir = apply_filters('zwt_custom_ls_directory', $dir);
+    if ($dir == null) {
+        $theme_files = (array) glob(get_template_directory().'/zanto/*.zwt.php');
 
-	foreach( (array)glob( ( is_null( $dir) ? GTP_lS_THEME_PATH : $dir ) . '/*.zwt.php' ) as $theme_file ) {
-		$theme_file = basename($theme_file, '.zwt.php');
-		if ( 0 !== strpos( $theme_file, 'continents-cities' ) && 0 !== strpos( $theme_file, 'ms-' ) &&
-			0 !== strpos( $theme_file, 'admin-' ))
-			$themes[] = $theme_file;
-	}
+        if (is_child_theme()) {
+            $theme_files = array_merge($theme_files,(array) glob(get_stylesheet_directory().'/zanto/*.zwt.php'));
+        }
+		
+    } else {
+        $theme_files = (array) glob($dir . '/*.zwt.php');
+    }
+	//add the default theme 
+	$theme_files[]= WP_PLUGIN_DIR . '/'.GTP_PLUGIN_FOLDER.'/views/lang-switcher/lang_switcher.zwt.php' ;
+	
 
-	return $themes;
+        foreach ($theme_files as $file_uri) {
+            $relative_theme_root = str_replace(WP_CONTENT_DIR, '', $file_uri);
+            $theme_file = basename($file_uri, '.php');
+
+            if (0 !== strpos($theme_file, '.zwt')) {
+			$header_array = get_file_data($file_uri, $file_headers, $context = '' );
+			if(empty($header_array['Name'])){
+			    $header_array['Name']= $theme_file;
+			}
+			$header_array['uri']= $relative_theme_root;
+            $themes[]= $header_array;
+				
+            }
+        }
+    return apply_filters('zwt_custom_ls_themes', $themes);
+	
 }
 
-
-function zwt_disp_language($native_name, $translated_name,
-        $lang_native_hidden = false, $lang_translated_hidden = false) {
+function zwt_disp_language($native_name, $translated_name, $lang_native_hidden = false, $lang_translated_hidden = false) {
     if (!$native_name && !$translated_name) {
         $ret = '';
     } elseif ($native_name && $translated_name) {
@@ -38,9 +69,9 @@ function zwt_disp_language($native_name, $translated_name,
         }
 
         if ($native_name != $translated_name) {
-            $ret = '<span ' . $hidden1 . ' class="zwt_lang_sel_native">' . $native_name .'</span> 
+            $ret = '<span ' . $hidden1 . ' class="zwt_lang_sel_native">' . $native_name . '</span> 
 			<span ' . $hidden2 . ' class="zwt_lang_sel_translated"> 
-			  ('. $translated_name .') 
+			  (' . $translated_name . ') 
 		   </span>';
         } else {
             $ret = '<span ' . $hidden3 . ' class="zwt_lang_sel_current">' . $native_name . '</span>';
@@ -53,14 +84,15 @@ function zwt_disp_language($native_name, $translated_name,
 
     return $ret;
 }
-function zwt_register_switcher_types($types){
-    foreach($types as $type=>$description){
-        if(preg_match('/[^a-z_\-0-9]/i', $type))
-            {
-                return false;
-            }
+
+function zwt_register_switcher_types($types) {
+    foreach ($types as $type => $description) {
+        if (preg_match('/[^a-z_\-0-9]/i', $type)) {
+            return false;
+        }
     }
-	global $zwt_ls_types;
+	//update_option('zwt_ls_types',$types);
+    global $zwt_ls_types;
     $zwt_ls_types = $types;
 }
 

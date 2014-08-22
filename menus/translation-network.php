@@ -77,7 +77,7 @@ get_current_screen()->set_help_sidebar(
                             <strong><?php echo $blog_info->blogname; ?></strong>
                             <p><a href="<?php echo esc_url(get_home_url($blog_info->blog_id)); ?>"> <?php _e('Visit'); ?> </a> | <a href="<?php echo esc_url(get_admin_url($blog_info->blog_id)); ?>"> <?php _e('Dashboard'); ?> </a></p>
                         </td>
-                        <td><?php echo format_code_lang($user_blog['lang_code']); ?></td>
+                        <td><?php echo format_code_lang($user_blog['lang_code']), ' (',$user_blog['lang_code'],')'; ?></td>
                         <td><?php echo $user_blog['trans_id']; ?> </td>
                         <td><?php echo get_trans_network_admin($user_blog['trans_id'])->display_name; ?> </td>
                         <td> <a href="" title="<?php _e('Remove &nbsp;'.$blog_info->blogname,'Gama') ?>" id='remove_trans_blog<?php echo $blog_info->blog_id; ?>' class='button remove_from_network'><?php _e('Remove','Zanto')?></a>

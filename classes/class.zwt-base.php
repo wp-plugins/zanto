@@ -19,7 +19,6 @@ if (!class_exists('ZWT_Base')) {
         protected static $writeableProperties = array();
         protected $modules;
 
-        const VERSION = '0.2.3';
         const PREFIX = 'zwt_';
         const DEBUG_MODE = false;
 
@@ -74,45 +73,56 @@ if (!class_exists('ZWT_Base')) {
                 return;
 
             wp_register_script(
-                    self::PREFIX . 'zanto-translation-main', plugins_url('javascript/zanto-main.js', dirname(__FILE__)), array('jquery'), self::VERSION, true
+                    self::PREFIX . 'zanto-translation-main', plugins_url('javascript/zanto-main.js', dirname(__FILE__)), array('jquery'), GTP_ZANTO_VERSION, true
             );
 
             wp_register_script(
-                    self::PREFIX . 'installation', plugins_url('javascript/zanto-installation.js', dirname(__FILE__)), array('jquery-ui-sortable'), self::VERSION, true
+                    self::PREFIX . 'installation', plugins_url('javascript/zanto-installation.js', dirname(__FILE__)), array('jquery-ui-sortable'), GTP_ZANTO_VERSION, true
             );
 
             wp_register_script(
-                    self::PREFIX . 'mo_management', plugins_url('javascript/mo-management.js', dirname(__FILE__)), array('jquery'), self::VERSION, true
+                    self::PREFIX . 'mo_management', plugins_url('javascript/mo-management.js', dirname(__FILE__)), array('jquery'), GTP_ZANTO_VERSION, true
             );
 
             wp_register_script(
-                    self::PREFIX . 'jquery_cookie', plugins_url('javascript/jquery.cookie.js', dirname(__FILE__)), array('jquery'), self::VERSION, true
+                    self::PREFIX . 'jquery_cookie', plugins_url('javascript/jquery.cookie.js', dirname(__FILE__)), array('jquery'), GTP_ZANTO_VERSION, true
             );
 
             wp_register_script(
-                    self::PREFIX . 'browser_lang_redirect', plugins_url('javascript/browser-lang-redirect.js', dirname(__FILE__)), array('jquery', self::PREFIX . 'jquery_cookie'), self::VERSION, true
+                    self::PREFIX . 'browser_lang_redirect', plugins_url('javascript/browser-lang-redirect.js', dirname(__FILE__)), array('jquery', self::PREFIX . 'jquery_cookie'), GTP_ZANTO_VERSION, true
             );
 
             wp_register_style(
-                    self::PREFIX . 'admin', plugins_url('css/admin.css', dirname(__FILE__)), array(), self::VERSION, 'all'
+                    self::PREFIX . 'admin', plugins_url('css/admin.css', dirname(__FILE__)), array(), GTP_ZANTO_VERSION, 'all'
             );
-			 wp_register_style(
-                    self::PREFIX . 'icon_font', plugins_url('css/icon-font/css/font-awesome.min.css', dirname(__FILE__)), array(), self::VERSION, 'all'
+            wp_register_style(
+                    self::PREFIX . 'icon_font', plugins_url('css/icon-font/css/font-awesome.min.css', dirname(__FILE__)), array(), GTP_ZANTO_VERSION, 'all'
             );
-			
-			wp_register_style('native_lang_select', GTP_PLUGIN_URL . 'css/language-selector.css', array(), ZWT_Base::VERSION, 'all');
-           
-		    if(GTP_LOAD_LS_CSS){
-                 wp_enqueue_style('native_lang_select');
-			}
-			
+
+            wp_register_style('native_lang_select', GTP_PLUGIN_URL . 'css/language-selector.css', array(), GTP_ZANTO_VERSION, 'all');
+
             if (is_admin()) {
                 wp_enqueue_style(self::PREFIX . 'admin');
-				wp_enqueue_style(self::PREFIX . 'icon_font');
+                wp_enqueue_style(self::PREFIX . 'icon_font');
                 wp_enqueue_script(self::PREFIX . 'zanto-translation-main');
+
+                $script_params = array(get_userdata(get_current_user_id())->display_name, //0
+                    __('Translations for this blog will be overwritten!', 'Zanto'), //1
+                    __('Add to Translation Network', 'Zanto'), //2
+                    __('Cancel', 'Zanto'), //3
+                    __('Nothing Selected', 'Zanto'), //4
+                    __('Your current blog settings will be lost. The default settings will be applied', 'Zanto'), //5
+                    __('The post you have selected already has a translation in this language! Do you want to continue?', 'Zanto') //6
+                );
+
+                wp_localize_script(ZWT_Base::PREFIX . 'zanto-translation-main', ZWT_Base::PREFIX . 'main_i8n', $script_params);
+            } else {
+                if (GTP_LOAD_LS_CSS) {
+                    wp_enqueue_style('native_lang_select');
+                }
             }
 
-            if ('toplevel_page_zwt_settings' == $hook_suffix) {
+            if ('zanto_page_zwt_settings' == $hook_suffix) {
                 wp_enqueue_script(self::PREFIX . 'installation');
             }
 
@@ -226,22 +236,25 @@ if (!class_exists('ZWT_Base')) {
         public function registerHookCallbacks() {
             // NOTE: Make sure you update the did_action() parameter in the corresponding callback method when changing the hooks here
             //add_action( 'wpmu_new_blog', 	        array( $this, 'activateNewSite') );
-			add_action('plugins_loaded', __CLASS__ . '::loadLangFiles');
+            add_action('plugins_loaded', __CLASS__ . '::loadLangFiles');
             add_action('wp_enqueue_scripts', __CLASS__ . '::loadResources');
             add_action('admin_enqueue_scripts', __CLASS__ . '::loadResources');
 
             add_action('init', array($this, 'init'));
             add_action('init', array($this, 'upgrade'), 11);
+            if (!is_admin()) {
+                add_action('wp_head', array($this, 'meta_generator_tag'));
+            }
         }
-		
-		/**
+
+        /**
          * Loads plugin translations
          * @mvc Controller
          * @author Zanto Translate
          */
-		function loadLangFiles() {
+        function loadLangFiles() {
             $lang_dir = GTP_PLUGIN_PATH . '/languages/';
-            load_plugin_textdomain('Zanto', false, $lang_dir );
+            load_plugin_textdomain('Zanto', false, $lang_dir);
         }
 
         /**
@@ -257,19 +270,29 @@ if (!class_exists('ZWT_Base')) {
                 define('GTP_LANGUAGE_CODE', get_option('WPLANG'));
             }
 
-            self::$notices = notices::getSingleton();
-
             if (self::DEBUG_MODE)
                 self::$notices->debugMode = true;
 
-            $zwt_interfaces = new ZWT_Interfaces();
-            if (GTP_SETUP_COMPLETE) {
-                new ZWT_Tax();
-                new ZWT_WP_POST();
-            } else {
-                if (!isset($_REQUEST['page']) || $_REQUEST['page'] != 'zwt_settings')
-                    self::$notices->enqueue(__('Zanto Installation is not complete, please click the button to finish installation procedure','Zanto').'&nbsp;<a class="button-primary" href="'.get_admin_url().'?page=zwt_settings">'.__('Configure Zanto','Zanto').'</a>');
+            if (is_admin()) {
+                $zwt_interfaces = new ZWT_Interfaces();
+                if (GTP_SETUP_COMPLETE) {
+                    new ZWT_Tax();
+                    new ZWT_WP_POST();
+                } else {
+                    if (!isset($_REQUEST['page']) || $_REQUEST['page'] != 'zwt_settings')
+                        add_notice(__('Zanto Installation is not complete, please click the button to finish installation procedure', 'Zanto') . '&nbsp;<a class="button-primary" href="' . admin_url('admin.php?page=zwt_settings') . '">' . __('Configure Zanto', 'Zanto') . '</a>');
+                }
             }
+        }
+
+        /**
+         * Adds Zanto Version to the <head> tag
+         * @since 0.3.0
+         * @return void
+         */
+        function meta_generator_tag() {
+            $tm = (defined('ZTM_VERSION')) ? ZTM_VERSION : '0';
+            printf('<meta name="generator" content="Zanto ver:%s tm:%s" />' . PHP_EOL, GTP_ZANTO_VERSION, $tm);
         }
 
         /**
@@ -279,17 +302,34 @@ if (!class_exists('ZWT_Base')) {
          * @param string $dbVersion
          */
         public function upgrade($dbVersion = 0) {
+            global $site_id;
+            /* all general upgrade procedures are implemented in the ZWT_Translation_Network class upgrade function */
             if (did_action('init') !== 1)
                 return;
-				if(isset($this->modules['settings']->settings['db-version']))
-             print_r($this->modules['settings']->settings);
-            if (version_compare($this->modules['settings']->settings['zanto_settings']['db-version'], self::VERSION, '=='))
-                return;
 
-            foreach ($this->modules as $module)
+            if (isset($this->modules['settings']->settings['zanto_settings']['db-version'])) {
+                if (version_compare($this->modules['settings']->settings['zanto_settings']['db-version'], GTP_ZANTO_VERSION, '=='))
+                    return;
+            }
+
+            $zwt_old_settings = get_metadata('site', $site_id, 'zwt_zanto_settings', $single = true);
+
+            if (isset($zwt_old_settings['zwt_installed_version'])) {// this upgrade procedure is done only once on the first site upgrade is carried out
+                if (version_compare($zwt_old_settings['zwt_installed_version'], GTP_ZANTO_VERSION, '!=')) {
+                    $this->modules['trans_network']->upgrade($this->modules['settings']->settings['zanto_settings']['db-version'], true);
+                    update_metadata('site', $site_id, 'zwt_zanto_settings', array('zwt_installed_version' => GTP_ZANTO_VERSION));
+                    add_notice(sprintf(__('Zanto has been updated on this Network to version %s', 'Zanto'), GTP_ZANTO_VERSION));
+                }
+            }
+
+            foreach ($this->modules as $module) {// this upgrade procedure is caried out whenever a site in the tanslation network is visited.
                 $module->upgrade($this->modules['settings']->settings['zanto_settings']['db-version']);
-			    ZWT_Settings::save_setting('settings', array('db-version' => self::VERSION));
-                self::clearCachingPlugins();
+            }
+
+            ZWT_Settings::save_setting('settings', array('zanto_settings' => array('db-version' => GTP_ZANTO_VERSION)));
+            self::clearCachingPlugins();
+            if (is_admin())
+                add_notice(__('Zanto has been updated on this blog', 'Zanto'));
         }
 
         /**
@@ -306,10 +346,8 @@ if (!class_exists('ZWT_Base')) {
     }
 
     // end ZWT_Base
-
-    require_once( dirname(__DIR__) . '/includes/notices/id-admin-notices.php' );
     require_once( dirname(__FILE__) . '/class.zwt-settings.php' );
-    //require_once( dirname( __FILE__ ) . '/class.zwt-cron.php' );
+    //require_once( dirname(__FILE__) . '/class.zwt-cron.php' );
     require_once( dirname(__FILE__) . '/class.zwt-translation-network.php' );
     require_once( dirname(__FILE__) . '/class.zwt-interfaces.php' );
     require_once( dirname(__FILE__) . '/class.zwt-download-mo.php' );

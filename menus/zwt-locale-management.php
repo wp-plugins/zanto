@@ -17,7 +17,7 @@ if ($WordPress_language->current_scope == 'front-end') {
 } else {
     $current_locale = $current_locale_back;
 }
- if (isset($_GET['scope']) && $_GET['scope']!=='back-end' && !current_user_can('manage_options')) {
+ if (isset($_GET['scope']) && !current_user_can('manage_options')) {
         wp_die('Insufficient privileges!');
     }
 
@@ -50,10 +50,10 @@ var zwt_pluginUrl = '<?php  echo GTP_PLUGIN_URL; ?>'
         <div id="menu-management" style="margin-right:10px;width:auto;"> 
 
             <div class="menu-edit" <?php if (version_compare($GLOBALS['wp_version'], '3.2.1', '<=')): ?>style="border-style:solid;border-radius:3px;border-width:1px;border-color:#DFDFDF;<?php endif; ?>">
-                <div id="nav-menu-header">
+                <div style="height:1em">
                     &nbsp;                        
                 </div>
-                <div id="post-body" style="border-style: solid;border-width: 1px 0;padding: 10px;">
+                <div id="post-body" style="padding: 10px;">
                     <div id="post-body-content">
                         <?php
                         if (isset($_GET['download_complete'])) {
@@ -127,7 +127,7 @@ var zwt_pluginUrl = '<?php  echo GTP_PLUGIN_URL; ?>'
                             global $zwt_site_obj;
                             $langs = $zwt_site_obj->modules['trans_network']->get_languages();
                             ?>
-                            <p><?php echo sprintf(__('The <b>Front-end</b> language is set to %s. Front end locale is %s.', 'Zanto'), zwt_get_flag($current_locale) . '&nbsp;' . $current_lang, $current_locale) ?></p>
+                            <p><?php echo sprintf(__('The <b>Front-end</b> language is set to %s. Front end locale is %s.', 'Zanto'), '<img src="'.zwt_get_site_flags($current_locale).'"/>' . '&nbsp;' . $current_lang, $current_locale) ?></p>
 
                             <a id="wp_lang_change_lang_button" href="#" ><?php _e('Change language', 'Zanto'); ?></a>
                             <div id="wp_lang_change_lang" style="display:none">
@@ -140,7 +140,7 @@ var zwt_pluginUrl = '<?php  echo GTP_PLUGIN_URL; ?>'
                                     <select id="front_mo_download"><option value="null">- <?php _e('Select', 'Zanto'); ?> -</option>
                                         <?php
                                         foreach ($langs as $c_language)
-                                            echo '<option value="' . $c_language['default_locale'] . '">' . $c_language['display_name'] . ' (' . $c_language['english_name'] . ')</option>';
+                                            echo '<option '.selected($c_language['default_locale'],$current_locale,true).' value="' . $c_language['default_locale'] . '">' . $c_language['display_name'] . ' (' . $c_language['english_name'] . ')</option>';
                                         ?>
 
                                     </select>	
@@ -151,55 +151,46 @@ var zwt_pluginUrl = '<?php  echo GTP_PLUGIN_URL; ?>'
                             </div>			
 
                             <?php } else { ?>
+							<?php $dir =  str_replace(content_url(), '', get_stylesheet_directory_uri()); 
+								  global $zwt_site_obj;
+								  $ls_settings=$zwt_site_obj->modules['settings']->settings['lang_switcher'];
+								  $flag_ext = $ls_settings['custom_flag_ext']; 
+								  $use_custom_flags = $ls_settings['use_custom_flags'];
+								  $custom_url=($use_custom_flags)? $ls_settings['custom_flag_url']:$dir.'/flags';
+								  $disabled = (!$use_custom_flags)?'disabled="true"':''; 
+								  ?>
+								  
 							<h3><?php _e('Custom Flags','Zanto') ?></h3>
-                            <div> <?php _e('<p>Here you can define a different directory containing the flags you want to use
+                            <div> <?php echo sprintf(__('<p>Here you can define a different directory containing the flags you want to use
 													instead of the default flags.</p><p>
 													The flag names should be the same as the locale name e.g the English flag Name should be en_EN, while the french flag should be named fr_FR.
-													If no directory is selected, the default Zanto flags will be used.
-													</p>', 'Zanto') ?><br/></div>
+													</p><p>The entered directory should start with any directory in the content directory e.g: <span style="color: gray;"> %s/flags</span></p>', 'Zanto'),$dir) ?><br/></div>
 
-							<p><strong><?php _e('Select a flag directory from your theme','Zanto') ?></strong></p>
-                            <i class="fa fa-folder-open" style="font-size: 1.5em; margin-right: 4px; color: #bbb; vertical-align: middle;"></i>
-							<?php $dir = $theme_folder = get_template_directory();
-                                  $theme_url= get_bloginfo('template_url');							
-								  $theme_base_folder =  basename($dir);?>
 							
-							<select id="zwt_flag_url">
-                           <option value="-1"><?php _e('Default', 'Zanto') ?></option>
-                                <?php
-                                global $zwt_site_obj;
-                                $custom_url=$zwt_site_obj->modules['settings']->settings['lang_switcher']['custom_flag_url']; 
-								$flag_ext = $zwt_site_obj->modules['settings']->settings['lang_switcher']['custom_flag_ext']; 
-                                if (is_dir($dir)) {// Open the themes directory, and proceed to read its contents
-                                    while ($dirs = glob($dir . '/*', GLOB_ONLYDIR)) {
-                                        $dir .= '/*';
-                                        if (!$d) {
-                                            $d = $dirs;
-                                        } else {
-                                            $d = array_merge($d, $dirs);
-                                        }
-                                    }
-                                    foreach ($d as $dirct_folder) {
-                                        $folder = str_replace($theme_folder . '/', "", $dirct_folder);
-										$value= $theme_url.'/'.$folder;
-                                        echo '<option '.selected($value,$custom_url).' value="'.$value.'"> ' . $theme_base_folder.'/'.$folder . '</option>';
-                                    }
-                                }
-                                ?>
-
-                            </select>	
+							
+								  
+							<p><label><input <?php echo checked($use_custom_flags, true); ?> id="zwt_use_custom_flags" type="checkbox"><?php _e('Use custom flags','Zanto') ?></label></p>
+							<p><strong><?php _e('Enter a flag directory from your themes','Zanto') ?></strong></p>
+							
+                            <i class="fa fa-folder-open" style="font-size: 1.5em; margin-right: 4px; color: #bbb; vertical-align: middle;"></i>
+							
+							<input <?php echo $disabled ?> type="text" size="45" id="zwt_flag_url" value= "<?php echo $custom_url ?>"></input>
+								
 							<span id="zwt_flag_ext_span"><label style="margin-left:5px">
-							<select id="zwt_flag_ext">
+							<select <?php echo $disabled ?> id="zwt_flag_ext">
 							<option <?php selected($flag_ext,'png') ?> value="png">.PNG</option>
 							<option <?php selected($flag_ext,'gif') ?> value="gif">.GIF</option>
 							<option <?php selected($flag_ext,'jpg') ?> value="jpg">.JPG</option>
-							</select> Flag images extention</label>
+							</select> <?php _e('Flag images extention','Zanto') ?></label>
 							</span>
 
                              <?php wp_nonce_field('zwt_custom_flag', 'zwt_custom_flags');?>
 
                             <p><br/>
-                            <a id="zwt_flag_url_change" href="#" class="button-primary"><?php _e('Update', 'Zanto') ?></a>
+							<input <?php echo $disabled ?> id="zwt_default_dir" type="button" class="button" value="<?php _e('Default Directory','Zanto') ?>" />
+                            <input id="zwt_flag_url_change" type="button" class="button-primary" value="<?php _e('Update', 'Zanto') ?>" />
+							<input id="zwt_default_url" type="hidden" value="<?php echo $dir.'/flags' ?>" />
+							
 							<br/>
                             </p>
                             <?php } ?>

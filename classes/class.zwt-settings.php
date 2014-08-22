@@ -47,7 +47,7 @@ if (!class_exists('ZWT_Settings')) {
 // $newSettings = shortcode_atts(self::getSettings(), $value);
             $newSettings = zwt_merge_atts(self::getSettings(), $value);
 //validation				
-            
+
             update_option(ZWT_Base::PREFIX . 'zanto_settings', $newSettings);
             do_action('zwt_save_settings', $value);
         }
@@ -99,12 +99,7 @@ if (!class_exists('ZWT_Settings')) {
          * @param string $dbVersion
          */
         public function upgrade($dbVersion = 0) {
-            /*
-              if( version_compare( $dbVersion, 'x.y.z', '<' ) )
-              {
-              // Do stuff
-              }
-             */
+            /* all general upgrade procedures are implemented in the ZWT_Translation_Network class upgrade function */
         }
 
         /**
@@ -126,15 +121,15 @@ if (!class_exists('ZWT_Settings')) {
          * Establishes initial values for all settings
          * @return array
          */
-        static function getDefaultSettings() {
+        public static function getDefaultSettings() {
             global $wpdb;
 //let defualt language be the default admin lang
             $default_admin_locale = get_locale();
-			
-            $zanto_settings=array(
-                'db-version' => '0.2.0'
+
+            $zanto_settings = array(
+                'db-version' => GTP_ZANTO_VERSION
             );
-			
+
             $blog_setup = array(
                 'auto_add_subscribers' => 0,
                 'browser_lang_redirect' => 0,
@@ -164,7 +159,8 @@ if (!class_exists('ZWT_Settings')) {
                 'menu_for_ls' => '',
                 'post_tl_style' => 0,
                 'custom_flag_url' => 0,
-                'custom_flag_ext' => 'png'
+                'custom_flag_ext' => 'png',
+                'use_custom_flags' => 0
             );
 
             $setup_status = array(
@@ -185,7 +181,7 @@ if (!class_exists('ZWT_Settings')) {
          * Retrieves all of the settings from the database
          * @return array
          */
-        protected static function getSettings() {
+        public static function getSettings() {
             $settings = shortcode_atts(
                     self::$defaultSettings, get_option(ZWT_Base::PREFIX . 'zanto_settings', array())
             );
@@ -202,14 +198,8 @@ if (!class_exists('ZWT_Settings')) {
             $newSettings = shortcode_atts($this->settings, $newSettings);
 
             if (!isset($newSettings['db-version']) || !is_string($newSettings['db-version']))
-                $newSettings['db-version'] = ZWT_Base::VERSION;
+                $newSettings['db-version'] = GTP_ZANTO_VERSION;
 
-            /* Basic Settings
-              if (strcmp($newSettings['basic']['field-example1'], 'valid data') !== 0) {
-              ZWT_Base::$notices->enqueue('Example 1 must equal "valid data"', 'error');
-              $newSettings['basic']['field-example1'] = self::$defaultSettings['basic']['field-example1'];
-              }
-             */
             return $newSettings;
         }
 
@@ -256,25 +246,25 @@ if (!class_exists('ZWT_Settings')) {
                         $id = preg_replace('/\D/', '', $field);
                         if (in_array($id, $selected_sites)) {
                             if ($id == '' || $value == '') {
-                                ZWT_Base::$notices->enqueue(__('Please make sure the form is properly filled.', 'Zanto'), 'error');
+                                add_notice(__('Please make sure the form is properly filled.', 'Zanto'), 'error');
                                 return false;
                             }
 
                             if (in_array($id, $userblog_ids) && in_array($value, $lang_codes)) {
                                 $site_langs[$id] = $value;
                             } else {
-                                ZWT_Base::$notices->enqueue(__('This operation is not permited.', 'Zanto'), 'error');
+                                add_notice(__('This operation is not permited.', 'Zanto'), 'error');
                                 return false;
                             }
                         }
                     }
                 }
                 if (empty($site_langs)) {
-                    ZWT_Base::$notices->enqueue(__('No blogs were selected', 'Zanto'), 'error');
+                    add_notice(__('No blogs were selected', 'Zanto'), 'error');
                     return false;
                 }
                 if (count(array_unique($site_langs)) < count($site_langs)) {
-                    ZWT_Base::$notices->enqueue(__('Blogs in a translation network should have unique languages.', 'Zanto'), 'error');
+                    add_notice(__('Blogs in a translation network should have unique languages.', 'Zanto'), 'error');
                     return false;
                 }
 
@@ -283,7 +273,7 @@ if (!class_exists('ZWT_Settings')) {
             /* interface 3 validation */
             if (isset($post_values['interface_3_finish'])) {
                 if (empty($post_values['trans_network_id']) || empty($post_values['language_of_blog'])) {
-                    ZWT_Base::$notices->enqueue(__('Please fill in all form values.', 'Zanto'), 'error');
+                    add_notice(__('Please fill in all form values.', 'Zanto'), 'error');
                     return false;
                 }
                 if (current_user_can('manage_network_plugins')) {
@@ -293,12 +283,12 @@ if (!class_exists('ZWT_Settings')) {
                 }
 
                 if (!in_array($post_values['trans_network_id'], $user_trans_ids)) {
-                    ZWT_Base::$notices->enqueue(__('This operation is not permited.', 'Zanto'), 'error');
+                    add_notice(__('This operation is not permited.', 'Zanto'), 'error');
                     return false;
                 }
                 $trans_id_langs = $wpdb->get_col($wpdb->prepare("SELECT lang_code FROM {$wpdb->base_prefix}zwt_trans_network WHERE trans_id = %d", $post_values['trans_network_id']));
                 if (in_array($post_values['language_of_blog'], $trans_id_langs)) {
-                    ZWT_Base::$notices->enqueue(__('The language you have chosen for the blog already exists with another blog in the chosen translation network.', 'Zanto'), 'error');
+                    add_notice(__('The language you have chosen for the blog already exists with another blog in the chosen translation network.', 'Zanto'), 'error');
                     return false;
                 }
 
@@ -307,16 +297,16 @@ if (!class_exists('ZWT_Settings')) {
                     $clean_values['trans_network_id'] = $post_values['trans_network_id'];
                     $clean_values['language_of_blog'] = $post_values['language_of_blog'];
                 } else {
-                    ZWT_Base::$notices->enqueue(__('This operation is not permited.', 'Zanto'), 'error');
+                    add_notice(__('This operation is not permited.', 'Zanto'), 'error');
                     return false;
                 }
                 if (isset($post_values['language_of_blog']) && isset($_POST['zwt_add_blog_trans'])) {// only applicable for translation network page
                     if (!is_numeric($post_values['id_of_blog'])) {
-                        ZWT_Base::$notices->enqueue(__('No Blog was chosen.', 'Zanto'), 'error');
+                        add_notice(__('No Blog was chosen.', 'Zanto'), 'error');
                         return false;
                     }
                     if (!in_array($post_values['id_of_blog'], $userblog_ids)) {
-                        ZWT_Base::$notices->enqueue(__('This operation is not permited.', 'Zanto'), 'error');
+                        add_notice(__('This operation is not permited.', 'Zanto'), 'error');
                         return false;
                     } else {
                         $clean_values['id_of_blog'] = $post_values['id_of_blog'];
@@ -342,7 +332,7 @@ if (!class_exists('ZWT_Settings')) {
                 if (isset($_POST['interface_1_finish']) && wp_verify_nonce($_POST['zwt_translation_interface_1'], 'zwt_translation_setting_nonce_1')) {
                     $site_langs = $this->validate_form_action($_POST);
                     if ($site_langs) {
-//$_POST is clean, now pour your heart out
+//$_POST is clear...
 //a translation network may belong to a different owner so new translation network id is calculated from all id's
                         $trans_id_ceiling = $wpdb->get_var("SELECT MAX(trans_id) FROM {$wpdb->base_prefix}zwt_trans_network");
                         $new_trans_id = $trans_id_ceiling + 1;
@@ -422,18 +412,28 @@ if (!class_exists('ZWT_Settings')) {
                 /* Interface 4 operations */
                 if (isset($_POST['interface_4_save']) && wp_verify_nonce($_POST['zwt_translation_interface_4'], 'zwt_translation_setting_nonce_4')) {
                     $c_trans_net = $zwt_site_obj->modules['trans_network'];
-                    if (isset($_POST['primary_trans_lang_blog'])) {
-                        zwt_network_vars($c_trans_net->transnet_id, 'update', 'main_lang_blog', $_POST['primary_trans_lang_blog']);
-                        $c_trans_net->get_primary_lang(true);
-                    }
+
 
                     if (!isset($_GET['stg_scope'])) {
+                        do_action('zwt_stgs_pre_save', $_POST);
+
+                        if (isset($_POST['primary_trans_lang_blog'])) {
+                            zwt_network_vars($c_trans_net->transnet_id, 'update', 'main_lang_blog', $_POST['primary_trans_lang_blog']);
+                            $c_trans_net->get_primary_lang_blog(true);
+                        }
+
+                        if (isset($_POST['zwt_seo_headlangs'])) {
+                            zwt_network_vars($c_trans_net->transnet_id, 'update', 'add_seo_headlangs', 1);
+                        } else {
+                            zwt_network_vars($c_trans_net->transnet_id, 'update', 'add_seo_headlangs', 0);
+                        }
+
                         if (isset($_POST['zwt_url_format'])) {
                             $parma_type = get_option('permalink_structure');
                             if (empty($parma_type) && $_POST['zwt_url_format'] == 1) {
-                                ZWT_Base::$notices->enqueue(__('Your permalink structure does not support adding languages to directories option', 'Zanto'), 'error');
+                                add_notice(__('Your permalink structure does not support adding languages to directories option', 'Zanto'), 'error');
                             } elseif (!empty($parma_type) && $_POST['zwt_url_format'] == 2) {
-                                ZWT_Base::$notices->enqueue(__('Your permalink structure does not support adding language parameter to URL', 'Zanto'), 'error');
+                                add_notice(__('Your permalink structure does not support adding language parameter to URL', 'Zanto'), 'error');
                             } elseif (in_array($_POST['zwt_url_format'], array(0, 1, 2))) {
                                 self::save_setting('settings', array('translation_settings' =>
                                     array(
@@ -483,26 +483,27 @@ if (!class_exists('ZWT_Settings')) {
                                     'browser_lr_time' => absint($_POST['zwt_browser_lang_redct_time'])
                                     )));
                         }
-
+                        do_action('zwt_stgs_post_save', $_POST);
                     }
 
                     if (isset($_GET['stg_scope']) && $_GET['stg_scope'] == 'lang_swchr') {
-					
-				    	if (isset($_POST['zwt_no_translation']) && in_array($_POST['zwt_no_translation'], array(0, 1))) {
+                        do_action('zwt_ls_pre_save', $_POST);
+
+                        if (isset($_POST['zwt_no_translation']) && in_array($_POST['zwt_no_translation'], array(0, 1))) {
                             self::save_setting('settings', array('lang_switcher' =>
                                 array(
                                     'skip_missing_trans' => $_POST['zwt_no_translation']
                                     )));
                         }
-						
-						if (isset($_POST['zwt_front_page_trans']) && in_array($_POST['zwt_front_page_trans'], array(0, 1))) {
+
+                        if (isset($_POST['zwt_front_page_trans']) && in_array($_POST['zwt_front_page_trans'], array(0, 1))) {
                             self::save_setting('settings', array('lang_switcher' =>
                                 array(
                                     'front_page_trans' => $_POST['zwt_front_page_trans']
                                     )));
                         }
-						
-						if (isset($_POST['zwt_post_availabitlity_text'])) {
+
+                        if (isset($_POST['zwt_post_availabitlity_text'])) {
                             self::save_setting('settings', array('lang_switcher' =>
                                 array(
                                     'post_availability_text' => sanitize_text_field($_POST['zwt_post_availabitlity_text'])
@@ -535,7 +536,7 @@ if (!class_exists('ZWT_Settings')) {
                                     )));
                         }
 
-						
+
                         if (isset($_POST['zwt_footer_ls'])) {
                             self::save_setting('settings', array('lang_switcher' =>
                                 array(
@@ -563,16 +564,18 @@ if (!class_exists('ZWT_Settings')) {
                                     'elements' => $elements
                                     )));
                             if (empty($_POST['zwt_ls_elements'])) {
-                                ZWT_Base::$notices->enqueue(__('Atleast one element must be included in the footer langauge switcher.', 'Zanto'), 'error');
+                                add_notice(__('Atleast one element must be included in the footer langauge switcher.', 'Zanto'), 'error');
                             }
                         }
 
                         if (isset($_POST['zwt_ls_theme'])) {
-
+                            global $zwt_language_switcher;
                             self::save_setting('settings', array('lang_switcher' =>
                                 array(
                                     'zwt_ls_theme' => $_POST['zwt_ls_theme']
                                     )));
+                            $zwt_language_switcher->get_settings(true);
+                            $zwt_language_switcher->get_ls_theme();
                         }
 
                         if (isset($_POST['zwt_lang_order']) && !is_null($_POST['zwt_lang_order']) && !empty($_POST['zwt_lang_order'])) {
@@ -600,6 +603,7 @@ if (!class_exists('ZWT_Settings')) {
                                     'zwt_ls_custom_css' => wp_filter_nohtml_kses($_POST['zwt_additional_css'])
                                     )));
                         }
+                        do_action('zwt_ls_post_save', $_POST);
                     }
                 }
 
@@ -611,7 +615,7 @@ if (!class_exists('ZWT_Settings')) {
 
                     if (isset($_POST['hidden_blog_ids']) && isset($_POST['zwt_blog_id'])) {
                         if (is_numeric($_POST['hidden_blog_ids']) && is_numeric($_POST['zwt_blog_id'])) {
-                            ZWT_Base::$notices->enqueue(__('Zanto got confused with the submission, please make sure javascript is enabled.', 'Zanto'), 'error');
+                            add_notice(__('Zanto got confused with the submission, please make sure javascript is enabled.', 'Zanto'), 'error');
                             return false;
                         } else {
                             $chosen_blog_id = is_numeric($_POST['hidden_blog_ids']) ? $_POST['hidden_blog_ids'] : $_POST['zwt_blog_id'];
@@ -621,7 +625,7 @@ if (!class_exists('ZWT_Settings')) {
                     }
 
                     if (!isset($_POST['blog_trans_ids']) || !isset($_POST['language_of_blog'])) {
-                        ZWT_Base::$notices->enqueue(__('Nothing was selected.', 'Zanto'), 'error');
+                        add_notice(__('Nothing was selected.', 'Zanto'), 'error');
                         return false;
                     }
                     $validate_array = array();
@@ -640,7 +644,7 @@ if (!class_exists('ZWT_Settings')) {
                             'setup_interface' => 'four'
                             )));
 
-                    zwt_add_links($blog_id, $clean_values['trans_network_id'],0);
+                    zwt_add_links($blog_id, $clean_values['trans_network_id'], 0);
 
                     $transnet_blogs = $zwt_site_obj->modules['trans_network']->get_transnet_blogs(true);
 

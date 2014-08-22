@@ -21,8 +21,8 @@ function noscript_notice() {
     </noscript>
     <?php
 }
-function check_internet_connection($sCheckHost = 'www.google.com') 
-{
+
+function check_internet_connection($sCheckHost = 'www.google.com') {
     return (bool) @fsockopen($sCheckHost, 80, $iErrno, $sErrStr, 5);
 }
 
@@ -82,7 +82,7 @@ function zwt_get_site_links($trans_id) {
         return;
     global $site_id, $blog_id;
     $update_flag = 0;
-	$home_url = zwt_home_url();
+    $home_url = zwt_home_url();
     $zwt_global_cache = get_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', true);
     if (isset($zwt_global_cache[$blog_id])) {
         if ($zwt_global_cache[$blog_id]['site_url'] != $home_url) {
@@ -97,32 +97,34 @@ function zwt_get_site_links($trans_id) {
             $zwt_global_cache[$blog_id]['site_url'] = $home_url;
             $zwt_global_cache[$blog_id]['admin_url'] = admin_url();
             update_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', $zwt_global_cache);
-            ZWT_Base::$notices->enqueue('blog meta options created and updated in global catche');
+            add_notice('blog meta options created and updated in global catche');
         }
     } else { //first time creation of global cache for this blog
         $zwt_global_cache[$blog_id]['site_url'] = $home_url;
         $zwt_global_cache[$blog_id]['admin_url'] = admin_url();
-		$zwt_global_cache[$blog_id]['lang_url_format'] = 0;
+        $zwt_global_cache[$blog_id]['lang_url_format'] = 0;
         update_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', $zwt_global_cache);
     }
 }
-function zwt_home_url(){
-    if(function_exists('domain_mapping_siteurl')){// support for domain mapping
-	     return domain_mapping_siteurl( false );
-	}else{
+
+function zwt_home_url() {
+    if (function_exists('domain_mapping_siteurl')) {// support for domain mapping
+        return domain_mapping_siteurl(false);
+    } else {
         return home_url();
-	}
+    }
 }
+
 function zwt_add_links($blog_id, $trans_id, $lang_url_format) {
     if (!absint($blog_id) || !absint($trans_id))
         return;
     global $site_id;
 
-    $home_url=zwt_home_url();
+    $home_url = zwt_home_url();
     $zwt_global_cache = get_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', true);
     $zwt_global_cache[$blog_id]['site_url'] = $home_url;
     $zwt_global_cache[$blog_id]['admin_url'] = admin_url();
-	$zwt_global_cache[$blog_id]['lang_url_format'] = $lang_url_format;
+    $zwt_global_cache[$blog_id]['lang_url_format'] = $lang_url_format;
     update_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', $zwt_global_cache);
 }
 
@@ -206,7 +208,7 @@ function _zwt_get_meta_table($type, $c_blog_id) {
 
 function zwt_get_post_select_options($attr) {
     global $blog_id;
-	$c_blog=$blog_id;
+    $c_blog = $blog_id;
     $defaults = array(
         'c_blog' => $c_blog, // blog id to check in
         'post_type' => '',
@@ -228,16 +230,30 @@ function zwt_get_post_select_options($attr) {
     if ($loop->have_posts()) {
         while ($loop->have_posts()) {
             $loop->the_post();
-			$translations = get_post_meta(get_the_ID(), ZWT_Base::PREFIX . 'post_network', true);
-			$trans_class="";
-			if(is_array($translations))
-			foreach($translations as $translation){
-			 if(isset($translation['blog_id']) && $translation['blog_id']==$c_blog)
-			 $trans_class="translated";
-			}
 			
-            $output .= the_title('<option class="'.$trans_class.'" value="' . get_the_ID() . '"' . selected($options['selected'], get_the_ID()) . ' > ', ' </option>', false);
-		}
+			if(get_post()->post_status == 'translation'){
+						continue;
+					}
+            $trans_class = $disabled = $good_class = '';     
+                    //if( class_exists( 'Ztm_Plugin_Base' ) ){
+					    
+					    $translation_meta = get_post_meta(get_post()->ID, '_translation_meta_', true);
+						if(isset($translation_meta[$c_blog]['status']) && $translation_meta[$c_blog]['status'] !== 'translated'){
+						    $good_class = ' good'; 
+                            $disabled = 'disabled="true"';							
+						}
+					//}
+					
+            $translations = get_post_meta(get_the_ID(), ZWT_Base::PREFIX . 'post_network', true);
+            
+            if (is_array($translations))
+                foreach ($translations as $translation) {
+                    if (isset($translation['blog_id']) && $translation['blog_id'] == $c_blog)
+                        $trans_class = 'translated'.$good_class;
+                }
+
+            $output .= the_title('<option '.$disabled.' class="' . $trans_class . '" value="' . get_the_ID() . '"' . selected($options['selected'], get_the_ID()) . ' > ', ' </option>', false);
+        }
     } else {
         $output = '<option value="">' . __('No Posts Found', 'Zanto') . '</option>';
     }
@@ -256,7 +272,7 @@ function zwt_broadcast_post_network($post_transnetwork) {
 
 function zwt_detach_post($blog_id, $post_transnetwork) {
     if (!is_numeric($blog_id) || !is_array($post_transnetwork)) {
-        ZWT_Base::$notices->enqueue('Wrong data received by zwt_detach_post() ', 'error');
+        add_notice('Wrong data received by zwt_detach_post() ', 'error');
         return;
     }
     foreach ($post_transnetwork as $index => $pnet_details) {
@@ -304,9 +320,9 @@ function zwt_get_global_urls_info($req_info, $blog_id) {
                 restore_current_blog();
             }
             break;
-		case 'lang_url_format':
+        case 'lang_url_format':
             $info = $blog_parameters[$blog_id]['lang_url_format'];
-            break;	
+            break;
         default:
             return false;
     }
@@ -322,6 +338,7 @@ function zwt_get_trans_url($obj_type, $obj_blog, $obj_id) {
                 break;
             case 'category':
                 $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?cat=' . $obj_id;
+				break;
             case 'post_tag':
                 $b_prefix = $wpdb->get_blog_prefix($obj_blog);
                 $term_slug = $wpdb->get_var($wpdb->prepare("SELECT slug FROM {$b_prefix }terms WHERE term_id = %d", $obj_id));
@@ -333,10 +350,10 @@ function zwt_get_trans_url($obj_type, $obj_blog, $obj_id) {
                 $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?' . $obj_type . '=' . $term_slug;
                 break;
         }
-		
-		$trans_link = apply_filters('zwt_trans_url', $trans_link, $obj_type,$obj_blog, $obj_id);
-	    
-		return $trans_link;
+
+    $trans_link = apply_filters('zwt_trans_url', $trans_link, $obj_type, $obj_blog, $obj_id);
+
+    return $trans_link;
 }
 
 function zwt_merge_atts($pairs, $atts) {
@@ -357,7 +374,7 @@ function zwt_merge_atts($pairs, $atts) {
     return $out;
 }
 
-/*This function is used to construct flag image html elements for the backend end*/
+/* This function is used to construct flag image html elements for the backend end */
 
 function zwt_get_flag($locale) {
     $flag = '<img src="' . GTP_PLUGIN_URL . 'images/flags/' . $locale . '.png" width="16" height="11" alt="' . $locale . '" />';
@@ -365,18 +382,19 @@ function zwt_get_flag($locale) {
     return apply_filters('zwt_get_flag', $flag, $locale);
 }
 
-/*This function is used to retrieve flag urls for the front end*/
-function zwt_get_site_flags($locale){
+/* This function is used to retrieve flag urls for the front end */
+
+function zwt_get_site_flags($locale) {
     global $zwt_site_obj;
-    $custom_url=$zwt_site_obj->modules['settings']->settings['lang_switcher']['custom_flag_url'];
-	$flag_ext=$zwt_site_obj->modules['settings']->settings['lang_switcher']['custom_flag_ext'];
-    if($custom_url !==0){
-	    $flag_url= $custom_url.'/' . $locale .'.'. $flag_ext;
+    $custom_url = $zwt_site_obj->modules['settings']->settings['lang_switcher']['custom_flag_url'];
+	$use_custom_flags = $zwt_site_obj->modules['settings']->settings['lang_switcher']['use_custom_flags'];
+    $flag_ext = $zwt_site_obj->modules['settings']->settings['lang_switcher']['custom_flag_ext'];
+    if ($custom_url !== 0 && $use_custom_flags) {
+        $flag_url = content_url().$custom_url . '/' . $locale . '.' . $flag_ext;
+    } else {
+        $flag_url = GTP_PLUGIN_URL . 'images/flags/' . $locale . '.png';
     }
-    else{
-         $flag_url= GTP_PLUGIN_URL . 'images/flags/' . $locale . '.png';
-    }
-	return apply_filters('zwt_front_flag', $flag_url, $locale);
+    return apply_filters('zwt_front_flag', $flag_url, $locale);
 }
 
 /* removes taxonomies of deleted blogs
@@ -384,19 +402,19 @@ function zwt_get_site_flags($locale){
 
 function zwt_clean_blog_tax($deleted_blog) {
     $tax_meta = get_option('zwt_taxonomy_meta');
-    if(is_array($tax_meta)){
-    foreach ($tax_meta as $tax => $t_array) {
-        foreach ($t_array as $term => $blog_tax) {
-            if (isset($blog_tax[$deleted_blog])) {
-                unset($tax_meta[$tax][$term][$deleted_blog]);
-            }
-            if (empty($tax_meta[$tax][$term])) {
-                unset($tax_meta[$tax][$term]);
+    if (is_array($tax_meta)) {
+        foreach ($tax_meta as $tax => $t_array) {
+            foreach ($t_array as $term => $blog_tax) {
+                if (isset($blog_tax[$deleted_blog])) {
+                    unset($tax_meta[$tax][$term][$deleted_blog]);
+                }
+                if (empty($tax_meta[$tax][$term])) {
+                    unset($tax_meta[$tax][$term]);
+                }
             }
         }
+        update_option('zwt_taxonomy_meta', $tax_meta);
     }
-    update_option('zwt_taxonomy_meta', $tax_meta);
-	}
     return;
 }
 
@@ -414,8 +432,8 @@ function zwt_network_vars($trans_net_id, $action, $element, $value=null) {
             break;
 
         case 'update':
-            if ($value == null) {
-                ZWT_Base::$notices->enqueue('No value received by zwt_network_vars() ', 'error');
+            if ($value === null) {
+                add_notice('No value received by zwt_network_vars() ', 'error');
                 return;
             }
             $network_vars = get_metadata('site', $site_id, 'zwt_' . $trans_net_id . '_network_vars', true);
@@ -545,4 +563,78 @@ function zwt_gzdecode($data, &$filename = '', &$error = '', $maxlength = null) {
         return false;
     }
     return $data;
+}
+
+/*
+ * This function checks if the provided blog is part of the active translation netwok
+ * Input parameter is the blog id for the blog to verify
+ * Out puts true if the blog is part of the translation network and false otherwise
+ */
+
+function zwt_is_transnet_blog($bid) {
+    global $zwt_site_obj;
+    $transnet_blogs = $zwt_site_obj->modules['trans_network']->transnet_blogs;
+    $in_transnet = false;
+    foreach ($transnet_blogs as $transblog) {
+        if ($bid == $transblog['blog_id'])
+            $in_transnet = true;
+    }
+    return $in_transnet;
+}
+
+/*
+ * This returns the language the blog represents in the translation network
+ * Input parameter is the blog id for the blog whose language is needed
+ * Out puts the lang code if found and false otherwise
+ */
+
+function zwt_get_blog_lang($bid) {
+    global $zwt_site_obj;
+    $transnet_blogs = $zwt_site_obj->modules['trans_network']->transnet_blogs;
+    foreach ($transnet_blogs as $transblog) {
+        if ($bid == $transblog['blog_id']) {
+            return $transblog['lang_code'];
+        }
+    }
+    return false;
+}
+
+/* For adding a single translation */
+
+function zwt_add_single_transln($source_pid, $target_pid, $target_bid) {
+    global $zwt_site_obj, $blog_id;
+    $primary_blog = $zwt_site_obj->modules['trans_network']->primary_lang_blog;
+    $post_transnetwork = array();
+
+    /* check if the current blog is the primary blog language */
+    if ($primary_blog == $blog_id) {
+        $old_pnetwork = get_post_meta($source_pid, ZWT_Base::PREFIX . 'post_network', true); //Get old post network from source post
+        $post_transnetwork[] = array('blog_id' => $target_bid, 'post_id' => $target_pid);
+
+        if (is_array($old_pnetwork)) {
+            $post_transnetwork = array_merge($post_transnetwork, $old_pnetwork);
+        } else {
+            /* add current blog to the metadata since no post translatin network exists */
+            $post_transnetwork[] = array('blog_id' => $blog_id, 'post_id' => $source_pid);
+        }
+        zwt_broadcast_post_network($post_transnetwork);
+    } else {
+        switch_to_blog($target_bid);
+        $target_pnetwork = get_post_meta($target_pid, ZWT_Base::PREFIX . 'post_network', true);
+        restore_current_blog();
+
+        if (is_array($target_pnetwork)) {
+            /* add post to existing network */
+            $new_pvalue = array('blog_id' => $blog_id, 'post_id' => $source_pid);
+            if (!in_array($new_pvalue, $target_pnetwork)) {
+                $target_pnetwork[] = $new_pvalue;
+                zwt_broadcast_post_network($target_pnetwork);
+            }
+        } else {
+            /* create new network and add it to the posts */
+            $post_transnetwork[] = array('blog_id' => $target_bid, 'post_id' => $target_pid);
+            $post_transnetwork[] = array('blog_id' => $blog_id, 'post_id' => $source_pid);
+            zwt_broadcast_post_network($post_transnetwork);
+        }
+    }
 }

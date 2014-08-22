@@ -10,11 +10,11 @@ if (!current_user_can('manage_options'))
         <?php
     } else {
         ?>
-		 <h2><?php _e('Zanto Settings for this blog', 'Zanto'); ?></h2>
-		 <p><?php _e('This is the Zanto Basic settings Page. Most settings here other than the "Primary Translation Language" Settings will only affect this blog.','Zanto') ?></p>
-		 <p><?php _e('CSS put in the custom css field will be included in the header css of your webpage.','Zanto') ?></p>
-         <br/>
-        <?php } ?>
+        <h2><?php _e('Zanto Settings for this blog', 'Zanto'); ?></h2>
+        <p><?php _e('This is the Zanto Basic settings Page. Most settings here other than the "Primary Translation Language" Settings will only affect this blog.', 'Zanto') ?></p>
+        <p><?php _e('CSS put in the custom css field will be included in the header css of your webpage.', 'Zanto') ?></p>
+        <br/>
+    <?php } ?>
 
 
     <?php if ('incomplete' == $settings['setup_status']['setup_wizard'] && (!$zwt_first_install_flag)) { /* setup wizard */ ?>
@@ -223,25 +223,27 @@ if (!current_user_can('manage_options'))
         ?>
 
         <h2 class="nav-tab-wrapper">
-            <a href="<?php echo admin_url('admin.php?page=zwt_settings'); ?>" class=" <?php echo (!$lang_swchr) ? 'nav-tab nav-tab-active' : 'nav-tab' ?> "><?php _e('Zanto Blog Settings','Zanto') ?></a><a href="<?php echo admin_url('admin.php?page=zwt_settings&stg_scope=lang_swchr'); ?>" class="<?php echo ($lang_swchr) ? 'nav-tab nav-tab-active' : 'nav-tab' ?>"><?php _e('Language Switcher Settings', 'Zanto') ?></a>
+            <a href="<?php echo admin_url('admin.php?page=zwt_settings'); ?>" class=" <?php echo (!$lang_swchr) ? 'nav-tab nav-tab-active' : 'nav-tab' ?> "><?php _e('Zanto Blog Settings', 'Zanto') ?></a><a href="<?php echo admin_url('admin.php?page=zwt_settings&stg_scope=lang_swchr'); ?>" class="<?php echo ($lang_swchr) ? 'nav-tab nav-tab-active' : 'nav-tab' ?>"><?php _e('Language Switcher Settings', 'Zanto') ?></a>
         </h2>
         <div class="menu-edit">
-		
-					<div  style="padding: 10px;">
-            <?php if (!isset($_GET['stg_scope'])) { ?>
+
+            <div  style="padding: 10px;">
+                <?php if (!isset($_GET['stg_scope'])) { ?>
                     <form form id="zwt_trans_network_setting4" method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']) ?>">
                         <?php wp_nonce_field('zwt_translation_setting_nonce_4', 'zwt_translation_interface_4'); ?>
-
+                        <input type="hidden" name="ztm_active" id="ztm_active" value="<?php echo ($tm_active) ? 1 : 0; ?>">
                         <table class="form-table">
+                            <?php do_action('zwt_menu_main_start'); ?>
                             <tr valign="top">
                                 <th width="33%" scope="row"><?php _e('Primary Translation Language', 'Zanto') ?></th>
                                 <td>
-                                    <select name="primary_trans_lang_blog" id="WPLANG">
+                                    <select name="primary_trans_lang_blog" id="primary-lang">
                                         <option value=''> - Select - </option>
                                         <?php foreach ($blog_trans_network as $index => $blog_details): ?>
-                                            <option value="<?php echo $blog_details['blog_id'] ?>" <?php selected($c_primary_blog_lang, $blog_details['blog_id']); ?>><?php echo format_code_lang($blog_details['lang_code']) ?></option>
+                                            <option value="<?php echo $blog_details['blog_id'] ?>" <?php selected($c_primary_blog_lang, $blog_details['blog_id']); ?>><?php echo format_code_lang($blog_details['lang_code']), ' (', $blog_details['lang_code'], ')' ?></option>
                                         <?php endforeach; ?>
                                     </select>
+                                    <p class="description"><?php _e('This is the Language of the blog from which all other languages will will be translated from.', 'Zanto') ?></p>
                                 </td>
                             </tr>
                             <tr>
@@ -256,12 +258,12 @@ if (!current_user_can('manage_options'))
                                                     <br/>
                                                     <label title="<?php _e('Add language to direcories url', 'Zanto') ?>">
                                                         <input  type="radio" name="zwt_url_format"  <?php echo($rewrite_on) ? '' : 'disabled="true"' ?> value="1" <?php checked($settings['translation_settings']['lang_url_format'], '1'); ?> />
-                                                        <span><?php echo sprintf(__('Add language to Directories URL e.g %s/%s/', 'Zanto'), zwt_home_url(),$c_blog_lang_code); ?>
+                                                        <span><?php echo sprintf(__('Add language to Directories URL e.g %s/%s/', 'Zanto'), zwt_home_url(), $c_blog_lang_code); ?>
                                                     </label>
                                                     <br>
                                                     <label title =<?php _e('Add language parameter to url', 'Zanto') ?> >
                                                         <input  type="radio" name="zwt_url_format" <?php echo($rewrite_on) ? 'disabled="true"' : '' ?> value="2" <?php checked($settings['translation_settings']['lang_url_format'], '2'); ?> />
-													    <span><?php echo sprintf(__('Add language Parameter to URL e.g %s/?lang=%s', 'Zanto'),zwt_home_url(),$c_blog_lang_code) ?></span>
+                                                        <span><?php echo sprintf(__('Add language Parameter to URL e.g %s/?lang=%s', 'Zanto'), zwt_home_url(), $c_blog_lang_code) ?></span>
 
                                                     </label>
                                                     <p><a href=" http://zanto.org/tutorial/language-url-formats/"><?php _e('Documentation Language URL format', 'Zanto') ?></a>.</p>
@@ -270,25 +272,36 @@ if (!current_user_can('manage_options'))
                                                     </fieldset>
                                                     </td>
                                                     </tr>
-                                                    
+                                                    <tr>
+                                                        <th scope="row"><?php _e('Multilingual SEO Options', 'Zanto') ?></th>
+                                                        <td>
+                                                            <fieldset><legend class="screen-reader-text"><span><?php _e('Multilingual SEO Options', 'Zanto') ?></span></legend>
+                                                                <label title="<?php _e('Add alternative languages in the HEAD section.', 'Zanto') ?>">
+                                                                    <input  type="checkbox" name="zwt_seo_headlangs" <?php checked($add_langs2head, 1) ?> value="1"  />
+                                                                    <span><?php _e('Add alternative languages in the HEAD section.(This is applied to all blogs)', 'Zanto') ?> </span>
+                                                                </label>
+
+                                                                <p><a href="http://zanto.org/?p=292"><?php _e('Documentation on  alternative languages in the HEAD section', 'Zanto') ?></a>.</p>
+                                                        </td>
+                                                    </tr>
                                                     <tr>
                                                         <th scope="row"><?php _e('User network  Acess Options', 'Zanto') ?></th>
                                                         <td>
                                                             <fieldset><legend class="screen-reader-text"><span><?php _e('User network Options', 'Zanto') ?></span></legend>
                                                                 <label title="<?php _e('Auto add users to network', 'Zanto') ?>">
                                                                     <input  type="radio" name="zwt_auto_user" value="1" <?php checked($settings['blog_setup']['auto_add_subscribers'], '1') ?> />
-                                                                    <span><?php _e('Auto add users of other blogs that are translations of this blog when they visit', 'Zanto') ?> </span>
+                                                                    <span><?php _e('Auto add users of other blogs in this translation network when they visit', 'Zanto') ?> </span>
                                                                 </label>
                                                                 <br/>
                                                                 <label title="<?php _e('Don\'t auto add users to blogs they are not registered', 'Zanto') ?>">
                                                                     <input  type="radio" name="zwt_auto_user" value="0" <?php checked($settings['blog_setup']['auto_add_subscribers'], '0') ?> />
-                                                                    <span><?php _e('Don\'t auto add users of translations of this blogs when they visit', 'Zanto') ?> </span>
+                                                                    <span><?php _e('Don\'t auto add users of other blogs in this translation network when they visit', 'Zanto') ?> </span>
                                                                 </label>
                                                                 <p><a href="http://zanto.org/?p=58"><?php _e('Documentation on auto adding users option', 'Zanto') ?></a>.</p>
                                                         </td>
                                                     </tr>
-													
-													<tr>
+
+                                                    <tr>
                                                         <th scope="row"><?php _e('Site visibility options', 'Zanto') ?></th>
                                                         <td>
                                                             <fieldset><legend class="screen-reader-text"><span><?php _e('Site visibility options', 'Zanto') ?></span></legend>
@@ -332,206 +345,225 @@ if (!current_user_can('manage_options'))
                                                                 <p><a href="http://zanto.org/?p=61"><?php _e('Documentation on browser language redirect', 'Zanto') ?></a>.</p>
                                                         </td>
                                                     </tr>
-
+                                                    <?php do_action('zwt_menu_main_end'); ?>
                                                     </table>
                                                     <input type="submit" name="interface_4_save" id="submit4" class="button button-primary" value="Save Changes">
                                                     </form>
                                                 <?php } ?>
                                                 <?php if (isset($_GET['stg_scope']) && $_GET['stg_scope'] == 'lang_swchr') { ?>
-                                                        <form form id="zwt_trans_network_setting4" method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']) ?>">
-                                                            <?php wp_nonce_field('zwt_translation_setting_nonce_4', 'zwt_translation_interface_4'); ?>
+                                                    <form form id="zwt_trans_network_setting4" method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']) ?>">
+                                                        <?php wp_nonce_field('zwt_translation_setting_nonce_4', 'zwt_translation_interface_4'); ?>
 
 
-                                                            <table class="form-table">
+                                                        <table class="form-table">
+                                                            <?php do_action('zwt_menu_ls_start'); ?>
+                                                            <tr>
+                                                                <th scope="row"><?php _e('Languages Order', 'Zanto') ?></th>
+                                                                <td>
+                                                                    <div class="lang-sort">
 
-                                                                <tr>
-                                                                    <th scope="row"><?php _e('Languages Order', 'Zanto') ?></th>
-                                                                    <td>
-                                                                        <div class="lang-sort">
+                                                                        <p class="description"><?php _e('Drag and drop to order languages', 'Zanto') ?></p>
+                                                                        <p>
+                                                                        <ul id="sortable">
+                                                                            <?php foreach ($blog_trans_network as $index => $blog_details): ?>
+                                                                                <li class="button" id="<?php echo $blog_details['blog_id'] ?>">
 
-                                                                            <p class="description"><?php _e('Drag and drop to order languages','Zanto')?></p>
-                                                                            <p>
-                                                                            <ul id="sortable">
-                                                                                <?php foreach ($blog_trans_network as $index => $blog_details): ?>
-                                                                                    <li class="button" id="<?php echo $blog_details['blog_id'] ?>">
-                                                                                        <img src=" <?php echo GTP_PLUGIN_URL . 'images/flags/' . $blog_details['lang_code'] . '.png'; ?>" class="admin-flag-icon"/>
-                                                                                        <?php echo $c_trans_net->get_display_language_name($blog_details['lang_code'], get_locale())/* format_code_lang($blog_details['lang_code']) */ ?>
+                                                                                    <?php echo $c_trans_net->get_display_language_name($blog_details['lang_code'], get_locale())/* format_code_lang($blog_details['lang_code']) */ ?>
 
-                                                                                    </li>
+                                                                                </li>
 
-                                                                                <?php endforeach; ?>
-                                                                            </ul>
-																			</p>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
+                                                                            <?php endforeach; ?>
+                                                                        </ul>
+                                                                        </p>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
 
-                                                                <tr>
-                                                                    <th scope="row"><?php _e('Content without translation', 'Zanto') ?></th>
-                                                                    <td>
-                                                                        <fieldset><legend class="screen-reader-text"><span><?php _e('Content without translation', 'Zanto') ?></span></legend>
-                                                                            <label title="<?php _e('Skip language', 'Zanto') ?>">
-                                                                                <input  type="radio" name="zwt_no_translation" value="1" <?php checked($settings['lang_switcher']['skip_missing_trans'], 1) ?> />
-                                                                                <span><?php _e('Skip language', 'Zanto') ?> </span>
+                                                            <tr>
+                                                                <th scope="row"><?php _e('Content without translation', 'Zanto') ?></th>
+                                                                <td>
+                                                                    <fieldset><legend class="screen-reader-text"><span><?php _e('Content without translation', 'Zanto') ?></span></legend>
+                                                                        <label title="<?php _e('Skip language', 'Zanto') ?>">
+                                                                            <input  type="radio" name="zwt_no_translation" value="1" <?php checked($settings['lang_switcher']['skip_missing_trans'], 1) ?> />
+                                                                            <span><?php _e('Skip language', 'Zanto') ?> </span>
+                                                                        </label>
+                                                                        <br/>
+                                                                        <label title="<?php _e('Link to the home page of missing translation', 'Zanto') ?>">
+                                                                            <input  type="radio" name="zwt_no_translation" value="0"   <?php checked($settings['lang_switcher']['skip_missing_trans'], 0) ?> />
+                                                                            <span><?php _e('Link to the home page of missing translation', 'Zanto') ?> </span>
+                                                                        </label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row"><?php _e('Front Page Settings', 'Zanto') ?></th>
+                                                                <td>
+                                                                    <fieldset><legend class="screen-reader-text"><span><?php _e('Front Page Settings', 'Zanto') ?></span></legend>
+                                                                        <label title="<?php _e('Link front page to translation front pages', 'Zanto') ?>">
+                                                                            <input  type="radio" name="zwt_front_page_trans" value="0" <?php checked($settings['lang_switcher']['front_page_trans'], 0) ?> />
+                                                                            <span><?php _e('Link front page to translation front pages', 'Zanto') ?> </span>
+                                                                        </label>
+                                                                        <br/>
+                                                                        <label title="<?php _e('Link front page static page to the translated page', 'Zanto') ?>">
+                                                                            <input  type="radio" name="zwt_front_page_trans" value="1"   <?php checked($settings['lang_switcher']['front_page_trans'], 1) ?> />
+                                                                            <span><?php _e('Link front page static page to the translated page', 'Zanto') ?> </span>
+                                                                        </label>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <th scope="row"><?php _e('Show post translation Links', 'Zanto') ?></th>
+                                                                <td>
+                                                                    <fieldset><legend class="screen-reader-text"><span><?php _e('Show post translation Links', 'Zanto') ?></span></legend>
+                                                                        <label title="<?php _e('Yes', 'Zanto') ?>">
+                                                                            <input  type="checkbox" name="zwt_post_trans_links"  <?php checked($settings['lang_switcher']['alt_lang_availability'], 1) ?> />
+                                                                            <span><?php _e('Yes', 'Zanto') ?> </span>
+                                                                        </label>
+                                                                        <p>
+                                                                            <label title="<?php _e('Position', 'Zanto') ?>">
+                                                                                <span><?php _e('Position', 'Zanto') ?> </span>
+                                                                                <br/>
+                                                                                <select   name="zwt_post_link_pos"  />
+                                                                                <option value="below" <?php selected($settings['lang_switcher']['post_tl_position'], 'below') ?> >Below Post</option>
+                                                                                <option value="above" <?php selected($settings['lang_switcher']['post_tl_position'], 'above') ?> >Above Post</option>
+                                                                                </select>
                                                                             </label>
+                                                                        </p><p>
+                                                                            <label title="<?php _e('Translation Links Style', 'Zanto') ?>">
+                                                                                <span><?php _e('Translation Links Style', 'Zanto') ?> </span>
+                                                                                <br/>
+                                                                                <select   name="zwt_post_link_style"  />
+                                                                                <option value="0" <?php selected($settings['lang_switcher']['post_tl_style'], '0') ?> ><?php _e('Default', 'Zanto') ?></option>
+                                                                                <option value="1" <?php selected($settings['lang_switcher']['post_tl_style'], '1') ?> ><?php _e('Plain', 'Zanto') ?></option>
+                                                                                </select>
+                                                                            </label>
+                                                                        </p>
+                                                                        <p>Text for alternative languages for posts</p>
+                                                                        <input type="text" name="zwt_post_availabitlity_text" size="50" value="<?php echo $settings['lang_switcher']['post_availability_text'] ?>"/>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <th scope="row"><?php _e('What to include in the language switcher', 'Zanto') ?></th>
+                                                                <td>
+                                                                    <fieldset><legend class="screen-reader-text"><span><?php _e('What to include in the Footer language switcher', 'Zanto') ?></span></legend>
+                                                                        <label title="<?php _e('Flag', 'Zanto') ?>">
+                                                                            <input  type="checkbox" name="zwt_ls_elements[flag]" <?php checked($settings['lang_switcher']['elements']['flag'], 1) ?> />
+                                                                            <span><?php _e('Flag', 'Zanto') ?> </span>
+                                                                        </label>
+                                                                        <br/>
+                                                                        <label title="<?php _e('Native Name', 'Zanto') ?>">
+                                                                            <input  type="checkbox" name="zwt_ls_elements[native_name]" <?php checked($settings['lang_switcher']['elements']['native_name'], 1) ?> />
+                                                                            <span><?php _e('Native Name', 'Zanto') ?> </span>
+                                                                        </label>
+                                                                        <br/>
+                                                                        <label title="<?php _e('Translated Name', 'Zanto') ?>">
+                                                                            <input  type="checkbox" name="zwt_ls_elements[translated_name]" <?php checked($settings['lang_switcher']['elements']['translated_name'], 1) ?> />
+                                                                            <span><?php _e('Translated Name', 'Zanto') ?> </span>
+                                                                        </label>
+                                                                        <p><a href="http://zanto.org/?p=62"><?php _e('Documentation on language switcher modification', 'Zanto') ?></a>.</p>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <th scope="row"><?php _e('Language Switcher Appearance', 'Zanto') ?></th>
+                                                                <td>
+
+                                                                    <?php
+                                                                    $lang_switcher_themes = zwt_get_ls_themes();
+                                                                    ?>																			
+                                                                    <p>
+                                                                        <label title="<?php _e('Language Switcher Theme', 'Zanto') ?>">
+                                                                            <span><?php _e('Language Switcher Theme', 'Zanto') ?> </span>
                                                                             <br/>
-                                                                            <label title="<?php _e('Link to the home page of missing translation', 'Zanto') ?>">
-                                                                                <input  type="radio" name="zwt_no_translation" value="0"   <?php checked($settings['lang_switcher']['skip_missing_trans'], 0) ?> />
-                                                                                <span><?php _e('Link to the home page of missing translation', 'Zanto') ?> </span>
-                                                                            </label>
-                                                                    </td>
-                                                                </tr>
-																<tr>
-                                                                    <th scope="row"><?php _e('Front Page Settings', 'Zanto') ?></th>
-                                                                    <td>
-                                                                        <fieldset><legend class="screen-reader-text"><span><?php _e('Front Page Settings', 'Zanto') ?></span></legend>
-                                                                            <label title="<?php _e('Link front page to translation front pages', 'Zanto') ?>">
-                                                                                <input  type="radio" name="zwt_front_page_trans" value="0" <?php checked($settings['lang_switcher']['front_page_trans'], 0) ?> />
-                                                                                <span><?php _e('Link front page to translation front pages', 'Zanto') ?> </span>
-                                                                            </label>
-                                                                            <br/>
-                                                                            <label title="<?php _e('Link front page static page to the translated page', 'Zanto') ?>">
-                                                                                <input  type="radio" name="zwt_front_page_trans" value="1"   <?php checked($settings['lang_switcher']['front_page_trans'], 1) ?> />
-                                                                                <span><?php _e('Link front page static page to the translated page', 'Zanto') ?> </span>
-                                                                            </label>
-                                                                    </td>
-                                                                </tr>
+                                                                            <select name="zwt_ls_theme" id="li_theme">
+                                                                                <?php
+                                                                                $active_ls = 0;
+                                                                                foreach ((array) $lang_switcher_themes as $index => $ls_files) {
 
-                                                                <tr>
-                                                                    <th scope="row"><?php _e('Show post translation Links', 'Zanto') ?></th>
-                                                                    <td>
-                                                                        <fieldset><legend class="screen-reader-text"><span><?php _e('Show post translation Links', 'Zanto') ?></span></legend>
-                                                                            <label title="<?php _e('Yes', 'Zanto') ?>">
-                                                                                <input  type="checkbox" name="zwt_post_trans_links"  <?php checked($settings['lang_switcher']['alt_lang_availability'], 1) ?> />
-                                                                                <span><?php _e('Yes', 'Zanto') ?> </span>
-                                                                            </label>
-                                                                            <p>
-                                                                                <label title="<?php _e('Position', 'Zanto') ?>">
-                                                                                    <span><?php _e('Position', 'Zanto') ?> </span>
-                                                                                    <br/>
-                                                                                    <select   name="zwt_post_link_pos"  />
-                                                                                    <option value="below" <?php selected($settings['lang_switcher']['post_tl_position'], 'below') ?> >Below Post</option>
-                                                                                    <option value="above" <?php selected($settings['lang_switcher']['post_tl_position'], 'above') ?> >Above Post</option>
-                                                                                    </select>
-                                                                                </label>
-                                                                            </p><p>
-                                                                                <label title="<?php _e('Translation Links Style', 'Zanto') ?>">
-                                                                                    <span><?php _e('Translation Links Style', 'Zanto') ?> </span>
-                                                                                    <br/>
-                                                                                    <select   name="zwt_post_link_style"  />
-                                                                                    <option value="0" <?php selected($settings['lang_switcher']['post_tl_style'], '0') ?> ><?php _e('Default', 'Zanto') ?></option>
-                                                                                    <option value="1" <?php selected($settings['lang_switcher']['post_tl_style'], '1') ?> ><?php _e('Plain', 'Zanto') ?></option>
-                                                                                    </select>
-                                                                                </label>
-                                                                            </p>
-                                                                            <p>Text for alternative languages for posts</p>
-                                                                            <input type="text" name="zwt_post_availabitlity_text" size="50" value="<?php echo $settings['lang_switcher']['post_availability_text'] ?>"/>
-                                                                    </td>
-                                                                </tr>
+                                                                                    if ($ls_files['uri'] == $settings['lang_switcher']['zwt_ls_theme']) {
+                                                                                        $active_ls = $index;
+                                                                                    }
+                                                                                    ?>
+                                                                                    <option value="<?php echo esc_attr($ls_files['uri']) ?>" <?php selected($settings['lang_switcher']['zwt_ls_theme'], $ls_files['uri'], true) ?> > <?php echo esc_html($ls_files['Name']) ?></option>
+                                                                                <?php } ?>
 
-                                                                <tr>
-                                                                    <th scope="row"><?php _e('What to include in the language switcher', 'Zanto') ?></th>
-                                                                    <td>
-                                                                        <fieldset><legend class="screen-reader-text"><span><?php _e('What to include in the Footer language switcher', 'Zanto') ?></span></legend>
-                                                                            <label title="<?php _e('Flag', 'Zanto') ?>">
-                                                                                <input  type="checkbox" name="zwt_ls_elements[flag]" <?php checked($settings['lang_switcher']['elements']['flag'], 1) ?> />
-                                                                                <span><?php _e('Flag', 'Zanto') ?> </span>
-                                                                            </label>
-                                                                            <br/>
-                                                                            <label title="<?php _e('Native Name', 'Zanto') ?>">
-                                                                                <input  type="checkbox" name="zwt_ls_elements[native_name]" <?php checked($settings['lang_switcher']['elements']['native_name'], 1) ?> />
-                                                                                <span><?php _e('Native Name', 'Zanto') ?> </span>
-                                                                            </label>
-                                                                            <br/>
-                                                                            <label title="<?php _e('Translated Name', 'Zanto') ?>">
-                                                                                <input  type="checkbox" name="zwt_ls_elements[translated_name]" <?php checked($settings['lang_switcher']['elements']['translated_name'], 1) ?> />
-                                                                                <span><?php _e('Translated Name', 'Zanto') ?> </span>
-                                                                            </label>
-                                                                            <p><a href="http://zanto.org/?p=62"><?php _e('Documentation on language switcher modification', 'Zanto') ?></a>.</p>
-                                                                    </td>
-                                                                </tr>
+                                                                            </select>
+                                                                        </label>
+                                                                        <?php $active_switcher = $lang_switcher_themes[$active_ls]; ?>
+                                                                    <p><?php printf(__('You can add a  language switcher from the current Language Swicher Theme any where on your site theme by inserting any of these PHP codes in the theme: %s or use the language switcher widget', 'Zanto'), '<a title="" href="#TB_inline?width=600&height=300&inlineId=zwt_theme_codes" class="thickbox">See Codes</a>'); ?>.</p>
+                                                                    <p><a href="http://zanto.org/?p=62"><?php _e('Documentation on how to create your own language switcher theme', 'Zanto') ?></a>.</p>
 
-                                                                <tr>
-                                                                    <th scope="row"><?php _e('Language Switcher Appearance', 'Zanto') ?></th>
-                                                                    <td>
+                                                                    <?php add_thickbox(); ?>
+                                                                    <div id="zwt_theme_codes" style="display:none;">
+                                                                        <?php global $zwt_ls_types ?>
+                                                                        <table class="zwt-ls-table">
+                                                                            <?php
+                                                                            foreach ($active_switcher as $ls_item => $lang_detail):
+                                                                                if (empty($lang_detail))
+                                                                                    continue;
+                                                                                if ($ls_item == 'uri')
+                                                                                    continue;
+                                                                                ?>
+                                                                                <tr>
+                                                                                    <th><?php echo $ls_item ?></th>
+                                                                                    <td><?php echo $lang_detail ?></td>       
+                                                                                </tr>
 
-                                                                        <?php
-                                                                        $lang_switcher_themes = zwt_get_ls_themes();
-                                                                       
-                                                                            ?>																			
-                                                                            <p>
-                                                                                <label title="<?php _e('Language Switcher Theme', 'Zanto') ?>">
-                                                                                    <span><?php _e('Language Switcher Theme', 'Zanto') ?> </span>
-                                                                                    <br/>
-                                                                                    <select name="zwt_ls_theme" id="li_theme">
-                                                                                        <option value="0"><?php _e('Default', 'Zanto') ?></option>
-                                                                                        <?php foreach ((array) $lang_switcher_themes as $val) { ?>
-                                                                                            <option value="<?php echo esc_attr($val) ?>" <?php selected($settings['lang_switcher']['zwt_ls_theme'], $val, true) ?> > <?php echo esc_html($val) ?></option>
-                                                                                        <?php } ?>
-                                                                                    </select>
-                                                                                </label>
-                                                                            <p><?php printf(__('You can add a  language switcher from the current Language Swicher Theme any where on your site theme by inserting any of these PHP codes in the theme: %s or use the language switcher widget', 'Zanto'), '<a href="#TB_inline?width=600&height=300&inlineId=zwt_theme_codes" class="thickbox">See Codes</a>'); ?>.</p>
-                                                                            <p><a href="http://zanto.org/?p=62"><?php _e('Documentation on how to create your own language switcher theme', 'Zanto') ?></a>.</p>
+                                                                            <?php endforeach; ?>
+                                                                        </table>
+                                                                        <br/>
+                                                                        <table class="widefat zwt-ls-codes">
+        <?php if (is_array($zwt_ls_types) && !empty($zwt_ls_types)):
+            foreach ($zwt_ls_types as $type => $description): ?>
+                                                                                    <tr>
+                                                                                        <th><?php echo $description ?></th><td><code class="php">&lt;?php do_action('zwt_lang_switcher', '<?php echo $type ?>'); ?&gt;</code></td>
+                                                                                    </tr>
 
-																		  <?php add_thickbox(); ?>
-                                                                            <div id="zwt_theme_codes" style="display:none;">
-                                                                                <?php global $zwt_ls_types ?>
-                                                                                <table class="form-table zwt-ls-table">
-                                                                                    <thead>
-                                                                                        <tr>
-                                                                                            <th><?php _e('Switcher Name', 'Zanto') ?></th>
-                                                                                            <th><?php _e('Description', 'Zanto') ?></th>       
-                                                                                            <th><?php _e('Code', 'Zanto') ?></th>
-                                                                                        </tr>
-                                                                                    </thead>
+            <?php endforeach;
+        else: ?>
+                                                                                <tr>
+                                                                                    <th><?php _e('Custom Language Switcher codes', 'Zanto'); ?></td>
+                                                                                    <td><code class="php">&lt;?php do_action('zwt_lang_switcher'); ?&gt;</code></td>
+                                                                                </tr>
+        <?php endif; ?>
 
-                                                                                    <tbody>
-                                                                                        <?php foreach ($zwt_ls_types as $type => $description): ?>
-                                                                                            <tr>
-                                                                                                <td><?php echo $type ?></td>
-                                                                                                <td><?php echo $description ?></td>
-                                                                                                <td><code class="php">&lt;?php do_action('zwt_lang_switcher', '<?php echo $type ?>'); ?&gt;</code></td>
-                                                                                            </tr>
-                                                                                        <?php endforeach; ?>
-                                                                                    </tbody>
-                                                                                </table>
-                                                                            </div>
-                                                                            </p>
-                                                                        
+                                                                        </table>
+                                                                    </div>
+                                                                    </p>
 
-                                                                        <strong><?php _e('custom css', 'Zanto') ?> </strong><br/>
-                                                                        <textarea id="zwt_custom_css"  name="zwt_additional_css" rows="4" cols="80"><?php
+                                                                    <strong><?php _e('custom css', 'Zanto') ?> </strong><br/>
+                                                                    <textarea id="zwt_custom_css"  name="zwt_additional_css" rows="4" cols="80"><?php
                                                                 if (!empty($settings['lang_switcher']['zwt_ls_custom_css']))
                                                                     echo $settings['lang_switcher']['zwt_ls_custom_css'];
-                                                                        ?></textarea>
-                                                                    </td>
-                                                                </tr>
+                                                                ?></textarea>
+                                                                </td>
+                                                            </tr>
 
-                                                                <tr>
-                                                                    <th scope="row"><?php _e('Footer Language Switcher Option', 'Zanto') ?></th>
-                                                                    <td>
-                                                                        <fieldset><legend class="screen-reader-text"><span><?php _e('Footer Language Switcher Option', 'Zanto') ?></span></legend>
-                                                                            <label title="<?php _e('Show footer language switcher', 'Zanto') ?>">
-                                                                                <input  type="checkbox" name="zwt_footer_ls" <?php checked($settings['lang_switcher']['show_footer_selector'], 1) ?>/>
-                                                                                <span><?php _e('Show footer language switcher', 'Zanto') ?> </span>
-                                                                            </label>
-                                                                            <br/><br/>
+                                                            <tr>
+                                                                <th scope="row"><?php _e('Footer Language Switcher Option', 'Zanto') ?></th>
+                                                                <td>
+                                                                    <fieldset><legend class="screen-reader-text"><span><?php _e('Footer Language Switcher Option', 'Zanto') ?></span></legend>
+                                                                        <label title="<?php _e('Show footer language switcher', 'Zanto') ?>">
+                                                                            <input  type="checkbox" name="zwt_footer_ls" <?php checked($settings['lang_switcher']['show_footer_selector'], 1) ?>/>
+                                                                            <span><?php _e('Show footer language switcher', 'Zanto') ?> </span>
+                                                                        </label>
+                                                                        <br/><br/>
 
 
 
-                                                                    </td>
-                                                                </tr>
-
-                                                            </table>
-                                                            <input type="hidden"  name="zwt_lang_order" id="zwt_lang_order" >
-                                                            <input type="submit" name="interface_4_save" id="submit4" class="button button-primary" value="Save Changes">
-                                                        </form>
-                                                <?php } ?>
+                                                                </td>
+                                                            </tr>
+        <?php do_action('zwt_menu_ls_end'); ?>
+                                                        </table>
+                                                        <input type="hidden"  name="zwt_lang_order" id="zwt_lang_order" >
+                                                        <input type="submit" name="interface_4_save" id="submit4" class="button button-primary" value="Save Changes">
+                                                    </form>
+    <?php } ?>
                                                 </div>
-												<div id="nav-menu-footer">
-                        &nbsp;     
-                    </div>
-												</div>
+                                                <div id="nav-menu-footer">
+                                                    &nbsp;     
+                                                </div>
+                                                </div>
                                                 <?php
                                             }
                                             //end interface 4  

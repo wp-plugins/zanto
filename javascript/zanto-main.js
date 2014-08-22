@@ -6,7 +6,7 @@
  * @author Zanto Translate
  */
 
-function zwt_wrapper($) {
+function zwt_main($) {
     var zwt = {
         /**
          * Main entry point
@@ -30,12 +30,19 @@ function zwt_wrapper($) {
             if (adminpage == 'zanto_page_zwt_advanced_tools') {
                 zwt.AToolsEventHandlers();
             }
+			if (adminpage == 'zanto_page_zwt_settings') {
+			    zwt.initialiseStgsPage();
+                zwt.stgsEventHandlers();
+            }
+			zwt.ZUI_Events();
         },
 
         /**
-         * Registers event handlers
-         * @author Zanto Translate
+         * Registers reusable Zanto User interface event handlers. can be resused by addonds 
          */
+		ZUI_Events: function (){ //these can be used through out zanto and zanto addons provided the right class is used for the selectors
+		    $('.zui-toggle-show').click(zwt.hideShow);//  hides/shows siblings of elements with class 'zwt-hide'
+		},
         transNetEventHandlers: function () {
             $('a.add_to_network').click(zwt.showUpdateTransInputs);
             $('a.remove_from_network').click(zwt.removeFromNetwork);
@@ -43,6 +50,9 @@ function zwt_wrapper($) {
 
         PostEventHandlers: function (event) {
             $('.transln_method_mthds').change(zwt.transln_method_change);
+			$('#zwt_select_primary').change(zwt.overwriteAlert);
+			$('.zwt_select_secondary').change(zwt.overwriteAlert);
+			$('a#zwt_cfo.zwt_cfp').click(zwt.copy4rmOriginal);
         },
 
         AToolsEventHandlers: function (event) {
@@ -50,7 +60,27 @@ function zwt_wrapper($) {
             $('#zwt_copy_taxonomy').click(zwt.advancedToolsAjax);
             $('#zwt_reset_zanto').click(zwt.advancedToolsAjax);
         },
+		stgsEventHandlers: function (event){
+		    var tmSet=$('#ztm_active');
+		    if(tmSet.length!=0 && tmSet[0].value =='1'){
+                $('#primary-lang').change(zwt.primaryLangAlert);
+            }
+		},
 		
+		initialiseStgsPage: function()
+        {		   
+            $( "#sortable" ).sortable({
+                update: function(event, ui) {
+                    var LangOrder = $(this).sortable('toArray').toString();
+                    $('#zwt_lang_order').attr('value',LangOrder);
+                }
+            });
+            $( "#sortable" ).disableSelection();
+			
+        },
+		hideShow: function (){
+		    $(this).parent().find('.zui-target').fadeToggle();
+		},
         removeFromNetwork: function(event){
             var buttonSelected = $(this);
             var buttonId = buttonSelected.attr('id');
@@ -58,7 +88,7 @@ function zwt_wrapper($) {
             var idRegex = /[0-9]+/;
             var id = parseInt(buttonId.match(idRegex), 10);
             event.preventDefault();
-            var proceed = confirm(buttonTitle+':\n\n'+zwt_install_params['remove_string']);
+            var proceed = confirm(buttonTitle+':\n\n'+zwt_main_i8n[1]);
             if(!proceed){
                 return;
             }else{
@@ -85,17 +115,17 @@ function zwt_wrapper($) {
         },
 
         showUpdateTransInputs: function (event) {
-            var c_user = zwt_install_params['current_user'];
+            var c_user = zwt_main_i8n[0];
             buttonSelected = $(this);
             var classRegex = /active/;
             if (buttonSelected.attr('class').search(classRegex) != -1) {
                 $('.zwt_show_dash').text('-');
-                $('.add_to_network').addClass('button').text('Add to Translation Network').removeClass('active').blur();
+                $('.add_to_network').addClass('button').text(zwt_main_i8n[2]).removeClass('active').blur();
                 $('#zwt_get_blogid').attr('value', '');
                 event.preventDefault();
             } else {
                 $('.zwt_show_dash').text('-');
-                $('.add_to_network').addClass('button').text('Add to Translation Network').removeClass('active');
+                $('.add_to_network').addClass('button').text(zwt_main_i8n[2]).removeClass('active');
 
 
                 var buttonId = buttonSelected.attr('id');
@@ -110,7 +140,7 @@ function zwt_wrapper($) {
                 transIdPos.prepend(zwt.transIdArray);
                 langArrayPos.prepend(zwt.langArray);
                 userPos.text(c_user);
-                buttonSelected.removeClass('button').text('Cancel').addClass('active').blur();
+                buttonSelected.removeClass('button').text(zwt_main_i8n[3]).addClass('active').blur();
                 //add the selected ID to submit button value for identification of selected ID
                 $('#zwt_get_blogid').attr('value', id);
                 return false;
@@ -139,10 +169,10 @@ function zwt_wrapper($) {
 					
             }else if(selected== 'zwt_reset_zanto'){
                 if(!$('#zwt_reset_settings').attr('checked')){
-                    alert('Nothing Selected');
+                    alert(zwt_main_i8n[4]);
                     return;
                 }
-                var r=confirm("Your current blog settings will be lost. The default settings will be applied");
+                var r=confirm(zwt_main_i8n[5]);
                 if (!r==true){
                     return;
                 }
@@ -167,6 +197,16 @@ function zwt_wrapper($) {
             });
         },
 		
+		primaryLangAlert:function(){
+            if(!confirm(zwt_settings_params[0])){
+                for(var i=0; i<this.length; i++){
+                    if(this[i].defaultSelected){
+                        this.selectedIndex=i;
+                    }
+                }
+            }
+        },
+		
         transNetworkPageStart: function () {
             $('#zwt_remove_elements').remove();
         },
@@ -187,7 +227,7 @@ function zwt_wrapper($) {
                 $('#transln_method_img' + id).show();
             } else if (inputSelectedVal == 2) {
 
-                var transSelectPost = $('#transln_method_select' + id);
+                var transSelectPost = $('#zwt_select_secondary' + id);
                 if (zwt.selectSet[id] != 1) {
                     var data = {
                         action: 'zwt_all_ajax',
@@ -204,18 +244,40 @@ function zwt_wrapper($) {
             } else if (inputSelectedVal == 3) {
                 $('#transln_method_text' + id).show().attr('value', 'http://');
             }
-        }
+        },
+		
+		overwriteAlert: function(e){
+		if(this[this.selectedIndex].className=="translated"){
+		    if(!confirm(zwt_main_i8n[6])){
+				        this[this.selectedIndex].selected=false;
+				        return false;
+				   }
+		}
+		
+		var cfp = $('.zwt_cfp');
+			if(cfp.length!=0)
+			   cfp.show();
+		},
+		
+		copy4rmOriginal: function(){
+		zwt_copy_from_original(document.getElementById('zwtprimaryblog').value, document.getElementById('zwt_select_primary').value);
+		return false;
+		}
 
     }; // end zwt
 
     $(document).ready(zwt.init);
 
-} // end zwt_wrapper()
+} // end zwt_main()
 
-zwt_wrapper(jQuery);
+zwt_main(jQuery);
 
 function zwt_copy_from_original(blog_id, post_id) {
     //jQuery('#zwt_cfo').after(zwt_ajxloaderimg).attr('disabled', 'disabled');
+    var copyButton = jQuery('#zwt_cfo');
+	if(copyButton.attr('disabled')== 'disabled'){
+	return false;
+	}
 
     if (typeof tinyMCE != 'undefined' && (ed = tinyMCE.activeEditor) && !ed.isHidden()) {
         var editor_type = 'rich';
@@ -253,7 +315,7 @@ function zwt_copy_from_original(blog_id, post_id) {
                 } catch (err) {
                 ;
                 }
-                jQuery('#zwt_cfo').attr('disabled', true);
+                copyButton.attr('disabled', true);
 
             }
         //   jQuery('#zwt_cfo').next().fadeOut();

@@ -28,7 +28,7 @@ function zwt_initial_activate(){
                 `english_name` VARCHAR( 128 ) NOT NULL ,            
                 `default_locale` VARCHAR( 8 ),
 				`custom` INT( 1 ),
-                UNIQUE KEY `code` (`code`),
+                UNIQUE KEY `default_locale` (`default_locale`),
                 UNIQUE KEY `english_name` (`english_name`)
             ) ENGINE=MyISAM {$charset_collate}"; 
             $wpdb->query($sql);
@@ -103,7 +103,7 @@ function zwt_initial_activate(){
         exit;
     }
 	
-		$short_v = implode('.', array_slice(explode('.', GTP_ZANTO_VERSION), 0, 3));
+	$short_v = implode('.', array_slice(explode('.', GTP_ZANTO_VERSION), 0, 3));
 	$zwt_old_settings = get_metadata('site', $site_id, 'zwt_zanto_settings', $single = true);
 	$zwt_new_settings = array('zwt_installed_version' => $short_v);
 	
@@ -120,7 +120,7 @@ function zwt_initial_activate(){
 		        break;
             case 0: break;// same version
             case 1: 
-		       ZantoWPTranslation::$notices->enqueue( 'A newer version of Zanto Translation plugin was previously installed on this site', 'error' );
+		       add_notice(__( 'A newer version of Zanto Translation plugin was previously installed on this site', 'Zanto'),'error');
 		       break;
         }
     }
@@ -131,7 +131,7 @@ if(isset($_GET['activate'])){
     if(!isset($wpdb)) global $wpdb;
     $table_name = 'zwt_languages';
     if(strtolower($wpdb->get_var("SHOW TABLES LIKE '{$table_name}'")) != strtolower($table_name)){
-	        ZantoWPTranslation::$notices->enqueue( 'Zanto cannot create the database tables! Make sure that your mysql user has the CREATE privilege', 'error' );
+	        add_notice(__('Zanto cannot create the database tables! Make sure that your mysql user has the CREATE privilege', 'Zanto'),'error');
             zwt_deactivate_zanto();               
         
     }

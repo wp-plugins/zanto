@@ -8,7 +8,7 @@ if (!class_exists('ZWT_Interfaces')) {
     /**
      * Handles plugin pages and interface field dispalys 
      * @package ZWT_Base
-     * @author Zanto Translate
+     * @author Ayebare Mucunguzi
      */
     class ZWT_Interfaces {
         const REQUIRED_CAPABILITY = 'manage_network_plugins';
@@ -25,10 +25,6 @@ if (!class_exists('ZWT_Interfaces')) {
         /**
          * Public setter for protected variables
          * Updates settings outside of the Settings API or other subsystems
-         * 
-         * @mvc Controller
-         * @author Zanto Translate
-         * @param string $variable
          * @param array $value This will be merged with ZWT_Settings->settings, so it should mimic the structure of the ZWT_Settings::$defaultSettings. It only needs the contain the values that will change, though. See ZWT_Base->upgrade() for an example.
          */
         public function __set($variable, $value) {
@@ -44,7 +40,9 @@ if (!class_exists('ZWT_Interfaces')) {
 
             add_action('admin_menu', array($this, 'registerSettingsPages'));
             add_action('init', array($this, 'init'), 90);
-            add_filter('plugin_action_links_' . plugin_basename(dirname(__DIR__)) . '/zanto.php', array($this, 'addPluginActionLinks'));
+            //add_filter('plugin_action_links_' . plugin_basename(dirname(__DIR__)) . '/zanto.php', array($this, 'addPluginActionLinks'));
+			add_filter('plugin_row_meta', array($this, 'plugin_support_link'), 10, 2 );
+
         }
 
         public function add_tabs() {
@@ -107,11 +105,22 @@ if (!class_exists('ZWT_Interfaces')) {
          * @return array
          */
         public static function addPluginActionLinks($links) {
-            array_unshift($links, '<a href="http://wordpress.org/extend/plugins/zanto-translation-base/faq/">' . __('Help', 'Zanto') . '</a>');
+            array_unshift($links, '<a href="http://zanto.org/support/">' . __('Support', 'Zanto') . '</a>');
             array_unshift($links, '<a href="options-general.php?page=' . ZWT_Base::PREFIX . 'settings">' . __('Settings', 'Zanto') . '</a>');
 
             return $links;
         }
+		
+		function plugin_support_link($links, $file) {
+            if ($file == GTP_PLUGIN_FOLDER.'/zanto.php'){
+                return array_merge($links, 
+				array( sprintf('<a href="http://zanto.org/support">%s</a>', __('Support','Zanto')) ),
+				array( sprintf('<a href="http://shop.zanto.org">%s</a>', __('Addons','Zanto')) )
+				);
+            }
+            return $links;
+        }
+
 
         /**
          * Adds language switcher to Admin tool bar
@@ -119,33 +128,47 @@ if (!class_exists('ZWT_Interfaces')) {
          * @author Zanto Translate
          */
         public function registerSettingsPages() {
-            global $wp_version;
-            global $zwt_site_obj, $zwt_menu_url;
+            global $wp_version, $zwt_site_obj, $zwt_menu_url;
 
             if (did_action('admin_menu') !== 1)
                 return;
 
             $zwt_site_obj->modules['settings']->init();
             $zwt_settings_page = add_menu_page(
-                    GTP_NAME . ' Settings', 'Zanto', self::REQUIRED_CAPABILITY, ZWT_Base::PREFIX . 'settings', array($this, 'markupSettingsPage'),$zwt_menu_url
+                    GTP_NAME . ' Dashboard', 'Zanto', self::REQUIRED_CAPABILITY, ZWT_Base::PREFIX . 'dashboard', array($this, 'markupDashboardPage'), $zwt_menu_url
             );
+			
+			 add_submenu_page(
+                        ZWT_Base::PREFIX . 'dashboard', GTP_NAME . __('Settings', 'Zanto'), __('Blog Settings', 'Zanto'), self::REQUIRED_CAPABILITY, ZWT_Base::PREFIX . __('settings', 'Zanto'), array($this, 'markupSettingsPage')
+                );
 
             if ('complete' == $zwt_site_obj->modules['settings']->settings['setup_status']['setup_wizard']) {
                 add_submenu_page(
-                        ZWT_Base::PREFIX . 'settings', GTP_NAME . ' Settings', 'Blog Settings', self::REQUIRED_CAPABILITY, ZWT_Base::PREFIX . __('settings', 'Zanto'), array($this, 'markupSettingsPage')
+                        ZWT_Base::PREFIX . 'dashboard', GTP_NAME . __('Dashboard', 'Zanto'), __('Dashboard', 'Zanto'), self::REQUIRED_CAPABILITY, ZWT_Base::PREFIX . __('dashboard', 'Zanto'), array($this, 'markupDashboardPage')
                 );
+               
                 add_submenu_page(
-                        ZWT_Base::PREFIX . 'settings', __('Translation Network', 'Zanto'), __('Translation Network', 'Zanto'), 'manage_options', ZWT_Base::PREFIX . __('trans_network', 'Zanto'), array($this, 'user_trans_networks'));
+                        ZWT_Base::PREFIX . 'dashboard', __('Translation Network', 'Zanto'), __('Translation Network', 'Zanto'), 'manage_options', ZWT_Base::PREFIX . __('trans_network', 'Zanto'), array($this, 'user_trans_networks'));
 
                 add_submenu_page(
-                        ZWT_Base::PREFIX . 'settings', __('Locale Manager ', 'Zanto'), __('Locale Manager', 'Zanto'), 'read', ZWT_Base::PREFIX . __('manage_locales', 'Zanto'), array($this, 'mo_management'));
+                        ZWT_Base::PREFIX . 'dashboard', __('Language Manager ', 'Zanto'), __('Language Manager', 'Zanto'), 'read', ZWT_Base::PREFIX . __('manage_locales', 'Zanto'), array($this, 'mo_management'));
 
                 add_submenu_page(
-                        ZWT_Base::PREFIX . 'settings', __('Advanced Tools ', 'Zanto'), __('Advanced Tools', 'Zanto'), 'manage_options', ZWT_Base::PREFIX . __('advanced_tools', 'Zanto'), array($this, 'advanced_tools'));
+                        ZWT_Base::PREFIX . 'dashboard', __('Advanced Tools ', 'Zanto'), __('Advanced Tools', 'Zanto'), 'manage_options', ZWT_Base::PREFIX . __('advanced_tools', 'Zanto'), array($this, 'advanced_tools'));
             }
+
             if (version_compare($wp_version, '3.3') >= 0) {
                 add_action('load-' . $zwt_settings_page, array($this, 'add_tabs'));
             }
+        }
+
+        /**
+         * Creates the markup for the Dashboard page
+         * @mvc Controller
+         * @author Zanto Translate
+         */
+        public function markupDashboardPage() {
+            require_once( dirname(__DIR__) . '/views/dashboard.php' );
         }
 
         /**
@@ -154,7 +177,7 @@ if (!class_exists('ZWT_Interfaces')) {
          * @author Zanto Translate
          */
         public function markupSettingsPage() {
-            global $wpdb, $blog_id, $zwt_site_obj, $zwt_icon_url;
+            global $wpdb, $blog_id, $site_id, $zwt_site_obj, $zwt_icon_url;
             $c_settings_obj = $zwt_site_obj->modules['settings'];
             $user_id = get_current_user_id();
             if (current_user_can(self::REQUIRED_CAPABILITY)) {
@@ -237,29 +260,38 @@ if (!class_exists('ZWT_Interfaces')) {
                         'current_blog_id' => $blog_id,
                         'all_blog_ids' => $user_blog_ids,
                         'default_lang' => $default_lang,
-						'duplicate_lang'=> __('You have already chosen this language for another blog','Zanto')
+                        'duplicate_lang' => __('You have already chosen this language for another blog', 'Zanto'),
+                        'select' => __('- Select -', 'Zanto')
                     );
                     wp_localize_script(ZWT_Base::PREFIX . 'installation', ZWT_Base::PREFIX . 'install_params', $script_params);
                 }
                 else {
                     $c_settings_obj->init();
-                    if ('complete' !== $c_settings_obj->settings['setup_status']['setup_wizard']){
+                    if ('complete' !== $c_settings_obj->settings['setup_status']['setup_wizard']) {
                         $c_settings_obj->settings = array('setup_status' =>
                             array(
                                 'setup_wizard' => 'complete',
                                 'setup_interface' => 'four'
-                                ));}
+                                ));
+                    }
                     /* set up blog translation settings data	 */
                     $c_trans_net = $zwt_site_obj->modules['trans_network'];
                     /* capture translation network changes on reload */
                     $c_trans_net->init();
                     $blog_trans_network = $c_trans_net->transnet_blogs;
                     $c_primary_blog_lang = $c_trans_net->primary_lang_blog;
-					$parma_type=get_option('permalink_structure');
-					$c_blog_locale=get_option('WPLANG');
-					$c_blog_lang_code=$c_trans_net->get_lang_code($c_blog_locale);
-					$rewrite_on = (empty($parma_type))? false:true;
-;
+                    $parma_type = get_option('permalink_structure');
+                    $c_blog_locale = get_option('WPLANG');
+                    $c_blog_lang_code = $c_trans_net->get_lang_code($c_blog_locale);
+                    $rewrite_on = (empty($parma_type)) ? false : true;
+                    /* Check if the translation Manager is active */
+                    $ztm_global_stgs = get_metadata('site', $site_id, 'ztm_install', $single = true);
+                    $tm_active = (isset($ztm_global_stgs['active']) && in_array($c_primary_blog_lang, $ztm_global_stgs['active'])) ? true : false;
+					$add_langs2head = (zwt_network_vars($c_trans_net->transnet_id, 'get', 'add_seo_headlangs'))?1:0;
+                    $script_params = array(
+                        __('Changing of the primary language will lead to loss of unfinished translations in the Translation Manager!', 'Zanto')//0
+                    );
+                    wp_localize_script(ZWT_Base::PREFIX . 'installation', ZWT_Base::PREFIX . 'settings_params', $script_params);
                 }
                 $settings = $c_settings_obj->settings;
                 require_once( dirname(__DIR__) . '/views/page-settings.php' );
@@ -326,9 +358,6 @@ if (!class_exists('ZWT_Interfaces')) {
                     }
                     $unique_trans_blog = array_unique($unique_trans_blog);
                 }
-                $user_name = get_userdata(get_current_user_id())->display_name;
-                $script_params = array('current_user' => $user_name, 'remove_string' =>__('Translations for this blog will be overwritten!','Zanto'));
-                wp_localize_script(ZWT_Base::PREFIX . 'zanto-translation-main', ZWT_Base::PREFIX . 'install_params', $script_params);
 
                 require_once( dirname(__DIR__) . '/menus/translation-network.php' );
             }
@@ -371,7 +400,6 @@ if (!class_exists('ZWT_Interfaces')) {
             $taxonomies = get_taxonomies($tax_args);
             require_once( dirname(__DIR__) . '/menus/zwt-advanced-tools.php');
         }
-       
 
         /**
          * Executes the logic of upgrading from specific older versions of the plugin to the current version
@@ -380,12 +408,7 @@ if (!class_exists('ZWT_Interfaces')) {
          * @param string $dbVersion
          */
         public function upgrade($dbVersion = 0) {
-            /*
-              if( version_compare( $dbVersion, 'x.y.z', '<' ) )
-              {
-              // Do stuff
-              }
-             */
+            /* all general upgrade procedures are implemented in the ZWT_Translation_Network class upgrade function */
         }
 
         /**

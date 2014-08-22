@@ -53,10 +53,10 @@ $c_blog_details = get_blog_details($trans_blog['blog_id']);
 <br/>
 
 <div class="zwt_advanced_box">
-<h3><?php _e('Recet Zanto settings','Zanto')?></h3>
+<h3><?php _e('reset Zanto settings','Zanto')?></h3>
 <div class= "zwt_advanced_box_inner">
-<label><input type="checkbox" name="zwt_reset_settings" id="zwt_reset_settings" value="pages"> <?php _e('Recet Zanto settings for this blog. Translations are not affected','Zanto')?></label>
-<p><input type="button" name="zwt_reset_zanto" id="zwt_reset_zanto" class="button button-primary" value="Recet"/>&nbsp;</p>
+<label><input type="checkbox" name="zwt_reset_settings" id="zwt_reset_settings" value="pages"> <?php _e('reset Zanto settings for this blog. Translations are not affected','Zanto')?></label>
+<p><input type="button" name="zwt_reset_zanto" id="zwt_reset_zanto" class="button button-primary" value="reset"/>&nbsp;</p>
 <?php $ajax_nonce = wp_create_nonce("zwt-advanced-tools"); ?>
 <input type="hidden" value="<?php echo $ajax_nonce ?>" name="_wpnonce" id="zwt_advanced_tools">
 <script type="text/javascript">
