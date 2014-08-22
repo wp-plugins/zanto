@@ -14,7 +14,7 @@ Zanto WP Translation enables you to convert blogs in a multisite into translatio
 of  pages, posts, categories, custom types and custom taxonomies. The plugin keeps track of what has been translated and what has not and provides an intuitive interface
 that allows you to carry out translation. The number of languages you can run are unlimited. Get more WordPress multilingual, Localization and Internationalization addons from here
 <a title="WordPress translation, localization and Internationalization addons" href="http://shop.zanto.org">multilingual addons</a> or keep up to-date with the best Internationalization and 
-localization practices at <a title="WordPress translation, localization and Internationalization" href="zanto.org">zanto.org/blog</a>
+localization practices at <a title="WordPress translation, localization and Internationalization" href="zanto.org">http://zanto.org/blog</a>
 
 
 Features:
