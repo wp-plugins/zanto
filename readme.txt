@@ -3,18 +3,18 @@ Contributors: brooksX
 Tags: translation, multilingual, localization, multisite, language switcher, languages, Internationalization, i18n, l10n
 Requires at least: 3.0
 Tested up to: 3.9.2
-Stable tag: 0.3.0
+Stable tag: 0.3.1
 License: GPLv2 or later
 
-Zanto WP Translation helps you run a WordPress multilingual site by providing linkage between content in blogs of different languages in a WordPress multisite.
+Zanto WP Translation helps you run a multilingual site by providing linkage between content in blogs of different languages in a WordPress multisite.
 
 == Description ==
 
-Zanto WP Translation enables you to convert blogs in a WordPress multisite into translations of each other. It provides a language switcher to switch between the different translations
+Zanto WP Translation enables you to convert blogs in a multisite into translations of each other. It provides a language switcher to switch between the different translations
 of  pages, posts, categories, custom types and custom taxonomies. The plugin keeps track of what has been translated and what has not and provides an intuitive interface
 that allows you to carry out translation. The number of languages you can run are unlimited. Get more WordPress multilingual, Localization and Internationalization addons from here
 <a title="WordPress translation, localization and Internationalization addons" href="http://shop.zanto.org">multilingual addons</a> or keep up to-date with the best Internationalization and 
-localization practices at <a title="WordPress translation, localization and Internationalization" href="http://zanto.org">zanto.org/blog</a>
+localization practices at <a title="WordPress translation, localization and Internationalization" href="zanto.org">zanto.org/blog</a>
 
 
 Features:
@@ -128,6 +128,9 @@ Yes, we have so many features in store under developement, keep tuned in at <a h
 and participate in our forum. Get to decide what you want in your favorite free multilingual plugin and we'll fold our shirt sleeves to get it ready for the next version.
 
 == Upgrade Notice ==
+
+= 0.3.1 =
+Upgrade to fix bug on translation page 
 
 = 0.3.0 =
 Upgrade to fix all reported issues in the previous version. 

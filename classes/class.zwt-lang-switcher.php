@@ -40,7 +40,7 @@ if (!class_exists('ZWT_Lang_Switcher')) {
          */
         public function registerHookCallbacks() {
 
-            add_action('plugins_loaded', array($this, 'init'));
+            add_action('plugins_loaded', array($this, 'init'),1);
             if (is_admin()) {
                 add_action('admin_init', array($this, 'process_admin_swicher'));
                 add_action('admin_bar_menu', __CLASS__ . '::adminLanguageSwitcher', 999);

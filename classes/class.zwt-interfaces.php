@@ -139,22 +139,22 @@ if (!class_exists('ZWT_Interfaces')) {
             );
 			
 			 add_submenu_page(
-                        ZWT_Base::PREFIX . 'dashboard', GTP_NAME . __('Settings', 'Zanto'), __('Blog Settings', 'Zanto'), self::REQUIRED_CAPABILITY, ZWT_Base::PREFIX . __('settings', 'Zanto'), array($this, 'markupSettingsPage')
+                        ZWT_Base::PREFIX . 'dashboard', GTP_NAME . __('Settings', 'Zanto'), __('Blog Settings', 'Zanto'), self::REQUIRED_CAPABILITY, ZWT_Base::PREFIX . 'settings', array($this, 'markupSettingsPage')
                 );
 
             if ('complete' == $zwt_site_obj->modules['settings']->settings['setup_status']['setup_wizard']) {
                 add_submenu_page(
-                        ZWT_Base::PREFIX . 'dashboard', GTP_NAME . __('Dashboard', 'Zanto'), __('Dashboard', 'Zanto'), self::REQUIRED_CAPABILITY, ZWT_Base::PREFIX . __('dashboard', 'Zanto'), array($this, 'markupDashboardPage')
+                        ZWT_Base::PREFIX . 'dashboard', GTP_NAME . __('Dashboard', 'Zanto'), __('Dashboard', 'Zanto'), self::REQUIRED_CAPABILITY, ZWT_Base::PREFIX .'dashboard', array($this, 'markupDashboardPage')
                 );
                
                 add_submenu_page(
-                        ZWT_Base::PREFIX . 'dashboard', __('Translation Network', 'Zanto'), __('Translation Network', 'Zanto'), 'manage_options', ZWT_Base::PREFIX . __('trans_network', 'Zanto'), array($this, 'user_trans_networks'));
+                        ZWT_Base::PREFIX . 'dashboard', __('Translation Network', 'Zanto'), __('Translation Network', 'Zanto'), 'manage_options', ZWT_Base::PREFIX . 'trans_network', array($this, 'user_trans_networks'));
 
                 add_submenu_page(
-                        ZWT_Base::PREFIX . 'dashboard', __('Language Manager ', 'Zanto'), __('Language Manager', 'Zanto'), 'read', ZWT_Base::PREFIX . __('manage_locales', 'Zanto'), array($this, 'mo_management'));
+                        ZWT_Base::PREFIX . 'dashboard', __('Language Manager ', 'Zanto'), __('Language Manager', 'Zanto'), 'read', ZWT_Base::PREFIX . 'manage_locales', array($this, 'mo_management'));
 
                 add_submenu_page(
-                        ZWT_Base::PREFIX . 'dashboard', __('Advanced Tools ', 'Zanto'), __('Advanced Tools', 'Zanto'), 'manage_options', ZWT_Base::PREFIX . __('advanced_tools', 'Zanto'), array($this, 'advanced_tools'));
+                        ZWT_Base::PREFIX . 'dashboard', __('Advanced Tools ', 'Zanto'), __('Advanced Tools', 'Zanto'), 'manage_options', ZWT_Base::PREFIX . 'advanced_tools', array($this, 'advanced_tools'));
             }
 
             if (version_compare($wp_version, '3.3') >= 0) {

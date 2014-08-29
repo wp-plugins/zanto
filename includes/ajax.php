@@ -379,20 +379,20 @@ if (is_admin() && isset($_REQUEST['admin_fn'])) {
                 $transnet_blogs = $zwt_site_obj->modules['trans_network']->get_transnet_blogs(true);
 
                 if ($wpdb->delete($wpdb->base_prefix . 'zwt_trans_network', array('blog_id' => $d_blog_id), array('%d'))) {
-                    add_notice('Zanto Trans Network was successfuly updated');
+                    add_notice(__('Zanto Translation Network was successfuly updated','Zanto'));
                     ZWT_Settings::save_setting('settings', array('setup_status' =>
                         array(
                             'setup_wizard' => 'incomplete',
                             'setup_interface' => 'two'
                             )));
                 } else { //@todo make it persistent
-                    add_notice('There was an error updating the Trans Network table', 'error');
+                    add_notice(__('There was an error updating the Trans Network table','Zanto'), 'error');
                     die();
                 }
 
                 if (count($transnet_blogs) < 2) {
                     if (!$wpdb->delete($wpdb->base_prefix . 'usermeta', array('meta_key' => 'zwt_installed_transnetwork', 'meta_value' => $transnet_id), array('%s', '%d'))) {
-                        add_notice('There was an error deleting the zwt_trans_network value from usermeta table', 'error');
+                        add_notice(__('There was an error deleting the zwt_trans_network value from usermeta table','Zanto'), 'error');
                     }
 
                     // delete zwt_network_vars from site meta
@@ -447,7 +447,7 @@ if (is_admin() && isset($_REQUEST['admin_fn'])) {
             if (!empty($not_translators)) {
                 $json = $not_translators;
             } else {
-                $json = array('label' => 'No Matches', 'value' => '');
+                $json = array('label' => __('No Matches','Zanto'), 'value' => '');
             }
             echo json_encode($json);
             die();
@@ -456,7 +456,7 @@ if (is_admin() && isset($_REQUEST['admin_fn'])) {
         case 'ztm_save_trnsln'://[CHECK FOR POST TYPE]
             check_ajax_referer('zantoajaxsave', '_wpnonce');
             if (empty($_POST['target_pid']))
-                wp_die(__('You are not allowed to edit this post.'));
+                wp_die(__('You are not allowed to edit this post.','Zanto'));
             $current_uid = get_current_user_id();
             $data = '';
             $id = $revision_id = 0;
@@ -470,7 +470,7 @@ if (is_admin() && isset($_REQUEST['admin_fn'])) {
             $translation_meta = get_post_meta($source_pid, '_translation_meta_', true);
             if (isset($translation_meta[ZTM_TARGET_BLOG]['translator']))
                 if ($translation_meta[ZTM_TARGET_BLOG]['translator'] !== $current_uid && $translation_meta[ZTM_TARGET_BLOG]['translator'] !== -1) {// prevent translator subotage
-                    $json['error'] = __('There was a problem verifying the translator', 'zanto-xlf');
+                    $json['error'] = __('There was a problem verifying the translator', 'Zanto');
                     echo json_encode($json);
                     die();
                 }
@@ -525,13 +525,13 @@ if (is_admin() && isset($_REQUEST['admin_fn'])) {
                     restore_current_blog();
                     update_post_meta($source_pid, '_translation_meta_', $translation_meta);
                 } else {
-                    $json['error'] = __('There was a problem saving the post', 'zanto-xlf');
+                    $json['error'] = __('There was a problem saving the post', 'Zanto');
                     echo json_encode($json);
                     die();
                 }
                 $json['date'] = $translation_meta[ZTM_TARGET_BLOG]['date'];
 				$json['progress'] = $translation_meta[ZTM_TARGET_BLOG]['progress'];
-                $json['body'] = __('Translations Saved', 'zanto-xlf');
+                $json['body'] = __('Translations Saved', 'Zanto');
                 echo json_encode($json);
             }
             die();
@@ -547,19 +547,19 @@ if (is_admin() && isset($_REQUEST['admin_fn'])) {
             $target_bid = (int) $_POST['target_bid'];
 
             if (!current_user_can('translate')) {
-                $json['error'] = __('This procedure requires translation previlages to be perfomed', 'zanto-xlf');
+                $json['error'] = __('This procedure requires translation previlages to be perfomed', 'Zanto');
                 echo json_encode($json);
                 die();
             }
 
             $translation_meta = get_post_meta($source_pid, '_translation_meta_', true);
             $user_job = ($_REQUEST['admin_fn'] == 'ztm_send2_review') ? 'translator' : 'reviewer';
-            $user_job_txt = __($user_job, 'zanto-xlf');
-            $receiver = ($user_job == 'translator') ? __('reviewer', 'zanto-xlf') : __('translator', 'zanto-xlf');
+            $user_job_txt = __($user_job, 'Zanto');
+            $receiver = ($user_job == 'translator') ? __('reviewer', 'Zanto') : __('translator', 'Zanto');
 
             if (isset($translation_meta[ZTM_TARGET_BLOG][$user_job])) {
                 if ($translation_meta[ZTM_TARGET_BLOG][$user_job] !== $current_uid && $translation_meta[ZTM_TARGET_BLOG][$user_job] !== -1) {
-                    $json['error'] = sprintf(__('There was a problem verifying the %s', 'zanto-xlf'), $user_job_txt);
+                    $json['error'] = sprintf(__('There was a problem verifying the %s', 'Zanto'), $user_job_txt);
                     echo json_encode($json);
                     die();
                 } else {
@@ -586,12 +586,12 @@ if (is_admin() && isset($_REQUEST['admin_fn'])) {
                     }
                 }
             } else {
-                $json['error'] = sprintf(__('This post has not been assigned a %s', 'zanto-xlf'), $user_job_txt);
+                $json['error'] = sprintf(__('This post has not been assigned a %s', 'Zanto'), $user_job_txt);
                 echo json_encode($json);
                 die();
             }
 
-            $json['body'] = sprintf(__('The review notes have been sent to the %s', 'zanto-xlf'), $receiver);
+            $json['body'] = sprintf(__('The review notes have been sent to the %s', 'Zanto'), $receiver);
             echo json_encode($json);
             die();
             break;
@@ -639,7 +639,7 @@ if (is_admin() && isset($_REQUEST['admin_fn'])) {
                     }
                     update_user_meta($user->ID, $wpdb->prefix . 'language_pairs', $lang_pairs);
                 } else {
-                    _e('Please assign a lang pair', 'zanto-xlf');
+                    _e('Please assign a lang pair', 'Zanto');
                     die();
                 }
                 $wp_list_table = new ZTM_Translators_List();
@@ -650,7 +650,7 @@ if (is_admin() && isset($_REQUEST['admin_fn'])) {
 
                 $wp_list_table->single_row($item);
             } else {
-                _e('user selection error', 'zanto-xlf');
+                _e('user selection error', 'Zanto');
             }
 
             die();
@@ -673,7 +673,7 @@ if (is_admin() && isset($_REQUEST['admin_fn'])) {
                     if ($user_ID !== -1) {
                         $chosen_user = get_userdata($user_ID);
                         if (!$chosen_user || !$chosen_user->has_cap('translate')) {
-                            echo sprintf(__('Invalid %s Chosen', 'zanto-xlf'), $job);
+                            echo sprintf(__('Invalid %s Chosen', 'Zanto'), $job);
                             die();
                         }
                     }
@@ -692,7 +692,7 @@ if (is_admin() && isset($_REQUEST['admin_fn'])) {
                     }
                 }
             } else {
-                echo __('Empty Assignment', 'zanto-xlf');
+                echo __('Empty Assignment', 'Zanto');
                 die();
             }
 

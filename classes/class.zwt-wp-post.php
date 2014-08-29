@@ -303,8 +303,8 @@ if (!class_exists('ZWT_WP_POST')) {
                 if (isset($parts['query'])) {
                     parse_str(strval($parts['query']), $query);
                 }
-                $source_post_id = isset($query['zwt_translate']) ? intval($query['zwt_translate']) : false;
-                $source_blog = isset($query['source_b']) ? intval($query['source_b']) : false;
+                $source_post_id = isset($query['zwt_translate']) ? intval($query['zwt_translate']) : null;
+                $source_blog = isset($query['source_b']) ? intval($query['source_b']) : null;
             }
             if (isset($source_post_id) && isset($source_blog)) {
                 switch_to_blog($source_blog);
