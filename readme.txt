@@ -70,6 +70,8 @@ Upload the Zanto WP Translation plugin to your WordPress plugin directory and ac
 5. Setting up a translation network from available blogs in the multisite
 
 == Changelog ==
+= 0.3.1 =
+* Fixex translation bug from previous version
 = 0.3.0 =
 * Changed Locale Manager to Language Manager for easy understanding
 * Changed the plugin name to allow for more Internationalization/localization plugins to be created under the Zanto wing.
