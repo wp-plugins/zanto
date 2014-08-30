@@ -3,7 +3,7 @@
 Plugin Name: Zanto WP Translation
 Plugin URI: http://zanto.org/
 Description: Make blogs in a WordPress multisite translations of each other
-Version: 0.3.0
+Version: 0.3.1
 Author: Zanto Translate
 Author URI: http://zanto.org
 Text Domain: Zanto
