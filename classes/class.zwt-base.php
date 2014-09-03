@@ -253,7 +253,7 @@ if (!class_exists('ZWT_Base')) {
          * @author Zanto Translate
          */
         function loadLangFiles() {
-            $lang_dir = GTP_PLUGIN_PATH . '/languages/';
+            $lang_dir = GTP_PLUGIN_FOLDER . '/languages/';
             load_plugin_textdomain('Zanto', false, $lang_dir);
         }
 
