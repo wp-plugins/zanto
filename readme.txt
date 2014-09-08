@@ -2,7 +2,7 @@
 Contributors: brooksX
 Tags: translation, multilingual, localization, multisite, language switcher, languages, Internationalization, i18n, l10n
 Requires at least: 3.0
-Tested up to: 3.9.2
+Tested up to: 4.0
 Stable tag: 0.3.1
 License: GPLv2 or later
 
