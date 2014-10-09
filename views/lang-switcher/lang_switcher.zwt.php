@@ -3,7 +3,7 @@
 Theme Name: Default Language Switcher 
 Theme URI: http://www.zanto.org
 Description: Default language switcher for Zanto
-Version: 0.1.2
+Version: 0.1.3
 Author: Ayebare Mucunguzi
 Theme URI: http://www.zanto.org
 License: GNU General Public License v2.0
@@ -92,40 +92,5 @@ function zwt_lang_switcher_fn($ls_type) {
     }
 }
 
-function zwt_footer_ls_fn() {
-    global $show_flag, $show_native_name, $show_translated_name;
-
-    $languages = zwt_get_languages('skip_missing=0');
-    if (!empty($languages)) {
-        // This is used in display of the footer Language Switcher
-        ?>
-        <div id="lang_sel_footer">
-            <ul>
-                <?php foreach ($languages as $lang) { ?>
-                    <li>
-                        <a rel="alternate" style="<?php echo($show_flag) ? 'background: url(' . $lang['country_flag_url'] . ') no-repeat scroll left center;' : ''; ?>"
- hreflang="<?php echo $lang['language_code'] ?>" 
-                           href="<?php echo apply_filters('zwt_filter_link', $lang['url'], $lang) ?>" class="<?php echo ($lang['active']) ? 'lang_sel_sel' : 'lang_sel'; ?>">
-
-                        <?php
-                                $lang_native = ($show_native_name)?$lang['native_name']:false;
-                            
-                                $lang_translated = ($show_translated_name)? $lang['translated_name']:false;
-
-                            echo zwt_disp_language($lang_native, $lang_translated);
-							
-                            ?>
-                        </a>
-                    </li>
-
-                <?php } ?>
-            </ul>
-            
-        </div>
-        <?php
-    }
-}
-
-add_action('zwt_footer_lang_switcher', 'zwt_footer_ls_fn');
 add_action('zwt_lang_switcher', 'zwt_lang_switcher_fn');
 ?>

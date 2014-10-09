@@ -236,7 +236,6 @@ if (!class_exists('ZWT_Base')) {
         public function registerHookCallbacks() {
             // NOTE: Make sure you update the did_action() parameter in the corresponding callback method when changing the hooks here
             //add_action( 'wpmu_new_blog', 	        array( $this, 'activateNewSite') );
-            add_action('plugins_loaded', __CLASS__ . '::loadLangFiles');
             add_action('wp_enqueue_scripts', __CLASS__ . '::loadResources');
             add_action('admin_enqueue_scripts', __CLASS__ . '::loadResources');
 
@@ -246,16 +245,7 @@ if (!class_exists('ZWT_Base')) {
                 add_action('wp_head', array($this, 'meta_generator_tag'));
             }
         }
-
-        /**
-         * Loads plugin translations
-         * @mvc Controller
-         * @author Zanto Translate
-         */
-        function loadLangFiles() {
-            $lang_dir = GTP_PLUGIN_PATH . '/languages/';
-            load_plugin_textdomain('Zanto', false, $lang_dir);
-        }
+        
 
         /**
          * Initializes variables

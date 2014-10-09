@@ -8,7 +8,7 @@ if (!class_exists('ZWT_WP_POST')) {
     /**
      * Handles post type operations 
      * @package ZWT_Base
-     * @author Zanto Translate
+     * @author Mucunguzi Ayebare Brooks
      */
     class ZWT_WP_POST {
 
@@ -28,8 +28,6 @@ if (!class_exists('ZWT_WP_POST')) {
 
         /**
          * Initializes variables
-         * @mvc Controller
-         * @author Zanto Translate
          */
         public function init() {
             if (did_action('init') !== 1)
@@ -431,8 +429,6 @@ if (!class_exists('ZWT_WP_POST')) {
 
         /**
          * Prepares site to use the plugin during activation
-         * @mvc Controller
-         * @author Zanto Translate
          * @param bool $networkWide
          */
         public function activate() {
@@ -441,8 +437,6 @@ if (!class_exists('ZWT_WP_POST')) {
 
         /**
          * Rolls back activation procedures when de-activating the plugin
-         * @mvc Controller
-         * @author Zanto Translate
          */
         public function deactivate() {
             
@@ -450,8 +444,6 @@ if (!class_exists('ZWT_WP_POST')) {
 
         /**
          * Executes the logic of upgrading from specific older versions of the plugin to the current version
-         * @mvc Model
-         * @author Zanto Translate
          * @param string $dbVersion
          */
         public function upgrade($dbVersion = 0) {
@@ -460,8 +452,6 @@ if (!class_exists('ZWT_WP_POST')) {
 
         /**
          * Checks that the object is in a correct state
-         * @mvc Model
-         * @author Zanto Translate
          * @param string $property An individual property to check, or 'all' to check all of them
          * @return bool
          */

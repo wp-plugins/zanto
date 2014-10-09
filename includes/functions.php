@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * Get Translation Network admin
+ *
+ * Retrieves the user data of the person who setup the translation network
+ *
+ * @since 0.1.0
+ * @param string Translation Network ID
+ * @return WP_User|bool WP_User object on success, false on failure.
+ */
 function get_trans_network_admin($trans_id) {
     global $wpdb;
     $trans_owner_array = $wpdb->get_results("SELECT user_id,  meta_value FROM wp_usermeta WHERE meta_key =  'zwt_installed_transnetwork'", ARRAY_A);
@@ -12,7 +20,16 @@ function get_trans_network_admin($trans_id) {
     return $user_details = get_userdata($admin_id);
 }
 
-function noscript_notice() {
+/**
+ * No Script Notice
+ *
+ * Used to display an error message when functions that require a javascript enabled browser find javascript disabled
+ *
+ * @since 0.1.0
+ * @return void
+ */
+ 
+function zwt_noscript_notice() {
     ?>
     <noscript>
     <div class="error">
@@ -22,18 +39,43 @@ function noscript_notice() {
     <?php
 }
 
+/**
+ * Check Connectivity
+ *
+ * Checks if user is connected to the internet by trying to access google
+ * @since 0.1.0
+ * @param string site to ping
+ * @return bool true on success, false on failure.
+ */
 function check_internet_connection($sCheckHost = 'www.google.com') {
-    return (bool) @fsockopen($sCheckHost, 80, $iErrno, $sErrStr, 5);
+    $connectivity = (bool) @fsockopen($sCheckHost, 80, $iErrno, $sErrStr, 5);
+	return apply_filters('check_internet_connection',$connectivity);
 }
 
-function zwt_add_metadata($meta_type, $object_id, $meta_key, $meta_value, $c_blog_id, $unique = false) {
+/**
+ * Add metadata to an object in a specified blog
+ *
+ * Adds meta data to any WordPress object that has metadata storage capability for a specified blog in the multisite 
+ *
+ * @since 0.1.0
+ * @param string $meta_type Type of object metadata is for (e.g., comment, post, or user)
+ * @param int $object_id ID of the object metadata is for
+ * @param string $meta_key Metadata key
+ * @param mixed $meta_value Metadata value. Must be serializable if non-scalar.
+ * @param int $blog_id the id of blog the object belongs to
+ * @param bool $unique Optional, default is false. Whether the specified metadata key should be
+ * 		unique for the object. If true, and the object already has a value for the specified
+ * 		metadata key, no change will be made
+ * @return int|bool The meta ID on success, false on failure.
+ */
+function zwt_add_metadata($meta_type, $object_id, $meta_key, $meta_value, $blog_id, $unique = false) {
     if (!$meta_type || !$meta_key)
         return false;
 
     if (!$object_id = absint($object_id))
         return false;
 
-    if (!$table = _zwt_get_meta_table($meta_type, $c_blog_id))
+    if (!$table = _zwt_get_meta_table($meta_type, $blog_id))
         return false;
 
     global $wpdb;
@@ -76,8 +118,15 @@ function zwt_add_metadata($meta_type, $object_id, $meta_key, $meta_value, $c_blo
 
     return $mid;
 }
-
-function zwt_get_site_links($trans_id) {
+/**
+ * Updates site links in the global cache
+ *
+ * Commonly used site links are stored in the global catche to eliminate use of switch_to_blog resource intensive function in the front end
+ * @since 0.3.2
+ * @param int $trans_id
+ * @return void
+ */
+function zwt_update_site_links($trans_id) {
     if (did_action('admin_init') !== 1)
         return;
     global $site_id, $blog_id;
@@ -93,7 +142,7 @@ function zwt_get_site_links($trans_id) {
             $zwt_global_cache[$blog_id]['admin_url'] = admin_url();
             $update_flag = 1;
         }
-        if ($update_flag) {
+        if (apply_filters('zwt_update_site_links',$update_flag, $trans_id, $zwt_global_cache)) {
             $zwt_global_cache[$blog_id]['site_url'] = $home_url;
             $zwt_global_cache[$blog_id]['admin_url'] = admin_url();
             update_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', $zwt_global_cache);
@@ -105,16 +154,35 @@ function zwt_get_site_links($trans_id) {
         $zwt_global_cache[$blog_id]['lang_url_format'] = 0;
         update_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', $zwt_global_cache);
     }
+	do_action('zwt_global_cache_update', $zwt_global_cache, $update_flag, $trans_id);
 }
 
+/**
+ * Retrieve the home url for the current site.
+ *
+ * Returns the 'home' option with the appropriate protocol, 
+ * @since 0.2.0
+ *
+ * @uses WordPress home_url() 
+ *
+ * @return string Home url.
+*/
 function zwt_home_url() {
     if (function_exists('domain_mapping_siteurl')) {// support for domain mapping
         return domain_mapping_siteurl(false);
     } else {
-        return home_url();
+        return apply_filters('zwt_home_url',home_url());
     }
 }
 
+/**
+ * Add commonly used site links and link formats (site_url, admin_url, lang_url_format) to the global cache
+ *
+ * @since 0.1.0
+ * @param int $blog_id , $trans_id, $lang_url_format
+ *
+ * @return void
+*/
 function zwt_add_links($blog_id, $trans_id, $lang_url_format) {
     if (!absint($blog_id) || !absint($trans_id))
         return;
@@ -128,14 +196,30 @@ function zwt_add_links($blog_id, $trans_id, $lang_url_format) {
     update_metadata('site', $site_id, 'zwt_' . $trans_id . '_site_cache', $zwt_global_cache);
 }
 
-function zwt_update_metadata($meta_type, $object_id, $meta_key, $meta_value, $c_blog_id, $prev_value = '') {
+/**
+ * Update metadata for the specified object in a specified blog If no value already exists for the specified object
+ * ID and metadata key, the metadata will be added.
+ *
+ * @since 0.1.0
+ * @uses WordPress update_metadata function
+ *
+ * @param string $meta_type Type of object metadata is for (e.g., comment, post, or user)
+ * @param int $object_id ID of the object metadata is for
+ * @param string $meta_key Metadata key
+ * @param mixed $meta_value Metadata value. Must be serializable if non-scalar.
+ * @param mixed $prev_value Optional. If specified, only update existing metadata entries with
+ * 		the specified value. Otherwise, update all entries.
+ * @return int|bool Meta ID if the key didn't exist, true on successful update, false on failure.
+ */
+ 
+function zwt_update_metadata($meta_type, $object_id, $meta_key, $meta_value, $blog_id, $prev_value = '') {
     if (!$meta_type || !$meta_key)
         return false;
 
     if (!$object_id = absint($object_id))
         return false;
 
-    if (!$table = _zwt_get_meta_table($meta_type, $c_blog_id))
+    if (!$table = _zwt_get_meta_table($meta_type, $blog_id))
         return false;
 
     global $wpdb;
@@ -165,7 +249,7 @@ function zwt_update_metadata($meta_type, $object_id, $meta_key, $meta_value, $c_
 
 
     if (!$meta_id = $wpdb->get_var($wpdb->prepare("SELECT $id_column FROM $table WHERE meta_key = %s AND $column = %d", $meta_key, $object_id)))
-        return zwt_add_metadata($meta_type, $object_id, $meta_key, $passed_value, $c_blog_id);
+        return zwt_add_metadata($meta_type, $object_id, $meta_key, $passed_value, $blog_id);
 
     $_meta_value = $meta_value;
     $meta_value = maybe_serialize($meta_value);
@@ -194,10 +278,16 @@ function zwt_update_metadata($meta_type, $object_id, $meta_key, $meta_value, $c_
 
     return true;
 }
-
-function _zwt_get_meta_table($type, $c_blog_id) {
+/**
+ * Get a WordPress table name for a specified blog in the multisite
+ *
+ * @since 0.1.0
+ * @param string $type the wordpress table name without the prefix for example options, terms, postmeta
+ * @return string table name with the right prefix
+ */
+function _zwt_get_meta_table($type, $blog_id) {
     global $wpdb;
-    $blog_prefix = $wpdb->get_blog_prefix($c_blog_id);
+    $blog_prefix = $wpdb->get_blog_prefix($blog_id);
     $table_name = $blog_prefix . $type . 'meta';
 
     if (empty($table_name))
@@ -205,7 +295,14 @@ function _zwt_get_meta_table($type, $c_blog_id) {
 
     return $table_name;
 }
-
+/**
+ * Creates a select field value with posts from the specified blog in the attr array
+ *
+ * @uses new WP_Query object
+ * @since 0.1.0
+ * @param  $attr an array containing the blog ID to retrieve posts from and query arguments to use 
+ * @return a string with the pre constructed select element
+ */
 function zwt_get_post_select_options($attr) {
     global $blog_id;
     $c_blog = $blog_id;
@@ -258,23 +355,49 @@ function zwt_get_post_select_options($attr) {
         $output = '<option value="">' . __('No Posts Found', 'Zanto') . '</option>';
     }
     restore_current_blog();
-    return $output;
+    return apply_filters('zwt_get_post_select_options', $output, $c_blog);
 }
-
+/**
+ * Adds post metadata containing a copy of post translation data 
+ * to all the posts that are transaltions of each other in the translation data.
+ *
+ * array(
+ *       array('blog_id' => 1, 'post_id' => 77),
+ *       array('blog_id' => 2, 'post_id' => 84);
+ * )
+ * the example above goes to show the format of the translation data, post with ID 77 from blog with ID 1 is a translation 
+ * of post with ID 84 from blog with ID 2
+ * 
+ * @uses zwt_update_metadata
+ * @since 0.1.0
+ * @param  $post_transnetwork an array containing arrays of post ID's togather with their Blog ID's of posts that are translations of each other
+ * @return void
+ */
 function zwt_broadcast_post_network($post_transnetwork) {
     foreach ($post_transnetwork as $index => $pnet_details) {
         if (isset($pnet_details['post_id']))
             zwt_update_metadata('post', $pnet_details['post_id'], ZWT_Base::PREFIX . 'post_network', $post_transnetwork, $pnet_details['blog_id']);
     }
+	do_action('zwt_broadcast_post_network',$post_transnetwork);
 }
 
-/* Removes an individual post from the post network */
-
+/**
+ * Removes an individual post from the post translation data
+ * Removes a post from the post translation network data and updates the new post data 
+ * to all remaining posts in the post translation network
+ * @uses zwt_broadcast_post_network function to update the new transaltions 
+ * @since 0.1.0
+ * @param  int $blog_id blog id of the post to be removed
+ * @param array $post_transnetwork an array containing arrays of post ID's togather with their Blog ID's of posts that are translations of each other
+ * @return a string with the pre constructed select element
+ */
 function zwt_detach_post($blog_id, $post_transnetwork) {
     if (!is_numeric($blog_id) || !is_array($post_transnetwork)) {
         add_notice('Wrong data received by zwt_detach_post() ', 'error');
         return;
     }
+	do_action('zwt_pre_detach_post',$post_transnetwork);
+	
     foreach ($post_transnetwork as $index => $pnet_details) {
         if ($pnet_details['blog_id'] == $blog_id) {
             unset($post_transnetwork[$index]);
@@ -288,14 +411,21 @@ function zwt_detach_post($blog_id, $post_transnetwork) {
     } else {
         zwt_broadcast_post_network($post_transnetwork);
     }
+	do_action('zwt_detach_post',$post_transnetwork);
 }
 
-/*
-  $obj_type is the object type e.g post, taxonomy, $obj_blog is the blog id of the object type,
-  $obj_id is the object id e.g post id for posts
+/**
+ * Gets required data stored in the global cache
+ *
+ * data is stored here to prevent use of switch_to_blog resource intensive function in the front end to fetch them
+ * 
+ * @since 0.2.0
+ * @param string $req_info the data 
+ * @param int  $blog_id the blog ID for the data required
+ * @return required data
  */
 
-function zwt_get_global_urls_info($req_info, $blog_id) {
+function zwt_get_global_data($req_info, $blog_id) {
     global $site_id, $zwt_site_obj;
     $transnet_id = $zwt_site_obj->modules['trans_network']->transnet_id;
     $blog_parameters = get_metadata('site', $site_id, 'zwt_' . $transnet_id . '_site_cache', true);
@@ -307,7 +437,7 @@ function zwt_get_global_urls_info($req_info, $blog_id) {
             if (!$info || $info == '') {
                 switch_to_blog($blog_id);
                 $info = get_option('siteurl');
-                zwt_get_site_links($transnet_id);
+                zwt_update_site_links($transnet_id);
                 restore_current_blog();
             }
             break;
@@ -316,7 +446,7 @@ function zwt_get_global_urls_info($req_info, $blog_id) {
             if (!$info || $info == '') {
                 switch_to_blog($blog_id);
                 $info = admin_url();
-                zwt_get_site_links($transnet_id);
+                zwt_update_site_links($transnet_id);
                 restore_current_blog();
             }
             break;
@@ -328,26 +458,59 @@ function zwt_get_global_urls_info($req_info, $blog_id) {
     }
     return $info;
 }
-
-function zwt_get_trans_url($obj_type, $obj_blog, $obj_id) {
-    global $site_id, $wpdb;
+/**
+ * Gets the translated url
+ *
+ * Used to get the short-link url to the translated object of the provided ID
+ * 
+ * @since 0.1.0
+ * @param string $obj_type type of object for which the url of translation is required
+ * @param int obj_blog the blog ID where the translation should come from
+ * @param int $obj_id the object ID for which the url of traslation is required if its not provided, the server request uri will be returned
+ * @return string url short-link of translation
+ */
+function zwt_get_trans_url($obj_type, $obj_blog, $obj_id=null) {
+    global $site_id, $wpdb, $blog_id;
+	$target_site = zwt_get_global_data('site_url', $obj_blog);
+	$trans_link = '#';
+	/**
+	 * Filter the value of an existing option before it is retrieved.
+	 *
+	 *
+	 * Passing a truthy value to the filter will short-circuit retrieving
+	 * the option value, returning the passed value instead.
+	 *
+	 * @since 0.3.2
+	 *
+	 * @param bool|string $pre_url Value to return instead of the short-link value.
+	 *                               Default false to skip it.
+	 */
+	$pre = apply_filters( 'zwt_pre_trans_url', false, $obj_type, $obj_blog, $obj_id );
+	
+	if ( false !== $pre )
+		return $pre;
+		
+	if ($obj_blog == $blog_id) {
+        return $_SERVER['REQUEST_URI'];
+    }
+		
     if (isset($obj_type))
         switch ($obj_type) {
             case 'post':
-                $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?p=' . $obj_id;
+                $trans_link = $target_site . '?p=' . $obj_id;
                 break;
             case 'category':
-                $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?cat=' . $obj_id;
+                $trans_link = $target_site . '?cat=' . $obj_id;
 				break;
             case 'post_tag':
                 $b_prefix = $wpdb->get_blog_prefix($obj_blog);
                 $term_slug = $wpdb->get_var($wpdb->prepare("SELECT slug FROM {$b_prefix }terms WHERE term_id = %d", $obj_id));
-                $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?tag=' . $term_slug;
+                $trans_link = $target_site . '?tag=' . $term_slug;
                 break;
             default:
                 $b_prefix = $wpdb->get_blog_prefix($obj_blog);
                 $term_slug = $wpdb->get_var($wpdb->prepare("SELECT slug FROM {$b_prefix }terms  WHERE term_id = %d", $obj_id));
-                $trans_link = zwt_get_global_urls_info('site_url', $obj_blog) . '?' . $obj_type . '=' . $term_slug;
+                $trans_link = $target_site . '?' . $obj_type . '=' . $term_slug;
                 break;
         }
 
@@ -374,7 +537,13 @@ function zwt_merge_atts($pairs, $atts) {
     return $out;
 }
 
-/* This function is used to construct flag image html elements for the backend end */
+/**
+ * construct flag image html elements for the backend end
+ *
+ * @since 0.1.0
+ * @param $locale the locale of the required flag
+ * @return string of the image html element of the required flag
+ */
 
 function zwt_get_flag($locale) {
     $flag = '<img src="' . GTP_PLUGIN_URL . 'images/flags/' . $locale . '.png" width="16" height="11" alt="' . $locale . '" />';
@@ -382,8 +551,13 @@ function zwt_get_flag($locale) {
     return apply_filters('zwt_get_flag', $flag, $locale);
 }
 
-/* This function is used to retrieve flag urls for the front end */
-
+/**
+ * construct flag urls for the front end
+ *
+ * @since 0.1.0
+ * @param $locale the locale of the required flag
+ * @return string of the image src of the required flag image element
+ */
 function zwt_get_site_flags($locale) {
     global $zwt_site_obj;
     $custom_url = $zwt_site_obj->modules['settings']->settings['lang_switcher']['custom_flag_url'];
@@ -397,16 +571,23 @@ function zwt_get_site_flags($locale) {
     return apply_filters('zwt_front_flag', $flag_url, $locale);
 }
 
-/* removes taxonomies of deleted blogs
- * takes deleted blog ID as a parameter */
 
-function zwt_clean_blog_tax($deleted_blog) {
+/**
+ * removes taxonomy terms of a  blog that is no-longer part of the translation network 
+ * from the taxonomy terms translation array
+ *
+ * @since 0.1.0
+ * @param $blog the blog whose taxonomy terms should be removed
+ * @return void
+ */
+
+function zwt_clean_blog_tax($blog) {
     $tax_meta = get_option('zwt_taxonomy_meta');
     if (is_array($tax_meta)) {
         foreach ($tax_meta as $tax => $t_array) {
             foreach ($t_array as $term => $blog_tax) {
-                if (isset($blog_tax[$deleted_blog])) {
-                    unset($tax_meta[$tax][$term][$deleted_blog]);
+                if (isset($blog_tax[$blog])) {
+                    unset($tax_meta[$tax][$term][$blog]);
                 }
                 if (empty($tax_meta[$tax][$term])) {
                     unset($tax_meta[$tax][$term]);
@@ -418,13 +599,24 @@ function zwt_clean_blog_tax($deleted_blog) {
     return;
 }
 
-function zwt_network_vars($trans_net_id, $action, $element, $value=null) {
+/**
+ * Gets or Updates variables that are used by the entire translation network
+ *
+ * @since 0.1.0
+ *
+ * @param int $trans_net_id the translation network ID of the translation network that shares the variable
+ * @param string $action can be either get to return the variable or update to update it.
+ * @param $var the variable to either update or retrieve depending on the $action value
+ * @value the value of the variable, should not be null when action is 'update'
+ * @return string|false value of retrieved element, or false on failure
+ */
+function zwt_network_vars($trans_net_id, $action, $var, $value=null) {
     global $blog_id, $switched, $site_id;
     switch ($action) {
         case 'get':
             $network_vars = get_metadata('site', $site_id, 'zwt_' . $trans_net_id . '_network_vars', true);
-            if (isset($network_vars[$element])) {
-                return $network_vars[$element];
+            if (isset($network_vars[$var])) {
+                return $network_vars[$var];
             } else {
                 return false;
             }
@@ -434,10 +626,10 @@ function zwt_network_vars($trans_net_id, $action, $element, $value=null) {
         case 'update':
             if ($value === null) {
                 add_notice('No value received by zwt_network_vars() ', 'error');
-                return;
+                return false;
             }
             $network_vars = get_metadata('site', $site_id, 'zwt_' . $trans_net_id . '_network_vars', true);
-            $network_vars[$element] = $value;
+            $network_vars[$var] = $value;
             update_metadata('site', $site_id, 'zwt_' . $trans_net_id . '_network_vars', $network_vars);
             break;
     }
@@ -565,12 +757,16 @@ function zwt_gzdecode($data, &$filename = '', &$error = '', $maxlength = null) {
     return $data;
 }
 
-/*
- * This function checks if the provided blog is part of the active translation netwok
- * Input parameter is the blog id for the blog to verify
- * Out puts true if the blog is part of the translation network and false otherwise
- */
 
+/**
+ * Checks if the provided blog is part of the active translation network
+ *
+ * @since 0.3.0
+ *
+ * @param int blog id for the blog to verify
+ * @return boolean true if the blog is part of the active translation network and false otherwise
+ */
+ 
 function zwt_is_transnet_blog($bid) {
     global $zwt_site_obj;
     $transnet_blogs = $zwt_site_obj->modules['trans_network']->transnet_blogs;
@@ -582,10 +778,13 @@ function zwt_is_transnet_blog($bid) {
     return $in_transnet;
 }
 
-/*
- * This returns the language the blog represents in the translation network
- * Input parameter is the blog id for the blog whose language is needed
- * Out puts the lang code if found and false otherwise
+/**
+ * Retrieve the language the blog represents in the translation network
+ * This is more convinient when you don't want to use switch_to_blog resource intensive function just to get a blog language
+ * @since 0.3.0
+ *
+ * @param int $bid blog id for the blog whose language is needed
+ * @return string|bool return the locale of the blog if found and false otherwise
  */
 
 function zwt_get_blog_lang($bid) {
@@ -599,8 +798,81 @@ function zwt_get_blog_lang($bid) {
     return false;
 }
 
-/* For adding a single translation */
+/**
+ * The main function responsible for returning Zanto WP Translation Settings object
+ * Instance to functions everywhere.
+ *
+ * Use this function like you would a global variable, except without needing
+ * to declare the global.
+ *
+ *
+ * @since 0.3.2
+ * @return object The Zanto Translation Settings object Instance
+ */
+ 
+function Zanto_WTS(){
+  return Zanto_WT()->modules['settings'];
+}
 
+
+/**
+ * The main function responsible for returning Zanto WP Translation Network object
+ * Instance to functions everywhere.
+ *
+ * Use this function like you would a global variable, except without needing
+ * to declare the global.
+ *
+ *
+ * @since 0.3.2
+ * @return object The Zanto Translation Network object Instance
+ */
+ 
+function Zanto_WTN(){
+  return Zanto_WT()->modules['trans_network'];
+}
+
+/**
+ * Retrieve the translation network ID of the active blog
+ * Should be called during or after init hook runs to call it after before init, set $data_base to true
+ * @since 0.3.2
+ *
+ * @param bool $data_base allows retrieval of the ID from the database when called before init.
+ * @return int the translation network ID
+ */
+function zwt_get_transnet_id($data_base = false){
+    global $blog_id,  $wpdb;
+	
+	$trans_network = Zanto_WTN();
+    $trans_net_id =  $trans_network->transnet_id;
+	
+	if (!is_numeric($trans_net_id) && isset($trans_network->zwt_trans_cache['zwt_trans_network_cache'])) {
+                    $trans_net_id = $trans_network->zwt_trans_cache['zwt_trans_network_cache']->get('trans_net_id' . $blog_id);
+        } 
+				
+	if (!is_numeric($trans_net_id) && $data_base) {
+                    $trans_net_id = $wpdb->get_var($wpdb->prepare(
+                                    "SELECT  trans_id 
+					FROM {$wpdb->base_prefix}zwt_trans_network
+                    WHERE  blog_id =%d", $blog_id));
+
+                    if (isset($this->zwt_trans_cache['zwt_trans_network_cache'])) {
+                        $this->zwt_trans_cache['zwt_trans_network_cache']->set('trans_net_id' . $blog_id, $trans_net_id);
+                    }
+                }
+	return $trans_net_id;
+}
+
+
+/**
+ * Add a translation to a post
+ * 
+ * @since 0.3.0
+ *
+ * @param int $source_pid id for the post we want to add a translation to
+ * @param int $target_pid id for the post we want to add as a translation for the source
+ * @param int $target_bid id for the blog to which the target post(translation) belongs
+ * @return void
+ */
 function zwt_add_single_transln($source_pid, $target_pid, $target_bid) {
     global $zwt_site_obj, $blog_id;
     $primary_blog = $zwt_site_obj->modules['trans_network']->primary_lang_blog;

@@ -1,4 +1,4 @@
-<?php  noscript_notice() ?>
+<?php  zwt_noscript_notice() ?>
 <?php if($box['id'] == ZWT_Base::PREFIX . 'choose_translation'): ?>
 <?php if(!isset($primary_lang)):?>
 <div class="zwt_notice"><?php _e('<strong>Notice</strong>: Please set the Primary Translation Language of this translation network to translate.','Zanto') ?> <i class="fa fa-warning error"></i></div>
@@ -42,7 +42,7 @@ if($c_id==$blog_id){
 </b>
 </td>
 <td align="left">
-<select class="transln_method_mthds" name="transln_method_mthds<?php echo $c_id?>" id="transln_method_mthds<?php echo $c_id?>">
+<select class="transln_method_mthds" autocomplete="off" name="transln_method_mthds<?php echo $c_id?>" id="transln_method_mthds<?php echo $c_id?>">
 <option value="1">Translate</option>
 <option value="2">Translation of</option>
 <option value="3">Custom Link</option>
@@ -52,8 +52,10 @@ if($c_id==$blog_id){
 <div class="transln_method" id="transln_methd_div<?php echo $c_id?>">
 <span id="transln_method_img<?php echo $c_id?>"><i class="fa fa-plus-square btp-post-icon"></i><a href="<?php echo  add_query_arg(array('zwt_translate'=>$post->ID,'source_b'=>$blog_id),  $blog_parameters[$c_id]['admin_url'].'post-new.php'.$post_type_string) ?>" target="_blank"> Translate</a></span>       
 <input type="text" value="" autocomplete="off" size="16"  name="transln_method_text[<?php echo $lang_c ?>]" id="transln_method_text<?php echo $c_id?>">
-<select  class="zwt_select_secondary" name="zwt_select_secondary[<?php echo $lang_c ?>]" id="zwt_select_secondary<?php echo $c_id?>" style="display:none">
-</select>
+<div style="display:none" id="zwt_select_secondary_div<?php echo $c_id?>" >
+<span class="spinner" style="display: inline; float:left"></span>
+<select class="zwt_select_secondary" name="zwt_select_secondary[<?php echo $lang_c ?>]" id="zwt_select_secondary<?php echo $c_id?>" ></select>
+</div>
 </div>
 </td>
 </tr>

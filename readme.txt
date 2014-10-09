@@ -2,11 +2,11 @@
 Contributors: brooksX
 Tags: translation, multilingual, localization, multisite, language switcher, languages, Internationalization, i18n, l10n
 Requires at least: 3.0
-Tested up to: 3.9.2
-Stable tag: 0.3.1
+Tested up to: 4.0
+Stable tag: 0.3.2
 License: GPLv2 or later
 
-Zanto WP Translation enables you to convert blogs in a WordPress multisite into translations of each other. It provides a language switcher to switch between the different translations
+Zanto WP Translation helps you run a multilingual site by providing linkage between content in blogs of different languages in a WordPress multisite.
 
 == Description ==
 
@@ -70,6 +70,16 @@ Upload the Zanto WP Translation plugin to your WordPress plugin directory and ac
 5. Setting up a translation network from available blogs in the multisite
 
 == Changelog ==
+= 0.3.2=
+* Added loading indicators to content being fetched by ajax on post translation page
+* Fixed bug that would not allow loading of the plugin's .mo file
+* Added French translation for the plugin.
+* Added support for pretty permalinks in the Language switcher urls
+* Added British English flag
+
+= 0.3.1=
+* Fixed bug on the post translation page
+
 = 0.3.0 =
 * Changed Locale Manager to Language Manager for easy understanding
 * Changed the plugin name to allow for more Internationalization/localization plugins to be created under the Zanto wing.
@@ -128,6 +138,8 @@ Yes, we have so many features in store under developement, keep tuned in at <a h
 and participate in our forum. Get to decide what you want in your favorite free multilingual plugin and we'll fold our shirt sleeves to get it ready for the next version.
 
 == Upgrade Notice ==
+= 0.3.2=
+Upgrade to fix bugs from the previous version. The latest version also has some improvements in the user interface that uses ajax functions.
 
 = 0.3.1 =
 Upgrade to fix bug on translation page 

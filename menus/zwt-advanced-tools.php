@@ -9,7 +9,7 @@
         <h2><?php echo __('Zanto Advanced Tools', 'Zanto'); ?></h2>
 		<p><?php _e('This page allows operations that are helpfull in troubleshooting Zanto and Automating certain tasks','Zanto')?></p>
 		
-	
+ <?php do_action('pre_zwt_advanced_tools'); ?>	
 <div class="zwt_advanced_box">
 <h3><?php _e('Clear Network Cache','Zanto')?></h3>
 <div class= "zwt_advanced_box_inner">
@@ -55,7 +55,7 @@ $c_blog_details = get_blog_details($trans_blog['blog_id']);
 <div class="zwt_advanced_box">
 <h3><?php _e('reset Zanto settings','Zanto')?></h3>
 <div class= "zwt_advanced_box_inner">
-<label><input type="checkbox" name="zwt_reset_settings" id="zwt_reset_settings" value="pages"> <?php _e('reset Zanto settings for this blog. Translations are not affected','Zanto')?></label>
+<label><input type="checkbox" autocomplete="off" name="zwt_reset_settings" id="zwt_reset_settings" value="pages"> <?php _e('reset Zanto settings for this blog. Translations are not affected','Zanto')?></label>
 <p><input type="button" name="zwt_reset_zanto" id="zwt_reset_zanto" class="button button-primary" value="reset"/>&nbsp;</p>
 <?php $ajax_nonce = wp_create_nonce("zwt-advanced-tools"); ?>
 <input type="hidden" value="<?php echo $ajax_nonce ?>" name="_wpnonce" id="zwt_advanced_tools">
@@ -64,5 +64,6 @@ var zwt_pluginUrl = '<?php  echo GTP_PLUGIN_URL; ?>'
 </script>
 </div>	
 </div>
+ <?php do_action('zwt_advanced_tools'); ?>
  <?php do_action('zwt_menu_footer'); ?>
 </div>

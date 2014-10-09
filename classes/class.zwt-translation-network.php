@@ -6,9 +6,8 @@ if ($_SERVER['SCRIPT_FILENAME'] == __FILE__)
 if (!class_exists('ZWT_Translation_Network')) {
 
     /**
-     * Example of an instance class
+     * Translation Network instance class
      * @package ZWT_Base
-     * @author Zanto Translate
      */
     class ZWT_Translation_Network extends ZWT_Module {
 
@@ -22,8 +21,6 @@ if (!class_exists('ZWT_Translation_Network')) {
 
         /**
          * Constructor
-         * @mvc Controller
-         * @author Zanto Translate
          */
         public function __construct() {
             require_once (GTP_PLUGIN_PATH . '/includes/cache.php' );
@@ -39,15 +36,10 @@ if (!class_exists('ZWT_Translation_Network')) {
             $this->zwt_trans_cache['zwt_trans_network_cache'] = new zwt_cache('translation_network', true);
             $this->zwt_trans_cache['zwt_locale_cache'] = new zwt_cache('locale_code', true);
             $this->zwt_trans_cache['zwt_lang_name_cache'] = new zwt_cache('lang_name', true);
-            //$this->zwt_trans_cache['zwt_flag_cache'] = new zwt_cache('flags', true);
-            //$this->zwt_trans_cache['zwt_language_name_cache'] = new zwt_cache('language_name', true);
-            //$this->zwt_trans_cache['zwt_term_taxonomy_cache'] = new zwt_cache();
         }
 
         /**
          * Initializes variables
-         * @mvc Controller
-         * @author Zanto Translate
          */
         public function init() {
             if (did_action('init') !== 1)
@@ -192,13 +184,11 @@ if (!class_exists('ZWT_Translation_Network')) {
         }
 
         public function update_global_cache() {
-            zwt_get_site_links($this->transnet_id);
+            zwt_update_site_links($this->transnet_id);
         }
 
         /**
          * Public getter for protected variables
-         * @mvc Model
-         * @author Zanto Translate
          * @param string $variable
          * @return mixed
          */
@@ -212,8 +202,6 @@ if (!class_exists('ZWT_Translation_Network')) {
 
         /**
          * Checks that the object is in a correct state
-         * @mvc Model
-         * @author Zanto Translate
          * @param string $property An individual property to check, or 'all' to check all of them
          * @return bool
          */
@@ -230,8 +218,6 @@ if (!class_exists('ZWT_Translation_Network')) {
 
         /**
          * Executes the logic of upgrading from specific older versions of the plugin to the current version
-         * @mvc Model
-         * @author Zanto Translate
          * @param string $dbVersion
          */
         public function upgrade($dbVersion = 0, $networkwide = false) {
@@ -272,8 +258,6 @@ if (!class_exists('ZWT_Translation_Network')) {
 
         /**
          * Rolls back activation procedures when de-activating the plugin
-         * @mvc Controller
-         * @author Zanto Translate
          */
         public function deactivate() {
             
@@ -281,8 +265,6 @@ if (!class_exists('ZWT_Translation_Network')) {
 
         /**
          * Does instance stuff
-         * @mvc Model
-         * @author Zanto Translate
          * @return bool
          */
         function get_english_name($code) {
@@ -755,7 +737,7 @@ if (!class_exists('ZWT_Translation_Network')) {
             if ($newvalue !== $oldvalue) {
                 foreach ($this->transnet_blogs as $trans_blog) {
                     if ($newvalue == $trans_blog['lang_code']) {
-                        add_notice(__('The language you have chosen for the blog already exists with another blog in its translation network.', 'Zanto'), 'error');
+                        add_notice(__('The language you have chosen for the blog already exists with another blog in this translation network.', 'Zanto'), 'error');
                         return $oldvalue;
                     }
                 }

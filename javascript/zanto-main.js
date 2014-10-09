@@ -189,7 +189,7 @@ function zwt_main($) {
                 data: data,
                 cache: false,
                 beforeSend: function () {
-                    $('#'+selected).after('<span class="zwt_ajax_response" style="margin-left:10px"><img src="'+zwt_pluginUrl+'/images/spin-small.gif"></span>');                       
+					$('#'+selected).after('<div class="zwt_ajax_response" style="display: inline-block; margin-left:10px"><span class="spinner" style="display: block; float: none;"></span></div>');                       
                 },
                 success: function (data) {
                     $('.zwt_ajax_response').html(data).fadeOut(1000, function(){});   
@@ -228,7 +228,13 @@ function zwt_main($) {
             } else if (inputSelectedVal == 2) {
 
                 var transSelectPost = $('#zwt_select_secondary' + id);
+				var transSelectPostDiv = $('#zwt_select_secondary_div' + id);
+				
+				transSelectPost.show();
+			    transSelectPostDiv.css('display','inline-block');
+				 
                 if (zwt.selectSet[id] != 1) {
+				 
                     var data = {
                         action: 'zwt_all_ajax',
                         admin_fn: 'zwt_fetch_trans_posts',
@@ -237,10 +243,11 @@ function zwt_main($) {
                     };
                     $.get(ajaxurl, data, function (data) {
                         transSelectPost.prepend(data);
+						transSelectPostDiv.find('.spinner').hide();
                     });
                     zwt.selectSet[id] = 1;
                 }
-                transSelectPost.show();
+               
             } else if (inputSelectedVal == 3) {
                 $('#transln_method_text' + id).show().attr('value', 'http://');
             }

@@ -6,7 +6,7 @@
 ?>
 <div class="wrap about-wrap">
 
-	<h1><?php _e( 'Welcome to Zanto WP Translation 3.0','Zanto' ); ?></h1>
+	<h1><?php _e( 'Welcome to Zanto WP Translation 3.2','Zanto' ); ?></h1>
 	
 	<div class="about-text">
 		<?php _e('Thank you for using Zanto WP Translation! The plugin is now better and more stable than ever with better SEO support, feature enhancements and bug crashes ( <a href="http://zanto.org/?p=234"> See the change log</a> ) ','Zanto' ); ?>
@@ -85,36 +85,24 @@
 	<th><?php _e('Featured Addon:','Zanto') ?></th>
 	<th>
 	<i style="color:orange" class="fa fa-star"></i><i style="color:orange" class="fa fa-star"></i><i style="color:orange" class="fa fa-star"></i><i style="color:orange" class="fa fa-star"></i><i style="color:orange" class="fa fa-star"></i>
-	<?php _e('Zanto Translation Manager Plugin','Zanto')?></th>
+	<?php _e('Zanto Better Links','Zanto')?></th>
 	</tr></thead>
 	<tbody><tr>
 	<td><div style="margin:4em 0 0 0;">
 		
-		<a data-price-mode="single" data-variable-price="no" data-download-id="8" data-action="edd_add_to_cart" class="zwt-button" style="font-size: 1.5em;" href="http://shop.zanto.org/downloads/zanto-translation-manager/?edd_action=add_to_cart&download_id=8" > <?php _e('$54.00&nbsp;&ndash;&nbsp;Buy','Zanto')?></a>
+		<a data-price-mode="single" data-variable-price="no" data-download-id="8" data-action="edd_add_to_cart" class="zwt-button" style="font-size: 1.5em;" href="http://shop.zanto.org/downloads/zanto-better-links/?edd_action=add_to_cart&download_id=8" > <?php _e('$19.00&nbsp;&ndash;&nbsp;Buy','Zanto')?></a>
 		
 		<p><a href="http://shop.zanto.org/downloads"><?php _e('See all Addons','Zanto')?></a></p>
 		</div>
 	</td>
 	<td>
-	<table>
-	<tr>
-	<td>
+	
 	<h4><?php _e('Features','Zanto')?></h4>
-	</td><td></td>
-	</tr>
-	<tr>
-	<td><div class="addon-features"><i class="fa fa-suitcase"></i> <a href="http://shop.zanto.org/downloads/zanto-translation-manager/"><?php _e('Manage All translations from a single site','Zanto') ?></a></div></td>
-	<td><div class="addon-features"><i class="fa fa-users"></i> <a href="http://shop.zanto.org/downloads/zanto-translation-manager/"><?php _e('Create translators and assign translations','Zanto') ?></a></div></td>
-	</tr>
-	<tr>
-	<td><div class="addon-features"><i class="fa fa-envelope"></i> <a href="http://shop.zanto.org/downloads/zanto-translation-manager/"><?php _e('Email Notifications for translators','Zanto')?></a></div></td>
-	<td><div class="addon-features"><i class="fa fa-paste"></i> <a href="http://shop.zanto.org/downloads/zanto-translation-manager/"><?php _e('Easy to use Translation Editor','Zanto')?></a></div></td>
-	</tr><tr>
-    <td><div class="addon-features"><i class="fa fa-file-text"></i> <a href="http://shop.zanto.org/downloads/zanto-translation-manager/"><?php _e('XLIFF Import and Export support','Zanto')?></a></div></td>
-    <td><a href="http://shop.zanto.org/downloads/zanto-translation-manager/"><?php _e('See all features ...','Zanto')?></a></td>
-	</tr>
-	</table>
-			
+    <br/>
+     <div class="addon-features" style="font-size:1.3em"><i class="fa fa-link"></i> <a href="http://shop.zanto.org/downloads/zanto-better-links/"><?php _e('Better SEO with  pretty WordPress permalinks in the language switcher urls','Zanto') ?></a></div>
+    <br/>
+	<a href="http://shop.zanto.org/downloads/zanto-translation-manager/"><?php _e('See all features ...','Zanto')?></a>
+		
 	</td>
 	
 	</tr></tbody>
