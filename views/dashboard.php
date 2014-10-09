@@ -90,7 +90,7 @@
 	<tbody><tr>
 	<td><div style="margin:4em 0 0 0;">
 		
-		<a data-price-mode="single" data-variable-price="no" data-download-id="8" data-action="edd_add_to_cart" class="zwt-button" style="font-size: 1.5em;" href="http://shop.zanto.org/downloads/zanto-better-links/?edd_action=add_to_cart&download_id=8" > <?php _e('$19.00&nbsp;&ndash;&nbsp;Buy','Zanto')?></a>
+		<a data-price-mode="single" data-variable-price="no" data-download-id="8" data-action="edd_add_to_cart" class="zwt-button" style="font-size: 1.5em;" href="http://shop.zanto.org/downloads/zanto-better-links/?edd_action=add_to_cart&download_id=187" > <?php _e('$19.00&nbsp;&ndash;&nbsp;Buy','Zanto')?></a>
 		
 		<p><a href="http://shop.zanto.org/downloads"><?php _e('See all Addons','Zanto')?></a></p>
 		</div>
@@ -101,7 +101,7 @@
     <br/>
      <div class="addon-features" style="font-size:1.3em"><i class="fa fa-link"></i> <a href="http://shop.zanto.org/downloads/zanto-better-links/"><?php _e('Better SEO with  pretty WordPress permalinks in the language switcher urls','Zanto') ?></a></div>
     <br/>
-	<a href="http://shop.zanto.org/downloads/zanto-translation-manager/"><?php _e('See all features ...','Zanto')?></a>
+	<a href="http://shop.zanto.org/downloads/zanto-better-links/"><?php _e('See all features ...','Zanto')?></a>
 		
 	</td>
 	

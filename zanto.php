@@ -23,12 +23,12 @@ define('GTP_PLUGIN_URL', plugin_dir_url(__FILE__));
 /**
  * Loads plugin translations
  */
-function load_lang_files()
+function zanto_load_lang_files()
 {
     $lang_dir = GTP_PLUGIN_FOLDER . '/languages/';
     load_plugin_textdomain('Zanto', false, $lang_dir);
 }
-add_filter('wp_loaded', 'load_lang_files');
+add_filter('wp_loaded', 'zanto_load_lang_files');
 
 /**
  * Checks if the system requirements are met

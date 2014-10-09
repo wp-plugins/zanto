@@ -75,7 +75,6 @@ Upload the Zanto WP Translation plugin to your WordPress plugin directory and ac
 * Fixed bug that would not allow loading of the plugin's .mo file
 * Added French translation for the plugin.
 * Added support for pretty permalinks in the Language switcher urls
-* Added British English flag
 
 = 0.3.1=
 * Fixed bug on the post translation page
