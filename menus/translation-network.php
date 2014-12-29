@@ -138,9 +138,10 @@ get_current_screen()->set_help_sidebar(
 
 			 <select name="blog_trans_ids" id="zwt_trans_id" class="zwt-update-transid">
                     <option value=""><?php _e('- Select -', 'Zanto') ?></option>
-                    <?php foreach ($unique_trans_blog as $user_blog): ?>
+					
+                    <?php foreach ($unique_trans_ids as $u_transid): ?>
 
-                        <option value="<?php echo $user_blog['trans_id'] ?>"><?php echo $user_blog['trans_id'] ?></option>
+                        <option value="<?php echo $u_transid ?>"><?php echo $u_transid ?></option>
 
                     <?php endforeach; ?>
                 </select>

@@ -349,10 +349,10 @@ if (!class_exists('ZWT_Interfaces')) {
                 /* get unique trans_ids for user display all for super admin */
 
                 if (!empty($trans_blog)) {
-                    $unique_trans_blog = array();
+                    $unique_trans_ids = array();
                     if (current_user_can('manage_network_plugins')) {
                         foreach ($trans_blog as $trans_ids) {
-                            $unique_trans_blog[] = $trans_ids['trans_id'];
+                            $unique_trans_ids[] = $trans_ids['trans_id'];
                         }
                     } else {
                         $user_trans_ids = get_user_meta($user_id, 'zwt_installed_transnetwork', false);
@@ -360,10 +360,10 @@ if (!class_exists('ZWT_Interfaces')) {
                             if (!in_array($trans_ids['trans_id'], $user_trans_ids)) {
                                 continue;
                             }
-                            $unique_trans_blog[] = $trans_ids['trans_id'];
+                            $unique_trans_ids[] = $trans_ids['trans_id'];
                         }
                     }
-                    $unique_trans_blog = array_unique($unique_trans_blog);
+                    $unique_trans_ids = array_unique($unique_trans_ids);
                 }
 
                 require_once( dirname(__DIR__) . '/menus/translation-network.php' );
