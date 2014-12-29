@@ -118,13 +118,13 @@ if (!class_exists('ZWT_Lang_Switcher')) {
             if ($this->ls_settings['zwt_ls_theme'] !== 0) {
                 $theme_path = WP_CONTENT_DIR . $this->ls_settings['zwt_ls_theme'];
 
-                if (file_exists($theme_path)) {
-                    require_once($theme_path);
+                if (file_exists($theme_path) && is_file($theme_path)) {
+                    include_once($theme_path);
                 } else {
-                    require_once( dirname(__DIR__) . '/views/lang-switcher/lang_switcher.zwt.php' );
+                    include_once( dirname(__DIR__) . '/views/lang-switcher/lang_switcher.zwt.php' );
                 }
             } else {
-                require_once( dirname(__DIR__) . '/views/lang-switcher/lang_switcher.zwt.php' );
+                include_once( dirname(__DIR__) . '/views/lang-switcher/lang_switcher.zwt.php' );
             }
 
             return;

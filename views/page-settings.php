@@ -8,13 +8,13 @@ if (!current_user_can('manage_options'))
     <?php if ('incomplete' == $settings['setup_status']['setup_wizard']) { ?>
         <h2><?php _e('Zanto Translation Network Setup', 'Zanto'); ?></h2>
         <?php
-    } else {
+    } /*elseif(!(isset($_GET['stg_scope']) && $_GET['stg_scope']=='debug')) {
         ?>
         <h2><?php _e('Zanto Settings for this blog', 'Zanto'); ?></h2>
         <p><?php _e('This is the Zanto Basic settings Page. Most settings here other than the "Primary Translation Language" Settings will only affect this blog.', 'Zanto') ?></p>
         <p><?php _e('CSS put in the custom css field will be included in the header css of your webpage.', 'Zanto') ?></p>
         <br/>
-    <?php } ?>
+    <?php } */?>
 
 
     <?php if ('incomplete' == $settings['setup_status']['setup_wizard'] && (!$zwt_first_install_flag)) { /* setup wizard */ ?>
@@ -215,15 +215,28 @@ if (!current_user_can('manage_options'))
     if ('four' == $settings['setup_status']['setup_interface']) {
 
 //set active tabs
-        $lang_swchr = false;
+        $scope_stgs = $scope_ls = $scope_debug = false;
         if (isset($_GET['stg_scope'])) {
-            if ($_GET['stg_scope'] == 'lang_swchr')
-                $lang_swchr = true;
-        }
+            switch ($_GET['stg_scope']){
+			    case 'lang_swchr':
+				$scope_ls = true;
+				break;
+				case 'debug':
+				$scope_debug = true;
+				break;
+				default:
+				$scope_stgs = true;
+				break;
+			} 
+        }else{
+		    $scope_stgs = true;
+		}
         ?>
 
         <h2 class="nav-tab-wrapper">
-            <a href="<?php echo admin_url('admin.php?page=zwt_settings'); ?>" class=" <?php echo (!$lang_swchr) ? 'nav-tab nav-tab-active' : 'nav-tab' ?> "><?php _e('Zanto Blog Settings', 'Zanto') ?></a><a href="<?php echo admin_url('admin.php?page=zwt_settings&stg_scope=lang_swchr'); ?>" class="<?php echo ($lang_swchr) ? 'nav-tab nav-tab-active' : 'nav-tab' ?>"><?php _e('Language Switcher Settings', 'Zanto') ?></a>
+            <a href="<?php echo admin_url('admin.php?page=zwt_settings'); ?>" class=" <?php echo ($scope_stgs) ? 'nav-tab nav-tab-active' : 'nav-tab' ?> "><?php _e('Zanto Blog Settings', 'Zanto') ?></a>
+			<a href="<?php echo admin_url('admin.php?page=zwt_settings&stg_scope=lang_swchr'); ?>" class="<?php echo ($scope_ls) ? 'nav-tab nav-tab-active' : 'nav-tab' ?>"><?php _e('Language Switcher Settings', 'Zanto') ?></a>
+			<a href="<?php echo admin_url('admin.php?page=zwt_settings&stg_scope=debug'); ?>" class="<?php echo ($scope_debug) ? 'nav-tab nav-tab-active' : 'nav-tab' ?>"><?php _e('Debug', 'Zanto') ?></a>
         </h2>
         <div class="menu-edit">
 
@@ -437,7 +450,7 @@ if (!current_user_can('manage_options'))
                                                                                 </select>
                                                                             </label>
                                                                         </p>
-                                                                        <p>Text for alternative languages for posts</p>
+                                                                        <p><?php _e('Text for alternative languages for posts','Zanto') ?></p>
                                                                         <input type="text" name="zwt_post_availabitlity_text" size="50" value="<?php echo $settings['lang_switcher']['post_availability_text'] ?>"/>
                                                                 </td>
                                                             </tr>
@@ -558,7 +571,9 @@ if (!current_user_can('manage_options'))
                                                         <input type="hidden"  name="zwt_lang_order" id="zwt_lang_order" >
                                                         <input type="submit" name="interface_4_save" id="submit4" class="button button-primary" value="Save Changes">
                                                     </form>
-    <?php } ?>
+    <?php }elseif (isset($_GET['stg_scope']) && $_GET['stg_scope'] == 'debug') { 
+	       do_action('zwt_debug_info');
+	 } ?> 
                                                 </div>
                                                 <div id="nav-menu-footer">
                                                     &nbsp;     

@@ -6,7 +6,7 @@
 ?>
 <div class="wrap about-wrap">
 
-	<h1><?php _e( 'Welcome to Zanto WP Translation 3.2','Zanto' ); ?></h1>
+	<h1><?php echo sprintf(__( 'Welcome to Zanto WP Translation %s','Zanto' ),GTP_ZANTO_VERSION); ?></h1>
 	
 	<div class="about-text">
 		<?php _e('Thank you for using Zanto WP Translation! The plugin is now better and more stable than ever with better SEO support, feature enhancements and bug crashes ( <a href="http://zanto.org/?p=234"> See the change log</a> ) ','Zanto' ); ?>
@@ -62,7 +62,7 @@
           <h3 style="text-align:left"><?php _e("Zanto extentions" ,"Zanto") ?></h3>
 
           <div class="feature-section images-stagger-right">
-             <a class="" title="<?php _e("Visit the extension's page","Zanto") ?>" href="http://shop.zanto.org" target="_blank"><i style="float: right; font-size: 19em; display: block; padding-left: 10px; text-align: center; color: rgb(157, 182, 104); padding-top: 0.3em; width: 1.6em;" class="fa fa-puzzle-piece"></i></a>
+             <a class="" title="<?php _e("Visit the extension's page","Zanto") ?>" href="http://plugins.zanto.org" target="_blank"><i style="float: right; font-size: 19em; display: block; padding-left: 10px; text-align: center; color: rgb(157, 182, 104); padding-top: 0.3em; width: 1.6em;" class="fa fa-puzzle-piece"></i></a>
             <h4 style="text-align: left"><?php _e('Take your multilingual website one step further' ,"Zanto") ?></h4></br>
             <p style="text-align: left"><?php _e("The Zanto extensions are an assortment of free and premium plugins developed to extend zanto and other multilingual plugins and tools you need for an international website.  They can be enabled/disabled safely without affecting your existing settings." , "Zanto") ?>
             </p>
@@ -71,7 +71,7 @@
             <p style="text-align: left"><?php _e("Zanto's extensions are installed and upgraded from your WordPress admin, like any other WordPress plugins. Well documented and easily extendable with hooks, they come with a dedicated support forum at zanto.org/support" , "Zanto") ?>
             </p>
             <p style="text-align:left">    
-                <a class="button-primary review-zanto" title="<?php _e("Visit the extension's page","Zanto") ?>" href="http://shop.zanto.org" target="_blank"><?php _e("Visit the extension's page","Zanto") ?> &raquo;</a>
+                <a class="button-primary review-zanto" title="<?php _e("Visit the extension's page","Zanto") ?>" href="http://plugins.zanto.org" target="_blank"><?php _e("Visit the extension's page","Zanto") ?> &raquo;</a>
             </p>
           </div>
         </div>
@@ -90,18 +90,18 @@
 	<tbody><tr>
 	<td><div style="margin:4em 0 0 0;">
 		
-		<a data-price-mode="single" data-variable-price="no" data-download-id="8" data-action="edd_add_to_cart" class="zwt-button" style="font-size: 1.5em;" href="http://shop.zanto.org/downloads/zanto-better-links/?edd_action=add_to_cart&download_id=187" > <?php _e('$19.00&nbsp;&ndash;&nbsp;Buy','Zanto')?></a>
+		<a data-price-mode="single" data-variable-price="no" data-download-id="8" data-action="edd_add_to_cart" class="zwt-button" style="font-size: 1.5em;" href="http://plugins.zanto.org/downloads/zanto-better-links/?edd_action=add_to_cart&download_id=187" > <?php _e('$19.00&nbsp;&ndash;&nbsp;Buy','Zanto')?></a>
 		
-		<p><a href="http://shop.zanto.org/downloads"><?php _e('See all Addons','Zanto')?></a></p>
+		<p><a href="http://plugins.zanto.org/downloads"><?php _e('See all Addons','Zanto')?></a></p>
 		</div>
 	</td>
 	<td>
 	
 	<h4><?php _e('Features','Zanto')?></h4>
     <br/>
-     <div class="addon-features" style="font-size:1.3em"><i class="fa fa-link"></i> <a href="http://shop.zanto.org/downloads/zanto-better-links/"><?php _e('Better SEO with  pretty WordPress permalinks in the language switcher urls','Zanto') ?></a></div>
+     <div class="addon-features" style="font-size:1.3em"><i class="fa fa-link"></i> <a href="http://plugins.zanto.org/downloads/zanto-better-links/"><?php _e('Better SEO with  pretty WordPress permalinks in the language switcher urls','Zanto') ?></a></div>
     <br/>
-	<a href="http://shop.zanto.org/downloads/zanto-better-links/"><?php _e('See all features ...','Zanto')?></a>
+	<a href="http://plugins.zanto.org/downloads/zanto-better-links/"><?php _e('See all features ...','Zanto')?></a>
 		
 	</td>
 	
@@ -121,7 +121,7 @@
 			<p><?php _e('A kind gesture of rating us on <a href="https://wordpress.org/plugins/zanto/">wordpress.org</a> goes a long way to show appreciation. This creates confidence in others that Zanto works and as our community grows so does the quality of the product. User feedback is pure green energy that fuels our morale to keep developing for you. Go ahead, take some time to let us know what you think :)','Zanto' ); ?></p>
 <a href="https://wordpress.org/plugins/zanto/" class="button-primary"><i class="fa fa-wordpress"></i> <?php _e('Rate Us on Wordpress.org','Zanto') ?></a>
 		     <h4><?php _e('Extend','Zanto'); ?></h4>
-		     <p><?php _e('Do you want to extend Zanto WP translation plugin? No problem, you can build your free or premium addon and we will include it in our <a href="shop.zanto.org">shop</a>.','Zanto'); ?>
+		     <p><?php _e('Do you want to extend Zanto WP translation plugin? No problem, you can build your free or premium addon and we will include it in our <a href="plugins.zanto.org">plugins</a>.','Zanto'); ?>
 			 <br/><?php _e('If there are hooks you would like us to add, let us know and we will add them for you.','Zanto') ?>
 			 </p>
 		</div>

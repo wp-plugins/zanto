@@ -41,6 +41,7 @@ if (!class_exists('ZWT_Interfaces')) {
             add_action('admin_menu', array($this, 'registerSettingsPages'));
             add_action('init', array($this, 'init'), 90);
             //add_filter('plugin_action_links_' . plugin_basename(dirname(__DIR__)) . '/zanto.php', array($this, 'addPluginActionLinks'));
+			add_action('zwt_debug_info', array($this, 'debug_info'));
 			add_filter('plugin_row_meta', array($this, 'plugin_support_link'), 10, 2 );
 
         }
@@ -70,6 +71,12 @@ if (!class_exists('ZWT_Interfaces')) {
         public function display_help_tabs($screen, $tab) {
             require( dirname(__DIR__) . '/views/zwt-help-tabs.php' );
         }
+		
+		/*since 0.3.2*/
+		public function debug_info(){
+		$zanto_stgs=get_option(ZWT_Base::PREFIX . 'zanto_settings', array());
+	    require( dirname(__DIR__) . '/views/debug-information.php' );
+		}
 
         public function activate() {
             global $wpdb, $EZSQL_ERROR;

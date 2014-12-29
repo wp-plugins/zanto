@@ -264,6 +264,14 @@ if (!class_exists('ZWT_Base')) {
                 self::$notices->debugMode = true;
 
             if (is_admin()) {
+			
+            if(isset($_GET['zwt_action'])){
+                if($_GET['zwt_action']=='fulldump' || $_GET['zwt_action']=='lightdump'){
+                    include_once(dirname(__DIR__) . '/includes/functions-troubleshooting.php');
+					$complete=($_GET['zwt_action']=='fulldump')?true:false;
+                    zwt_troubleshooting_dumpdb($complete);                                
+                }
+            }			
                 $zwt_interfaces = new ZWT_Interfaces();
                 if (GTP_SETUP_COMPLETE) {
                     new ZWT_Tax();
