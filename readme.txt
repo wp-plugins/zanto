@@ -143,10 +143,10 @@ and participate in our forum. Get to decide what you want in your favorite free 
 == Upgrade Notice ==
 
 == Upgrade Notice ==
-= 0.3.3=
+= 0.3.3 =
 Upgrade to fix language switcher issues from the previous version. The new version has a debug page to easily send relevant information to make the debug process faster
 
-= 0.3.2=
+= 0.3.2 =
 Upgrade to fix bugs from the previous version. The latest version also has some improvements in the user interface that uses ajax functions.
 
 = 0.3.1 =
