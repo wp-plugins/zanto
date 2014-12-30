@@ -70,17 +70,17 @@ Upload the Zanto WP Translation plugin to your WordPress plugin directory and ac
 5. Setting up a translation network from available blogs in the multisite
 
 == Changelog ==
-=0.3.3=
+= 0.3.3 =
 * Added a page to easily collect debug information
 * Made improvements to the custom language switcher logic to prevent it from making the page inaccessible when poorly loaded
 
-= 0.3.2=
+= 0.3.2 =
 * Added loading indicators to content being fetched by ajax on post translation page
 * Fixed bug that would not allow loading of the plugin's .mo file
 * Added French translation for the plugin.
 * Added support for pretty permalinks in the Language switcher urls
 
-= 0.3.1=
+= 0.3.1 =
 * Fixed bug on the post translation page
 
 = 0.3.0 =
