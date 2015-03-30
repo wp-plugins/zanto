@@ -16,8 +16,7 @@ function zwt_initial_activate(){
     }    
     
     try{
-  
-		
+  		
         // languages table
         $table_name = $wpdb->base_prefix .'zwt_languages';            
         if($wpdb->get_var("SHOW TABLES LIKE '{$table_name}'") != $table_name){
@@ -84,7 +83,7 @@ function zwt_initial_activate(){
             $sql = " 
             CREATE TABLE `{$table_name}` (
                 `blog_id` INT NOT NULL PRIMARY KEY ,
-                `trans_id` VARCHAR( 100 ) NOT NULL ,
+                `trans_id` INT NOT NULL ,
                 `lang_code` VARCHAR(7) NOT NULL ,  				
                  UNIQUE KEY `blog_trans_id` (`blog_id`,`trans_id`),
                  UNIQUE KEY `blog_lang` (`blog_id`,`lang_code`),

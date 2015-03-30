@@ -2,8 +2,8 @@
 Contributors: brooksX
 Tags: translation, multilingual, localization, multisite, language switcher, languages, Internationalization, i18n, l10n
 Requires at least: 3.0
-Tested up to: 4.1
-Stable tag: 0.3.3
+Tested up to: 4.1.1
+Stable tag: 0.3.4
 License: GPLv2 or later
 
 Zanto WP Translation helps you run a multilingual site by providing linkage between content in blogs of different languages in a WordPress multisite.
@@ -16,8 +16,10 @@ that allows you to carry out translation. The number of languages you can run ar
 <a title="WordPress translation, localization and Internationalization addons" href="http://shop.zanto.org">multilingual addons</a> or keep up to-date with the best Internationalization and 
 localization practices at <a title="WordPress translation, localization and Internationalization" href="http://zanto.org">zanto.org/blog</a>
 
+= Demo and Documentation =
+<a title="Demo" href="http://lang1.zanto.org">zanto.org/Demo</a>
 
-Features:
+= Features: =
 
 * Translation of posts, categories, custom taxonomies, custom types.
 * Browser Language re-direct  i.e re-direct users to their preferred language in their browser language settings.
@@ -70,17 +72,17 @@ Upload the Zanto WP Translation plugin to your WordPress plugin directory and ac
 5. Setting up a translation network from available blogs in the multisite
 
 == Changelog ==
-=0.3.3=
+= 0.3.3 =
 * Added a page to easily collect debug information
 * Made improvements to the custom language switcher logic to prevent it from making the page inaccessible when poorly loaded
 
-= 0.3.2=
+= 0.3.2 =
 * Added loading indicators to content being fetched by ajax on post translation page
 * Fixed bug that would not allow loading of the plugin's .mo file
 * Added French translation for the plugin.
 * Added support for pretty permalinks in the Language switcher urls
 
-= 0.3.1=
+= 0.3.1 =
 * Fixed bug on the post translation page
 
 = 0.3.0 =
@@ -140,13 +142,16 @@ you are never alone and stuck while using our plugins.
 Yes, we have so many features in store under developement, keep tuned in at <a href="http://zanto.org/blog/">Our blog</a> and subscribe to our posts on to get the latest information on WordPress translation, new feature developments,
 and participate in our forum. Get to decide what you want in your favorite free multilingual plugin and we'll fold our shirt sleeves to get it ready for the next version.
 
-== Upgrade Notice ==
 
 == Upgrade Notice ==
-= 0.3.3=
+
+= 0.3.4 =
+A couple of Bug fixes from 0.3.3
+
+= 0.3.3 =
 Upgrade to fix language switcher issues from the previous version. The new version has a debug page to easily send relevant information to make the debug process faster
 
-= 0.3.2=
+= 0.3.2 =
 Upgrade to fix bugs from the previous version. The latest version also has some improvements in the user interface that uses ajax functions.
 
 = 0.3.1 =

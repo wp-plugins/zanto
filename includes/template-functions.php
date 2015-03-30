@@ -33,7 +33,7 @@ function zwt_get_ls_themes($dir = null) {
     }
 	//add the default themes 
 	$theme_files[]= WP_PLUGIN_DIR . '/'.GTP_PLUGIN_FOLDER.'/views/lang-switcher/lang_switcher.zwt.php' ;
-	//$theme_files[]= WP_PLUGIN_DIR . '/'.GTP_PLUGIN_FOLDER.'/views/lang-switcher/select_lang_switcher.zwt.php' ;
+	$theme_files[]= WP_PLUGIN_DIR . '/'.GTP_PLUGIN_FOLDER.'/views/lang-switcher/ls_2015_v1.zwt.php' ;
 	
 
         foreach ($theme_files as $file_uri) {

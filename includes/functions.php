@@ -10,7 +10,8 @@
  */
 function get_trans_network_admin($trans_id) {
     global $wpdb;
-    $trans_owner_array = $wpdb->get_results("SELECT user_id,  meta_value FROM wp_usermeta WHERE meta_key =  'zwt_installed_transnetwork'", ARRAY_A);
+	$sql="SELECT user_id, meta_value FROM {$wpdb->base_prefix}usermeta WHERE meta_key = 'zwt_installed_transnetwork'";
+    $trans_owner_array = $wpdb->get_results($sql, ARRAY_A);
     foreach ($trans_owner_array as $trans_owner) {
         if ($trans_owner['meta_value'] == $trans_id) {
             $admin_id = $trans_owner['user_id'];

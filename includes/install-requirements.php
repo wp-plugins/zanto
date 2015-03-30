@@ -4,7 +4,7 @@ function zwt_requirements_missing(){
 	$requirements= array('zwt_PHP_VERSION'=>1, 'zwt_WP_VERSION'=>1, 'Multisite'=>1);
 	//require_once( ABSPATH .'/wp-admin/includes/plugin.php' );		// to get is_plugin_active() early
 	
-	if(version_compare(phpversion(), '5.3', '<'))
+	if(version_compare(phpversion(), '5.2', '<'))
 		$requirements['zwt_PHP_VERSION']=0;
 	
 	if( version_compare( $wp_version, GTP_REQUIRED_WP_VERSION, '<' ) )
