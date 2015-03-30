@@ -8,7 +8,7 @@
 	<h1><?php echo sprintf( __( 'Welcome to Zanto WP Translation %s', 'Zanto' ), GTP_ZANTO_VERSION ); ?></h1>
 
 	<div class="about-text">
-		<?php _e( 'Thank you for using Zanto WP Translation! The plugin is now better and more stable than ever with better SEO support, feature enhancements and bug crashes ( <a href="http://zanto.org/?p=409"> See the change log</a> ) ', 'Zanto' ); ?>
+		<?php _e( 'Thank you for using Zanto WP Translation! We received very few bug reports in the previous version, we expect this one to even be better!', 'Zanto' ); ?>
 	</div>
 
 	<?php
